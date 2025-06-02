@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -28,7 +29,7 @@ namespace Characters.MovementSystems
         private bool _isGrounded;
         private BoxCollider2D _boxCollider2D;
         
-        private void Start()
+        private async void Start()
         {
             if (!snapGridOnStart) return;
             if (!TryGetComponent(out _boxCollider2D))
@@ -36,7 +37,8 @@ namespace Characters.MovementSystems
                 Debug.LogWarning("Need BoxCollider2D with is Trigger");
                 return;
             }
-            
+
+            await UniTask.WaitForSeconds(0.1f);
             transform.position = SnapToGrid(transform.position);
         }
         

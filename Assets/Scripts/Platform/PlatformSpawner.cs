@@ -39,6 +39,9 @@ namespace Platform
 
         [FoldoutGroup("Control")] [SerializeField] [Tooltip("Start position")]
         private Vector3 spawnStartPosition = Vector3.zero;
+        
+        [FoldoutGroup("Control")] [SerializeField] [Tooltip("Distance between platform")]
+        private float distancePlatform;
 
         [FoldoutGroup("Control")] [SerializeField] [Tooltip("Platform parent")]
         private Transform parent;
@@ -58,10 +61,7 @@ namespace Platform
         private void Awake()
         {
             PoolingManager.Instance.PreWarm(platformPrefab, prewarmCount, parent);
-        }
-
-        private void Start()
-        {
+            
             lastSpawnPosition = spawnStartPosition;
 
             // Start spawn 7 platform
@@ -69,8 +69,9 @@ namespace Platform
             for (var i = 0; i < initialNormalPlatformCount; i++)
             {
                 var newStep = CalculateNextStep();
-                lastSpawnPosition.x += 1f;
+                lastSpawnPosition.x += distancePlatform;
                 lastSpawnPosition.y = newStep * stepHeight;
+                lastSpawnPosition = SnapToGrid(lastSpawnPosition, 0.1f);
                 SpawnPlatform(lastSpawnPosition, normalSO);
             }
         }
@@ -86,8 +87,9 @@ namespace Platform
             var newStep = CalculateNextStep();
             Debug.Log(newStep);
           
-            lastSpawnPosition.x += 1f;
+            lastSpawnPosition.x += distancePlatform;
             lastSpawnPosition.y = newStep * stepHeight;
+            lastSpawnPosition = SnapToGrid(lastSpawnPosition, 0.1f);
 
             SpawnPlatform(lastSpawnPosition);
         }
@@ -181,6 +183,20 @@ namespace Platform
 
             return platformDataList[platformDataList.Count - 1];
         }
+        
+        /// <summary>
+        /// Snap to grid
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="gridSize"></param>
+        /// <returns></returns>
+        private Vector3 SnapToGrid(Vector3 position, float gridSize = 0.5f)
+        {
+            position.x = Mathf.Round(position.x / gridSize) * gridSize;
+            position.y = Mathf.Round(position.y / gridSize) * gridSize;
+            return position;
+        }
+
         
         #endregion
 
