@@ -28,9 +28,8 @@ namespace Characters.MovementSystems
         private bool _isGrounded;
         private bool _isLanding;
         private BoxCollider2D _boxCollider2D;
-        private bool _ignoreGravity;
-
-        private void Start()
+        
+        private async void Start()
         {
             if (!snapGridOnStart) return;
             if (!TryGetComponent(out _boxCollider2D))
@@ -39,6 +38,7 @@ namespace Characters.MovementSystems
                 return;
             }
 
+            await UniTask.WaitForSeconds(0.1f);
             transform.position = SnapToGrid(transform.position);
         }
 
