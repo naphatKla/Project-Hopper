@@ -912,7 +912,7 @@ GameObject:
   - component: {fileID: 1994263100}
   - component: {fileID: 1994263101}
   - component: {fileID: 1994263102}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -983,7 +983,7 @@ Transform:
   m_GameObject: {fileID: 1994263097}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.506, y: 0.018, z: 0}
+  m_LocalPosition: {x: -5.47, y: 1.267, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1075,9 +1075,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridOffset: {x: 0.5, y: 0}
+  collisionLayer:
+    serializedVersion: 2
+    m_Bits: 129
   moveHorizontalDistance: 1
   moveVerticalDistance: 1
-  moveDuration: 0.25
+  moveHorizontalDuration: 0
+  movVerticallDuration: 0
   snapGridOnStart: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
