@@ -284,7 +284,14 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      BatAttack-Outline_0: 7133841845378669129
+      BatAttack-Outline_1: 1944314616142364164
+      BatAttack-Outline_2: -4285609834844154004
+      BatAttack-Outline_3: 482683378678335984
+      BatAttack-Outline_4: -1105153591754057777
+      BatAttack-Outline_5: 1904356174299763848
+      BatAttack-Outline_6: 1948827065846843756
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

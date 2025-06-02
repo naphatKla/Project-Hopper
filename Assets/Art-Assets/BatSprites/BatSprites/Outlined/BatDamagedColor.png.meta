@@ -209,7 +209,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      BatDamagedColor_0: -4399505171833178570
+      BatDamagedColor_1: -5572350991336674018
+      BatDamagedColor_2: 2975181403889213501
+      BatDamagedColor_3: 6868640564219639654
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
