@@ -140,26 +140,27 @@ namespace Platform
         {
             if (currentStep == targetStep)
             {
-                if (retainStep-- <= 0)
+                if (retainStep <= 0)
                 {
-                    targetStep = Mathf.Clamp(
-                        currentStep + Random.Range(-3, 4),
-                        minStep,
-                        maxStep
-                    );
-                    retainStep = Random.Range(1, 2);
+                    int direction = Random.Range(0, 2) == 0 ? -1 : 1;
+                    int magnitude = Random.Range(1, 4);
+                    int offset = direction * magnitude;
+                    targetStep = Mathf.Clamp(currentStep + offset, minStep, maxStep);
+                    retainStep = Random.Range(1, 5);
                 }
 
                 nextStep = currentStep;
+                retainStep--;
             }
             else
             {
-                nextStep = currentStep + (targetStep > currentStep ? 1 : -1);
+                nextStep = currentStep + (currentStep < targetStep ? 1 : -1);
             }
-            
+
             return nextStep;
         }
 
+        
         /// <summary>
         /// Calculate weight of platform
         /// </summary>
