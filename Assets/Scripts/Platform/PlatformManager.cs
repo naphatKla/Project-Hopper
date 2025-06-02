@@ -1,28 +1,31 @@
 using System;
 using UnityEngine;
 
-public class PlatformManager : MonoBehaviour
+namespace Platform
 {
-    public PlatformBaseStateSO currentState;
-
-    private void Start()
+    public class PlatformManager : MonoBehaviour
     {
-        currentState?.EnterState(this);
-    }
+        public PlatformBaseStateSO currentState;
 
-    private void Update()
-    {
-        currentState?.UpdateState(this);
-    }
+        private void Start()
+        {
+            currentState?.EnterState(this);
+        }
 
-    public void OnStepped(GameObject player)
-    {
-        currentState?.OnStepped(this, player);
-    }
+        private void Update()
+        {
+            currentState?.UpdateState(this);
+        }
 
-    public void SetState(PlatformBaseStateSO newState)
-    {
-        currentState = newState;
-        currentState.EnterState(this);
+        public void OnStepped(GameObject player)
+        {
+            currentState?.OnStepped(this, player);
+        }
+
+        public void SetState(PlatformBaseStateSO newState)
+        {
+            currentState = newState;
+            currentState.EnterState(this);
+        }
     }
 }
