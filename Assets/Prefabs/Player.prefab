@@ -179,8 +179,9 @@ MonoBehaviour:
   collisionLayer:
     serializedVersion: 2
     m_Bits: 129
+  gravityScale: -9.81
   moveHorizontalDistance: 1
   moveVerticalDistance: 1
-  moveHorizontalDuration: 0
-  movVerticallDuration: 0
+  moveHorizontalDuration: 0.25
+  moveVerticalDuration: 0.1
   snapGridOnStart: 1
