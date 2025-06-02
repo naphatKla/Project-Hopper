@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -8,29 +9,27 @@ namespace Characters.MovementSystems
 {
     public class MovementSystem : MonoBehaviour
     {
-        [Title("Configs")] 
-        [SerializeField] private Vector2 gridOffset = new Vector2(0.5f, 0);
+        [Title("Configs")] [SerializeField] private Vector2 gridOffset = new Vector2(0.5f, 0);
         [SerializeField] private LayerMask collisionLayer;
         [SerializeField] private float gravityScale = -9.81f;
 
-        [Title("Movement Stats")] 
-        [PropertyTooltip("(Units)")] 
-        [SerializeField] private int moveHorizontalDistance = 1;
+        [Title("Movement Stats")] [PropertyTooltip("(Units)")] [SerializeField]
+        private int moveHorizontalDistance = 1;
 
-        [PropertyTooltip("(Units)")] 
-        [SerializeField] private int moveVerticalDistance = 1;
+        [PropertyTooltip("(Units)")] [SerializeField]
+        private int moveVerticalDistance = 1;
 
-        [Unit(Units.Second)] 
-        [SerializeField] private float moveHorizontalDuration = 0.25f;
+        [Unit(Units.Second)] [SerializeField] private float moveDuration = 0.25f;
+
+        [SerializeField] private AnimationCurve moveCurve;
         
-        [Unit(Units.Second)] 
-        [SerializeField] private float moveVerticalDuration = 0.1f;
-
         [SerializeField] private bool snapGridOnStart;
 
         private bool _isGrounded;
+        private bool _isLanding;
         private BoxCollider2D _boxCollider2D;
-        
+        private bool _ignoreGravity;
+
         private void Start()
         {
             if (!snapGridOnStart) return;
@@ -39,37 +38,42 @@ namespace Characters.MovementSystems
                 Debug.LogWarning("Need BoxCollider2D with is Trigger");
                 return;
             }
-            
+
             transform.position = SnapToGrid(transform.position);
         }
-        
+
         private void Update()
         {
-            if (_isGrounded) return;
-            Vector2 currentPos = transform.position;
-            Vector2 newPos = currentPos + Vector2.up * (gravityScale * Time.deltaTime);
-            MovePosition(newPos);
+            GravityHandler();
         }
 
         [Button]
-        public async void TryMove()
+        public async void TryMoveAction()
         {
             if (!_isGrounded) return;
             if (CheckObstacle()) return;
 
-            Vector2 verticalPos = (Vector2)transform.position + Vector2.up * moveVerticalDistance;
+            _ignoreGravity = true;
+
+            Vector2 startPos = transform.position;
+            Vector2 horizontalOffset = Vector2.right * moveVerticalDistance;
+
             await DOTween.To(() => 0f, t =>
-            {
-                Vector2 newPos = Vector2.Lerp(transform.position, verticalPos, t);
-                MovePosition(newPos);
-            }, 1f, moveVerticalDuration).AsyncWaitForCompletion();
-            
-            Vector2 horizontalPos = (Vector2)transform.position + Vector2.right * moveVerticalDistance;
-            DOTween.To(() => 0f, t =>
-            {
-                Vector2 newPos = Vector2.Lerp(transform.position, horizontalPos, t);
-                MovePosition(newPos);
-            }, 1f, moveHorizontalDuration);
+                {
+                    Vector2 horizontal = Vector2.Lerp(startPos, startPos + horizontalOffset, t);
+
+                    float arc = moveCurve.Evaluate(t);
+                    float yOffset = moveVerticalDistance * arc + 0.1f;
+
+                    Vector2 curvedPos = new Vector2(horizontal.x, startPos.y + yOffset);
+                    MovePosition(curvedPos);
+
+                }, 1f, moveDuration)
+                .SetEase(Ease.Linear)
+                .OnComplete(() =>
+                {
+                    _ignoreGravity = false;
+                });
         }
 
         private void MovePosition(Vector2 newPos)
@@ -77,13 +81,26 @@ namespace Characters.MovementSystems
             if (newPos.y < transform.position.y)
             {
                 float deltaY = MathF.Abs(transform.position.y - newPos.y);
-                if (!CheckGround(transform.position, out RaycastHit2D groundHit, deltaY))
+                if (CheckGround(transform.position, out RaycastHit2D groundHit, deltaY))
                 {
+                    if (_isLanding) return;
                     transform.position = SnapToGrid(transform.position);
+                    _isLanding = true;
                     return;
                 }
+
+                _isLanding = false;
             }
+
             transform.position = newPos;
+        }
+
+        private void GravityHandler()
+        {
+            if (_ignoreGravity) return;
+            Vector2 currentPos = transform.position;
+            Vector2 newPos = currentPos + Vector2.up * (gravityScale * Time.deltaTime);
+            MovePosition(newPos);
         }
 
         private bool CheckObstacle()
@@ -102,18 +119,18 @@ namespace Characters.MovementSystems
             Debug.DrawRay(origin, Vector2.down * length, hit.collider ? Color.green : Color.red, 0.1f);
             return _isGrounded;
         }
-        
+
         private Vector2 SnapToGrid(Vector2 pos)
         {
             float newX = MathF.Floor(pos.x) + gridOffset.x;
-            float newY = MathF.Floor(pos.y) + gridOffset.y;
+            float newY = MathF.Round(pos.y) + gridOffset.y;
 
             Vector2 snappedPos = new Vector2(newX, newY);
             float deltaY = pos.y - newY;
 
-            if (deltaY > 0 && CheckGround(pos, out RaycastHit2D hit, deltaY + 0.01f))
-                snappedPos = hit.point + hit.normal * 0.01f;
-            
+            if (deltaY > 0 && CheckGround(pos, out RaycastHit2D hit, deltaY))
+                snappedPos = hit.point + hit.normal;
+
             return snappedPos;
         }
 

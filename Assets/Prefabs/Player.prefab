@@ -182,6 +182,6 @@ MonoBehaviour:
   gravityScale: -9.81
   moveHorizontalDistance: 1
   moveVerticalDistance: 1
-  moveHorizontalDuration: 0.25
+  moveHorizontalDuration: 0.15
   moveVerticalDuration: 0.1
   snapGridOnStart: 1
