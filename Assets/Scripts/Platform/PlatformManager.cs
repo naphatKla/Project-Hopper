@@ -1,16 +1,28 @@
+using System;
 using UnityEngine;
 
 public class PlatformManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public PlatformBaseStateSO currentState;
+
+    private void Start()
     {
-        
+        currentState?.EnterState(this);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        currentState?.UpdateState(this);
+    }
+
+    public void OnStepped(GameObject player)
+    {
+        currentState?.OnStepped(this, player);
+    }
+
+    public void SetState(PlatformBaseStateSO newState)
+    {
+        currentState = newState;
+        currentState.EnterState(this);
     }
 }
