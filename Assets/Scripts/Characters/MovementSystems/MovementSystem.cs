@@ -3,7 +3,6 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Characters.MovementSystems
 {
@@ -27,6 +26,7 @@ namespace Characters.MovementSystems
 
         private bool _isGrounded;
         private bool _isLanding;
+        private bool _ignoreGravity;
         private BoxCollider2D _boxCollider2D;
         
         private async void Start()
