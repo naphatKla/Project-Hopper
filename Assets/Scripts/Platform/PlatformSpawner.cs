@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Characters.Controllers;
 using PoolingSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -75,6 +76,19 @@ namespace Platform
                 SpawnPlatform(lastSpawnPosition, normalSO);
             }
         }
+
+        private void OnEnable()
+        {
+            if (!PlayerController.Instance?.MovementSystem) return;
+            PlayerController.Instance.MovementSystem.OnJumpUp += SpawnNextPlatform;
+        }
+
+        private void OnDisable()
+        {
+            if (!PlayerController.Instance?.MovementSystem) return;
+            PlayerController.Instance.MovementSystem.OnJumpUp -= SpawnNextPlatform;
+        }
+
         #endregion
 
         #region Public Methods

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7827860333836497543}
   - component: {fileID: 5921234169387798148}
   - component: {fileID: 2249414347600718533}
+  - component: {fileID: 814245367004937187}
   - component: {fileID: 6083643814791524918}
   m_Layer: 6
   m_Name: Player
@@ -163,6 +164,21 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &814245367004937187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4378311090812985516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeb5cc79325a1aa4db60ea899e86681d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _movementSystem: {fileID: 6083643814791524918}
+  movementState: 0
+  combatState: 0
 --- !u!114 &6083643814791524918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,7 +198,7 @@ MonoBehaviour:
   gravityScale: -9.81
   moveHorizontalDistance: 1
   moveVerticalDistance: 1
-  moveDuration: 0.25
+  moveDuration: 0.3
   moveCurve:
     serializedVersion: 2
     m_Curve:
@@ -196,14 +212,14 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.4
+      time: 0.2
       value: 1
-      inSlope: -0.0000015085607
-      outSlope: -0.0000015085607
+      inSlope: -0.86039096
+      outSlope: -0.86039096
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.065851554
+      outWeight: 0.042172167
     - serializedVersion: 3
       time: 1
       value: 0
@@ -216,4 +232,3 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  snapGridOnStart: 1

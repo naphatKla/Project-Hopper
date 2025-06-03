@@ -1,17 +1,22 @@
 using System;
+using Characters.MovementSystems;
+using MoreMountains.Tools;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Characters.Controllers
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : MMSingleton<PlayerController>
     {
-        [Title("States")]
+        [Title("Dependencies")]
+        [SerializeField] private MovementSystem _movementSystem;
+        
+        [Title("States")] 
         [SerializeField] private MovementState movementState;
         [SerializeField] private CombatState combatState;
-        
+
+        public MovementSystem MovementSystem => _movementSystem;
         //[Title("Dependencies")]
-        
         
     }
 
