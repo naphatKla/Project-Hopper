@@ -33,10 +33,7 @@ namespace Characters.MovementSystems
 
         [InfoBox("You can adjust movement curve. The start and end point need to be zero. and the highest value should be one.")] 
         [SerializeField] private AnimationCurve moveCurve;
-
-        [PropertyTooltip("Snap the position of this character with grid position, Suggest to be true.")] 
-        [SerializeField] private bool snapGridOnStart = true;
-
+        
         /// <summary>
         /// Determine this character is on ground or not.
         /// </summary>
@@ -62,19 +59,12 @@ namespace Characters.MovementSystems
         #region Unity Methods
 
         /// <summary>
-        /// Initialize the character
+        /// Initialize and dependency condition.
         /// </summary>
         private async void Start()
         {
-            if (!snapGridOnStart) return;
-            if (!TryGetComponent(out _boxCollider2D))
-            {
+            if (!TryGetComponent(out _boxCollider2D) && !_boxCollider2D.isTrigger)
                 Debug.LogWarning("Need BoxCollider2D with is Trigger");
-                return;
-            }
-      
-            await UniTask.WaitForSeconds(0.1f);
-            transform.position = SnapToGrid(transform.position);
         }
 
         /// <summary>
@@ -99,6 +89,7 @@ namespace Characters.MovementSystems
             if (!_isGrounded) return;
             if (CheckObstacle()) return;
 
+            Debug.Log("Jump up!!");
             _ignoreGravity = true;
 
             Vector2 startPos = transform.position;
@@ -135,7 +126,7 @@ namespace Characters.MovementSystems
                 if (CheckGround(transform.position, out RaycastHit2D groundHit, deltaY))
                 {
                     if (_isLanding) return;
-                    transform.position = SnapToGrid(transform.position);
+                    transform.position = SnapToGrid(newPos);
                     _isLanding = true;
                     return;
                 }
@@ -152,6 +143,8 @@ namespace Characters.MovementSystems
         private void GravityHandler()
         {
             if (_ignoreGravity) return;
+            if (_isGrounded) return;
+            Debug.Log("GRAVIT!");
             Vector2 currentPos = transform.position;
             Vector2 newPos = currentPos + Vector2.up * (gravityScale * Time.deltaTime);
             MovePosition(newPos);
@@ -199,8 +192,8 @@ namespace Characters.MovementSystems
             Vector2 snappedPos = new Vector2(newX, pos.y);
             float deltaY = transform.position.y - pos.y;
 
-            if (deltaY > 0 && CheckGround(pos, out RaycastHit2D hit, deltaY + 0.05f))
-                snappedPos = hit.point;
+            if (deltaY > 0 && CheckGround(pos, out RaycastHit2D hit, deltaY))
+                snappedPos.y = hit.point.y;
             
             return snappedPos;
         }
