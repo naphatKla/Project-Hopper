@@ -129,8 +129,8 @@ namespace Characters.MovementSystems
             float deltaY = pos.y - newY;
 
             if (deltaY > 0 && CheckGround(pos, out RaycastHit2D hit, deltaY))
-                snappedPos = hit.point + hit.normal;
-
+                snappedPos = hit.point;
+            
             return snappedPos;
         }
 

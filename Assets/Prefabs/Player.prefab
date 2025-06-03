@@ -182,6 +182,38 @@ MonoBehaviour:
   gravityScale: -9.81
   moveHorizontalDistance: 1
   moveVerticalDistance: 1
-  moveHorizontalDuration: 0.15
-  moveVerticalDuration: 0.1
+  moveDuration: 0.25
+  moveCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.4
+      value: 1
+      inSlope: -0.0000015085607
+      outSlope: -0.0000015085607
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.065851554
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -2.0106761
+      outSlope: -2.0106761
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.03861
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   snapGridOnStart: 1
