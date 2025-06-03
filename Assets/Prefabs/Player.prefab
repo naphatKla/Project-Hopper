@@ -198,7 +198,7 @@ MonoBehaviour:
   gravityScale: -9.81
   moveHorizontalDistance: 1
   moveVerticalDistance: 1
-  moveDuration: 0.25
+  moveDuration: 0.3
   moveCurve:
     serializedVersion: 2
     m_Curve:
@@ -212,14 +212,14 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.4
+      time: 0.2
       value: 1
-      inSlope: -0.0000015085607
-      outSlope: -0.0000015085607
+      inSlope: -0.86039096
+      outSlope: -0.86039096
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.065851554
+      outWeight: 0.042172167
     - serializedVersion: 3
       time: 1
       value: 0

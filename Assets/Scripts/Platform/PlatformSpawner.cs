@@ -79,11 +79,13 @@ namespace Platform
 
         private void OnEnable()
         {
+            if (!PlayerController.Instance?.MovementSystem) return;
             PlayerController.Instance.MovementSystem.OnJumpUp += SpawnNextPlatform;
         }
 
         private void OnDisable()
         {
+            if (!PlayerController.Instance?.MovementSystem) return;
             PlayerController.Instance.MovementSystem.OnJumpUp -= SpawnNextPlatform;
         }
 
