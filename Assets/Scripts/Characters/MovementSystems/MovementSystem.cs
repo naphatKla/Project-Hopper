@@ -31,7 +31,8 @@ namespace Characters.MovementSystems
         [ValidateInput("@moveHorizontalDistance >= 0", "this value can't below than zero.")]
         [SerializeField] private float moveDuration = 0.25f;
 
-        [InfoBox("You can adjust movement curve. The start and end point need to be zero. and the highest value should be one.")] 
+        [PropertySpace]
+        [InfoBox("You can adjust movement curve. \nThe start and end point need to be zero. and the highest value should be one.")] 
         [SerializeField] private AnimationCurve moveCurve;
         
         /// <summary>
@@ -53,6 +54,17 @@ namespace Characters.MovementSystems
         /// The box collider of this character.
         /// </summary>
         private BoxCollider2D _boxCollider2D;
+
+        /// <summary>
+        /// Invoke when the character start move or jump.
+        /// </summary>
+        public Action OnJumpUp { get; set; }
+        
+        /// <summary>
+        /// Invoke when the character on landing from the falling state first time on the ground.
+        /// GameObject is means the object landed on.
+        /// </summary>
+        public Action<GameObject> OnLanding { get; set; }
         
         #endregion
 
@@ -83,13 +95,13 @@ namespace Characters.MovementSystems
         /// The primary movement of this game. Try to move and jump to the next grid, depend on the movement distance
         /// Move when the condition is true and return ( not do any action ) if the condition is false.
         /// </summary>
-        [Button]
+        [Button] [PropertySpace]
         public async void TryMoveAction()
         {
             if (!_isGrounded) return;
             if (CheckObstacle()) return;
 
-            Debug.Log("Jump up!!");
+            OnJumpUp?.Invoke();
             _ignoreGravity = true;
 
             Vector2 startPos = transform.position;
@@ -127,6 +139,7 @@ namespace Characters.MovementSystems
                 {
                     if (_isLanding) return;
                     transform.position = SnapToGrid(newPos);
+                    OnLanding?.Invoke(groundHit.transform.gameObject);
                     _isLanding = true;
                     return;
                 }
@@ -144,7 +157,7 @@ namespace Characters.MovementSystems
         {
             if (_ignoreGravity) return;
             if (_isGrounded) return;
-            Debug.Log("GRAVIT!");
+        
             Vector2 currentPos = transform.position;
             Vector2 newPos = currentPos + Vector2.up * (gravityScale * Time.deltaTime);
             MovePosition(newPos);
