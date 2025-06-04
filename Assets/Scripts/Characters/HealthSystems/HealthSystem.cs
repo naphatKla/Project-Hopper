@@ -5,7 +5,7 @@ namespace Characters.HealthSystems
 {
     public class HealthSystem : MonoBehaviour
     {
-        [SerializeField] private float maxHp;
+        [SerializeField] private float maxHp = 1;
         private float _currentHp;
         private bool _isDead;
         

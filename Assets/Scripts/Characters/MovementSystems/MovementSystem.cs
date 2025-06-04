@@ -77,8 +77,7 @@ namespace Characters.MovementSystems
         {
             OnLanding += HandleLanding;
         }
-
-
+        
         /// <summary>
         /// Initialize and dependency condition.
         /// </summary>
