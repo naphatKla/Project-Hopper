@@ -152,7 +152,8 @@ namespace Platform
             while (activePlatforms.Count > maxActivePlatformCount)
             {
                 var oldPlatform = activePlatforms.Dequeue();
-                oldPlatform.GetComponent<PlatformManager>().OnDespawned();
+                var manager = oldPlatform.GetComponent<PlatformManager>();
+                manager.OnDespawned();
                 PoolingManager.Instance.Despawn(oldPlatform);
             }
         }

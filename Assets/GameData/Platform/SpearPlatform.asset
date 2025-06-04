@@ -15,5 +15,5 @@ MonoBehaviour:
   sprites:
   - {fileID: 302213971, guid: 3639e3b85cabf0745ac8590e6abcb901, type: 3}
   platformType: 0
-  weight: 2
+  weight: 10
   state: {fileID: 11400000, guid: 18b69e97f4d9c04418897f7cc006d9a7, type: 2}
