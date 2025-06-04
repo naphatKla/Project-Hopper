@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Characters.HealthSystems
 {
@@ -14,11 +15,12 @@ namespace Characters.HealthSystems
         private float _currentHp;
         private bool _isDead;
         private bool _isIframePerHit;
+        private bool _isInvincible;
         
         public Action OnHealthChange { get; set; }
         public Action OnTakeDamage { get; set; }
         public Action OnDead { get; set; }
-
+        
         private void Start()
         {
             ResetHealth();
@@ -28,10 +30,14 @@ namespace Characters.HealthSystems
         public async void TakeDamage(float damage)
         {
             if (_isDead || _isIframePerHit) return;
+            feedbackTest.Kill();
+            
+            if (_isInvincible)
+                feedbackTest = GetComponent<SpriteRenderer>().DOColor(Color.blue, 0.1f).SetLoops(2, LoopType.Yoyo);
             
             ModifyHealth(-damage);
 
-            feedbackTest.Kill();
+        
             feedbackTest = GetComponent<SpriteRenderer>().DOColor(Color.red, 0.1f).SetLoops(2, LoopType.Yoyo);
             
             if (_currentHp > 0) return;
@@ -44,12 +50,17 @@ namespace Characters.HealthSystems
             _isIframePerHit = false;
         }
 
-        public void ModifyHealth(float amount)
+        private void ModifyHealth(float amount)
         {
             _currentHp += amount;
             OnHealthChange?.Invoke();
         }
 
+        public void SetInvincible(bool value)
+        {
+            _isInvincible = value;
+        }
+        
         public void ResetHealth()
         {
             ModifyHealth(maxHp);
