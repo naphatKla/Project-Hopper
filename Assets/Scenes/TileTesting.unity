@@ -522,10 +522,12 @@ MonoBehaviour:
   platformDatas:
   - {fileID: 11400000, guid: 43f21ea81c0c3d24492d105b1e7faf10, type: 2}
   - {fileID: 11400000, guid: 991c83f9df899f248bf4f7c798616d5a, type: 2}
-  currentStep: 4
-  nextStep: 4
-  targetStep: 4
-  retainStep: 6
+  - {fileID: 11400000, guid: ca3c839f928716d4c9feeeda1c3dbd63, type: 2}
+  - {fileID: 11400000, guid: c350b4a28f6e2f046936eb564544637f, type: 2}
+  currentStep: 1
+  nextStep: 1
+  targetStep: 3
+  retainStep: 1
   initialNormalPlatformCount: 7
   prewarmCount: 10
   spawnStartPosition: {x: -0.5, y: 0, z: 0}

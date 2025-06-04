@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c65c9f5c798363d43b2255e88aaf1035, type: 3}
-  m_Name: FallingPlatform
+  m_Name: BrokenPlatform
   m_EditorClassIdentifier: 
   sprites:
-  - {fileID: 1049574012, guid: 3639e3b85cabf0745ac8590e6abcb901, type: 3}
-  platformType: 1
-  weight: 10
-  state: {fileID: 11400000, guid: 8e0d0c56dee410c418881f98ebd47b89, type: 2}
+  - {fileID: -1170603751906099542, guid: 3639e3b85cabf0745ac8590e6abcb901, type: 3}
+  platformType: 2
+  weight: 5
+  state: {fileID: 11400000, guid: 0ba9b7e15c5524f409d08ed7ba08f248, type: 2}

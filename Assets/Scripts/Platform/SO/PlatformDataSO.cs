@@ -10,6 +10,8 @@ namespace Platform
     {
         Normal,
         Falling,
+        Broken,
+        Spear,
     }
 
     [CreateAssetMenu(fileName = "PlatformDataSO", menuName = "Scriptable Objects/PlatformDataSO")]

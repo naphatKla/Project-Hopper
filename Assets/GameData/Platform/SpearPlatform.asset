@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c65c9f5c798363d43b2255e88aaf1035, type: 3}
-  m_Name: FallingPlatform
+  m_Name: SpearPlatform
   m_EditorClassIdentifier: 
   sprites:
-  - {fileID: 1049574012, guid: 3639e3b85cabf0745ac8590e6abcb901, type: 3}
-  platformType: 1
-  weight: 10
-  state: {fileID: 11400000, guid: 8e0d0c56dee410c418881f98ebd47b89, type: 2}
+  - {fileID: 302213971, guid: 3639e3b85cabf0745ac8590e6abcb901, type: 3}
+  platformType: 0
+  weight: 2
+  state: {fileID: 11400000, guid: 18b69e97f4d9c04418897f7cc006d9a7, type: 2}
