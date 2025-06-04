@@ -22,7 +22,7 @@ namespace Characters.InputSystems
             guardButton?.onClick.AddListener(PerformGuard);
         }
         
-        [Button]
+        [PropertySpace] [Button]
         protected override void PerformMove()
         {
             OnMoveInputPerform?.Invoke();

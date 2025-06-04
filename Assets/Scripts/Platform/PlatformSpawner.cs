@@ -81,7 +81,6 @@ namespace Platform
             }
 
             await UniTask.DelayFrame(2);
-            Debug.Log("Next frame");
             PlayerController.Instance.gameObject.SetActive(true);
         }
 
