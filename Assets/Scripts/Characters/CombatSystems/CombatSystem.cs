@@ -57,10 +57,10 @@ namespace Characters.CombatSystems
 
         public async void Guard()
         {
-            if (_isAttackCooldown) return;
+            if (_isGuardCooldown) return;
             if (!TryGetComponent(out HealthSystem healthSystem)) return;
             
-            _isAttackCooldown = true;
+            _isGuardCooldown = true;
             healthSystem.SetInvincible(true);
             await UniTask.WaitForSeconds(guardDuration);
             healthSystem.SetInvincible(false);
