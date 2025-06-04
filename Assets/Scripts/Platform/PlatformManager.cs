@@ -85,21 +85,28 @@ namespace Platform
         /// <param name="speed"></param>
         public async UniTask PlayAndWait(Animator animator, string name, float desiredDuration)
         {
+            if (!animator || !animator.gameObject.activeInHierarchy) return;
+
             var clip = GetClipByName(animator, name);
-            if (clip == null)
-            { return; }
+            if (clip == null) return;
 
             float speed = clip.length / desiredDuration;
 
             animator.Play(name, 0, 0f);
             animator.speed = speed;
 
-            await UniTask.WaitUntil(() =>
+            try
             {
-                var state = animator.GetCurrentAnimatorStateInfo(0);
-                return state.IsName(name) && state.normalizedTime >= 1f;
-            });
+                await UniTask.WaitUntil(() =>
+                {
+                    if (!Application.isPlaying || animator == null || !animator.gameObject.activeInHierarchy) return true;
+                    var state = animator.GetCurrentAnimatorStateInfo(0);
+                    return state.IsName(name) && state.normalizedTime >= 1f;
+                }, cancellationToken: animator.GetCancellationTokenOnDestroy());
+            }
+            catch (OperationCanceledException) { }
         }
+
 
         
         /// <summary>
