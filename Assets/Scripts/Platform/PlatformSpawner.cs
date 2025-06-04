@@ -62,8 +62,9 @@ namespace Platform
         #endregion
 
         #region Unity Methods
-        private void Awake()
+        private async void Awake()
         {
+            PlayerController.Instance.gameObject.SetActive(false);
             PoolingManager.Instance.PreWarm(platformPrefab, prewarmCount, parent);
             
             lastSpawnPosition = spawnStartPosition;
@@ -78,6 +79,10 @@ namespace Platform
                 lastSpawnPosition = SnapToGrid(lastSpawnPosition, 0.1f);
                 SpawnPlatform(lastSpawnPosition, normalSO);
             }
+
+            await UniTask.DelayFrame(2);
+            Debug.Log("Next frame");
+            PlayerController.Instance.gameObject.SetActive(true);
         }
 
         private void OnEnable()
