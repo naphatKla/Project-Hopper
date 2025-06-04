@@ -29,19 +29,21 @@ namespace Characters.InputSystems
             guardButton?.onClick.RemoveListener(PerformGuard);
         }
 
-        [PropertySpace] [Button]
+  
+
+        [BoxGroup] [Button(ButtonSizes.Large)]
+        protected override void PerformAttack()
+        {
+            OnAttackInputPerform?.Invoke();
+        }
+        
+        [BoxGroup] [Button(ButtonSizes.Large)] 
         protected override void PerformMove()
         {
             OnMoveInputPerform?.Invoke();
         }
 
-        [Button]
-        protected override void PerformAttack()
-        {
-            OnAttackInputPerform?.Invoke();
-        }
-
-        [Button]
+        [BoxGroup] [Button(ButtonSizes.Large)]
         protected override void PerformGuard()
         {
             OnGuardInputPerform?.Invoke();

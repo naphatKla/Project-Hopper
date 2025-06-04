@@ -65,15 +65,18 @@ namespace Platform
         {
             try
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(waitTime));
-                await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount);
+                while (true)
+                {
+                    await UniTask.Delay(TimeSpan.FromSeconds(waitTime));
+                    await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount);
                     
-                //Strike here
-                manager.Attack(attackBoxSize, attackBoxOffset, attackLayerMask, 1);
+                    //Strike here
+                    manager.Attack(attackBoxSize, attackBoxOffset, attackLayerMask, 1);
                    
-                Animator animator = manager.spear.GetComponent<Animator>();
-                await manager.PlayAndWait(animator,"Spike", 0.33f);
-                Hide(manager);
+                    Animator animator = manager.spear.GetComponent<Animator>();
+                    await manager.PlayAndWait(animator,"Spike", 0.33f);
+                    Hide(manager);
+                }
             }
             catch (Exception a)
             {
