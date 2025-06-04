@@ -29,6 +29,12 @@ namespace Platform
             currentState = newState;
             currentState.EnterState(this);
         }
+
+        public void ResetPlatform()
+        {
+            GetComponent<Rigidbody2D>().gravityScale = 0;
+            GetComponent<SpriteRenderer>().color = Color.white;
+        }
         
         /// <summary>
         /// Blink the game object
@@ -40,7 +46,6 @@ namespace Platform
         public async UniTask BlinkColor(Color colorA, Color colorB, float totalDuration, int blinkCount)
         {
             SpriteRenderer renderer = gameObject.GetComponent<SpriteRenderer>();
-            Debug.Log(renderer);
             float singleDuration = totalDuration / (blinkCount * 2f);
 
             Sequence seq = DOTween.Sequence();

@@ -1,3 +1,5 @@
+using System;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
@@ -8,14 +10,17 @@ namespace Platform
     {
         public override void EnterState(PlatformManager manager)
         {
-            manager.GetComponent<Rigidbody2D>().gravityScale = 0;
+            manager.ResetPlatform();
         }
 
         public override void UpdateState(PlatformManager manager) { }
 
         public override async void OnStepped(PlatformManager manager, GameObject player)
         {
-            manager.BlinkColor(Color.white, Color.red, 0.66f, 3);
+            await manager.BlinkColor(Color.white, Color.red, 0.66f, 3);
+            manager.GetComponent<Rigidbody2D>().gravityScale = 1;
+            await UniTask.Delay(TimeSpan.FromSeconds(1f));
+            manager.gameObject.SetActive(false);
         }
     }
 }
