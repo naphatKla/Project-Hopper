@@ -101,7 +101,6 @@ namespace Characters.MovementSystems
         /// The primary movement of this game. Try to move and jump to the next grid, depend on the movement distance
         /// Move when the condition is true and return ( not do any action ) if the condition is false.
         /// </summary>
-        [Button] [PropertySpace]
         public async void TryMoveAction()
         {
             if (!_isGrounded) return;
@@ -162,7 +161,7 @@ namespace Characters.MovementSystems
         private void GravityHandler()
         {
             if (_ignoreGravity) return;
-            if (CheckGround(transform.position, out RaycastHit2D _, 0.05f)) return;
+            //if (_isGrounded) return;
         
             Vector2 currentPos = transform.position;
             Vector2 newPos = currentPos + Vector2.up * (gravityScale * Time.deltaTime);

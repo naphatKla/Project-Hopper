@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2249414347600718533}
   - component: {fileID: 814245367004937187}
   - component: {fileID: 6083643814791524918}
+  - component: {fileID: 2415365376945018392}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -176,7 +177,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeb5cc79325a1aa4db60ea899e86681d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _movementSystem: {fileID: 6083643814791524918}
+  inputSystem: {fileID: 2415365376945018392}
+  movementSystem: {fileID: 6083643814791524918}
   movementState: 0
   combatState: 0
 --- !u!114 &6083643814791524918
@@ -205,30 +207,45 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 2
-      outSlope: 2
+      inSlope: 6.08374
+      outSlope: 6.08374
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.010266295
     - serializedVersion: 3
-      time: 0.2
+      time: 0.49850526
       value: 1
-      inSlope: -0.86039096
-      outSlope: -0.86039096
-      tangentMode: 0
+      inSlope: 0.0059791207
+      outSlope: 0.0059791207
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.042172167
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: -2.0106761
-      outSlope: -2.0106761
+      inSlope: -4.596942
+      outSlope: -4.596942
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.03861
+      inWeight: 0.021347718
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2415365376945018392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4378311090812985516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4edd4a50746fabb4db797bc9925dd708, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveButton: {fileID: 0}
+  attackButton: {fileID: 0}
+  guardButton: {fileID: 0}
