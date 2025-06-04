@@ -209,7 +209,10 @@ namespace Characters.MovementSystems
             float deltaY = transform.position.y - pos.y;
 
             if (deltaY > 0 && CheckGround(pos, out RaycastHit2D hit, deltaY))
-                snappedPos.y = hit.collider.ClosestPoint(hit.point).y;
+            {
+                float surfaceY = hit.collider.bounds.max.y;
+                snappedPos.y = surfaceY;
+            }
             
             return snappedPos;
         }
