@@ -9,6 +9,7 @@ namespace Platform
     public enum PlatformType
     {
         Normal,
+        Falling,
     }
 
     [CreateAssetMenu(fileName = "PlatformDataSO", menuName = "Scriptable Objects/PlatformDataSO")]

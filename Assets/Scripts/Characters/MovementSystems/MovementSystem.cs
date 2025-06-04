@@ -69,11 +69,17 @@ namespace Characters.MovementSystems
         #endregion
 
         #region Unity Methods
+        
+        private void Awake()
+        {
+            OnLanding += HandleLanding;
+        }
+
 
         /// <summary>
         /// Initialize and dependency condition.
         /// </summary>
-        private async void Start()
+        private void Start()
         {
             if (!TryGetComponent(out _boxCollider2D) && !_boxCollider2D.isTrigger)
                 Debug.LogWarning("Need BoxCollider2D with is Trigger");
@@ -156,7 +162,7 @@ namespace Characters.MovementSystems
         private void GravityHandler()
         {
             if (_ignoreGravity) return;
-            if (_isGrounded) return;
+            if (CheckGround(transform.position, out RaycastHit2D _, 0.05f)) return;
         
             Vector2 currentPos = transform.position;
             Vector2 newPos = currentPos + Vector2.up * (gravityScale * Time.deltaTime);
@@ -209,6 +215,18 @@ namespace Characters.MovementSystems
                 snappedPos.y = hit.collider.ClosestPoint(hit.point).y;
             
             return snappedPos;
+        }
+        
+        /// <summary>
+        /// Call OnStepped in platformManager
+        /// </summary>
+        /// <param name="landedObject"></param>
+        private void HandleLanding(GameObject landedObject)
+        {
+            if (landedObject.TryGetComponent<Platform.PlatformManager>(out var platformManager))
+            {
+                platformManager.OnStepped(gameObject);
+            }
         }
         
         #endregion
