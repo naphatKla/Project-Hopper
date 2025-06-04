@@ -39,7 +39,7 @@ namespace Platform
 
         public override void OnStepped(PlatformManager manager, GameObject player) { }
 
-        public override async void OnSpawned(PlatformManager manager)
+        public override void OnSpawned(PlatformManager manager)
         {
             manager.ResetPlatform();
             
@@ -68,7 +68,7 @@ namespace Platform
                 while (true)
                 {
                     await UniTask.Delay(TimeSpan.FromSeconds(waitTime));
-                    await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount);
+                    await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount, manager.blinkCts?.Token);
                     
                     //Strike here
                     manager.Attack(attackBoxSize, attackBoxOffset, attackLayerMask, 1);
@@ -80,7 +80,6 @@ namespace Platform
             }
             catch (Exception a)
             {
-                Console.WriteLine(a);
                 throw;
             }
         }
