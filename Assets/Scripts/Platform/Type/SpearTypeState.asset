@@ -12,4 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9af2b9d101a0f26448248add3bf10812, type: 3}
   m_Name: SpearTypeState
   m_EditorClassIdentifier: 
-  spearAnimation: {fileID: 1598568543137190644, guid: 8846bcee1bb5ee64ca5e5bb4834c72aa, type: 3}
+  waitTime: 1
+  blinkCount: 3
+  flashDuration: 0.33
+  strikeDuration: 0.33
+  attackBoxSize: {x: 0.77, y: 0.5}
+  attackBoxOffset: {x: 0, y: 0.7}
+  attackLayerMask:
+    serializedVersion: 2
+    m_Bits: 64

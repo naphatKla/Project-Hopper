@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Characters.HealthSystems;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Sirenix.OdinInspector;
@@ -9,8 +10,11 @@ namespace Platform
 {
     public class PlatformManager : MonoBehaviour
     {
-        public PlatformBaseStateSO currentState;
-        public CancellationTokenSource blinkCts;
+        [ReadOnly] public PlatformBaseStateSO currentState;
+        [ReadOnly] public CancellationTokenSource blinkCts;
+
+        private Vector2 lastAttackBoxSize;
+        private Vector2 lastAttackBoxOffset;
 
         [FoldoutGroup("Object Effect")]
         public GameObject spear;
@@ -126,7 +130,31 @@ namespace Platform
             }
             return null;
         }
+        
+        /// <summary>
+        /// Attack by platform
+        /// </summary>
+        public void Attack(Vector2 attackBoxSize, Vector2 attackBoxOffset, LayerMask attackLayerMask, float damage)
+        {
+            lastAttackBoxSize = attackBoxSize;
+            lastAttackBoxOffset = attackBoxOffset;
+            
+            Vector2 center = (Vector2)transform.position + attackBoxOffset;
+            Collider2D[] hits = Physics2D.OverlapBoxAll(center, attackBoxSize, 0f, attackLayerMask);
 
+            foreach (var hit in hits)
+            {
+                Debug.Log($"Hit: {hit.name}");
+                if (hit.TryGetComponent(out HealthSystem health)) health.TakeDamage(damage);
+            }
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Vector2 center = (Vector2)transform.position + lastAttackBoxOffset;
+            Gizmos.DrawWireCube(center, lastAttackBoxSize);
+        }
 
     }
 }
