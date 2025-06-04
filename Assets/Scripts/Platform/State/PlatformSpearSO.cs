@@ -48,10 +48,11 @@ namespace Platform
             
             manager.spear.SetActive(true);
             var animator = manager.spear.GetComponent<Animator>();
+            if (animator == null) { return; }
+            animator.Play("Spike", 0, 0f);
             animator.speed = 0;
-            
-            await UniTask.NextFrame();
-            RunLoop(manager, manager.blinkCts.Token).Forget();
+           
+            RunLoop(manager).Forget();
         }
 
         public override void OnDespawned(PlatformManager manager)
@@ -60,22 +61,19 @@ namespace Platform
             manager.spear.SetActive(false);
         }
         
-        private async UniTaskVoid RunLoop(PlatformManager manager, CancellationToken token)
+        private async UniTaskVoid RunLoop(PlatformManager manager)
         {
             try
             {
-                while (!token.IsCancellationRequested)
-                {
-                    await UniTask.Delay(TimeSpan.FromSeconds(waitTime), cancellationToken: token);
-                    await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount, token);
+                await UniTask.Delay(TimeSpan.FromSeconds(waitTime));
+                await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount);
                     
-                    //Strike here
-                    manager.Attack(attackBoxSize, attackBoxOffset, attackLayerMask, 1);
+                //Strike here
+                manager.Attack(attackBoxSize, attackBoxOffset, attackLayerMask, 1);
                    
-                    Animator animator = manager.spear.GetComponent<Animator>();
-                    await manager.PlayAndWait(animator,"Spike", 0.33f);
-                    Hide(manager);
-                }
+                Animator animator = manager.spear.GetComponent<Animator>();
+                await manager.PlayAndWait(animator,"Spike", 0.33f);
+                Hide(manager);
             }
             catch (Exception a)
             {
