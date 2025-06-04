@@ -210,9 +210,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridOffset: {x: 0.5, y: 0}
-  collisionLayer:
+  groundLayerMask:
     serializedVersion: 2
-    m_Bits: 129
+    m_Bits: 1
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 448
   gravityScale: -9.81
   moveHorizontalDistance: 1
   moveVerticalDistance: 1
