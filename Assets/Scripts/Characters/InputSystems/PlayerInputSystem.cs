@@ -21,7 +21,14 @@ namespace Characters.InputSystems
             attackButton?.onClick.AddListener(PerformAttack);
             guardButton?.onClick.AddListener(PerformGuard);
         }
-        
+
+        private void OnDisable()
+        {
+            moveButton?.onClick.RemoveListener(PerformMove);
+            attackButton?.onClick.RemoveListener(PerformAttack);
+            guardButton?.onClick.RemoveListener(PerformGuard);
+        }
+
         [PropertySpace] [Button]
         protected override void PerformMove()
         {

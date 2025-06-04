@@ -14,8 +14,11 @@ namespace Characters.MovementSystems
         [Title("Configs")] [PropertyTooltip("Offset in the grid. Depends on the pivot point of transform.")]
         [SerializeField] private Vector2 gridOffset = new Vector2(0.5f, 0);
         
-        [PropertyTooltip("Layer to detected and perform collision with.")]
-        [SerializeField] private LayerMask collisionLayer;
+        [PropertyTooltip("Ground layer to detected and perform collision with.")]
+        [SerializeField] private LayerMask groundLayerMask;
+        
+        [PropertyTooltip("Obstacle layer to block the player movement.")]
+        [SerializeField] private LayerMask obstacleLayerMask;
         
         [PropertyTooltip("Gravity scale of this entity. the sign is mean the gravity's direction.")]
         [SerializeField] private float gravityScale = -9.81f;
@@ -75,8 +78,7 @@ namespace Characters.MovementSystems
         {
             OnLanding += HandleLanding;
         }
-
-
+        
         /// <summary>
         /// Initialize and dependency condition.
         /// </summary>
@@ -170,17 +172,13 @@ namespace Characters.MovementSystems
         }
 
         /// <summary>
-        /// Check the obstacle in the front and top direction.
-        /// Detected ranges are depend on the movement direction, both of horizontal and vertical axis.
+        /// Check the obstacle in the front direction
+        /// Detected ranges are depend on the movement distance.
         /// </summary>
-        /// <returns>True if they have the obstacle in front of this character movement and above.</returns>
+        /// <returns>True if they have the obstacle in front of this character movement</returns>
         private bool CheckObstacle()
         {
-            Bounds bounds = _boxCollider2D.bounds;
-            Vector2 topCenter = bounds.center + new Vector3(0f, bounds.extents.y);
-            Vector2 rayStartPos = topCenter + new Vector2(0, moveVerticalDistance);
-            Debug.DrawRay(rayStartPos, Vector2.right * moveHorizontalDistance, Color.red, 0.1f);
-            return Physics2D.Raycast(rayStartPos, Vector2.right, moveHorizontalDistance, collisionLayer);
+            return Physics2D.Raycast(transform.position, Vector2.right, moveHorizontalDistance, obstacleLayerMask);
         }
         
         /// <summary>
@@ -192,7 +190,7 @@ namespace Characters.MovementSystems
         /// <returns>True if they have the ground and collision object below this character.</returns>
         private bool CheckGround(Vector2 origin, out RaycastHit2D hit, float length)
         {
-            hit = Physics2D.Raycast(origin, Vector2.down, length, collisionLayer);
+            hit = Physics2D.Raycast(origin, Vector2.down, length, groundLayerMask);
             _isGrounded = hit.collider;
             Debug.DrawRay(origin, Vector2.down * length, hit.collider ? Color.green : Color.red, 0.1f);
             return _isGrounded;
@@ -212,7 +210,10 @@ namespace Characters.MovementSystems
             float deltaY = transform.position.y - pos.y;
 
             if (deltaY > 0 && CheckGround(pos, out RaycastHit2D hit, deltaY))
-                snappedPos.y = hit.collider.ClosestPoint(hit.point).y;
+            {
+                float surfaceY = hit.collider.bounds.max.y;
+                snappedPos.y = surfaceY;
+            }
             
             return snappedPos;
         }
