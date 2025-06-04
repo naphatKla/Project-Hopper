@@ -1,6 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Characters.Controllers;
+using Characters.MovementSystems;
+using Cysharp.Threading.Tasks;
 using PoolingSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -99,7 +102,6 @@ namespace Platform
         {
             currentStep = nextStep;
             var newStep = CalculateNextStep();
-            Debug.Log(newStep);
           
             lastSpawnPosition.x += distancePlatform;
             lastSpawnPosition.y = newStep * stepHeight;

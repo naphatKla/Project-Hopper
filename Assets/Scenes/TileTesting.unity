@@ -309,6 +309,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 4378311090812985516, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6083643814791524918, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6083643814791524918, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
       propertyPath: moveCurve.m_Curve.Array.size
       value: 3
@@ -637,6 +645,7 @@ MonoBehaviour:
   platformPrefab: {fileID: 2169834587886236752, guid: c60854f3245dc884d8611c406bc119cd, type: 3}
   platformDatas:
   - {fileID: 11400000, guid: 43f21ea81c0c3d24492d105b1e7faf10, type: 2}
+  - {fileID: 11400000, guid: 991c83f9df899f248bf4f7c798616d5a, type: 2}
   currentStep: 4
   nextStep: 4
   targetStep: 4
