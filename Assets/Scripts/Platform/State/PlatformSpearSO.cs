@@ -39,14 +39,18 @@ namespace Platform
 
         public override void OnStepped(PlatformManager manager, GameObject player) { }
 
-        public override void OnSpawned(PlatformManager manager)
+        public override async void OnSpawned(PlatformManager manager)
         {
             manager.ResetPlatform();
+            
+            manager.blinkCts?.Cancel();
             manager.blinkCts = new CancellationTokenSource();
+            
             manager.spear.SetActive(true);
             var animator = manager.spear.GetComponent<Animator>();
             animator.speed = 0;
             
+            await UniTask.NextFrame();
             RunLoop(manager, manager.blinkCts.Token).Forget();
         }
 
