@@ -31,9 +31,13 @@ namespace Characters.HealthSystems
         {
             if (_isDead || _isIframePerHit) return;
             feedbackTest.Kill();
-            
+
             if (_isInvincible)
+            {
                 feedbackTest = GetComponent<SpriteRenderer>().DOColor(Color.blue, 0.1f).SetLoops(2, LoopType.Yoyo);
+                return;
+            }
+               
             
             ModifyHealth(-damage);
 
@@ -59,6 +63,7 @@ namespace Characters.HealthSystems
         public void SetInvincible(bool value)
         {
             _isInvincible = value;
+            Debug.Log("Guard");
         }
         
         public void ResetHealth()
