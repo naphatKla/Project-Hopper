@@ -64,6 +64,9 @@ namespace Platform
         #region Unity Methods
         private async void Awake()
         {
+            activePlatforms.Clear();
+            spawnedPlatformCount = 0;
+            PoolingManager.Instance.ClearPool();
             PlayerController.Instance.gameObject.SetActive(false);
             PoolingManager.Instance.PreWarm(platformPrefab, prewarmCount, parent);
             
@@ -134,6 +137,7 @@ namespace Platform
             // Set State
             var context = platformGO.GetComponent<PlatformManager>();
             context.SetState(platformData.state);
+            context.OnSpawned();
 
             spawnedPlatformCount++;
             CheckDespawnPlatform();
@@ -148,6 +152,7 @@ namespace Platform
             while (activePlatforms.Count > maxActivePlatformCount)
             {
                 var oldPlatform = activePlatforms.Dequeue();
+                oldPlatform.GetComponent<PlatformManager>().OnDespawned();
                 PoolingManager.Instance.Despawn(oldPlatform);
             }
         }

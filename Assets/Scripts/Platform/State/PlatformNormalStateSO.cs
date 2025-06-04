@@ -7,11 +7,18 @@ namespace Platform
     {
         public override void EnterState(PlatformManager manager)
         {
-            manager.GetComponent<Rigidbody2D>().gravityScale = 0;
+            manager.ResetPlatform();
         }
 
         public override void UpdateState(PlatformManager manager) { }
 
         public override void OnStepped(PlatformManager manager, GameObject player) { }
+
+        public override void OnSpawned(PlatformManager manager) { }
+
+        public override void OnDespawned(PlatformManager manager)
+        {
+            manager.ResetPlatform();
+        }
     }
 }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: NormalPlatform
   m_EditorClassIdentifier: 
   sprites:
-  - {fileID: 8483051222464998911, guid: f30553eaacbe5ca46b9c5f1103fcae4c, type: 3}
+  - {fileID: 8915592984020964820, guid: 3639e3b85cabf0745ac8590e6abcb901, type: 3}
   platformType: 0
   weight: 10
   state: {fileID: 11400000, guid: 28d1abb3241443a42a2407a269b5735c, type: 2}
