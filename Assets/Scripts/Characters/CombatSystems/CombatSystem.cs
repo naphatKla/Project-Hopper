@@ -1,5 +1,5 @@
-using System;
 using System.Threading;
+using Characters.Controllers;
 using Characters.HealthSystems;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
@@ -18,8 +18,12 @@ namespace Characters.CombatSystems
         [SerializeField] private float damage = 1f;
         [SerializeField] private float attackDelay = 0.1f;
         [SerializeField] private float attackCooldown = 0.1f;
+        [SerializeField] private float guardDuration = 0.12f;
+        [SerializeField] private float guardCooldown = 0.25f;
+        
         private Vector2 _attackStartPos;
         private bool _isAttackCooldown;
+        private bool _isGuardCooldown;
         private CancellationTokenSource _ct;
 
         private void OnDisable()
@@ -30,7 +34,7 @@ namespace Characters.CombatSystems
         public async void Attack()
         {
             if (_isAttackCooldown) return;
-
+            
             _ct = new CancellationTokenSource();
             await UniTask.WaitForSeconds(attackDelay, cancellationToken: _ct.Token);
             if (_ct.IsCancellationRequested) return;
@@ -47,13 +51,22 @@ namespace Characters.CombatSystems
                 Debug.Log($"{gameObject.name} deal {damage} damage to {targetHealth.name}");
             }
             
-            await UniTask.WaitForSeconds(attackCooldown);
+            await UniTask.WaitForSeconds(attackCooldown - attackDelay);
             _isAttackCooldown = false;
         }
 
-        public void Guard()
+        public async void Guard()
         {
+            if (_isAttackCooldown) return;
+            if (!TryGetComponent(out HealthSystem healthSystem)) return;
             
+            _isAttackCooldown = true;
+            healthSystem.SetInvincible(true);
+            await UniTask.WaitForSeconds(guardDuration);
+            healthSystem.SetInvincible(false);
+
+            await UniTask.WaitForSeconds(guardCooldown - guardDuration);
+            _isGuardCooldown = false;
         }
 
         private void OnDrawGizmosSelected()
