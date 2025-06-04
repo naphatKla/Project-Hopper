@@ -44,10 +44,16 @@ namespace Characters.CombatSystems
             {
                 if (!hit.TryGetComponent(out HealthSystem targetHealth)) continue;
                 targetHealth.TakeDamage(damage);
+                Debug.Log($"{gameObject.name} deal {damage} damage to {targetHealth.name}");
             }
             
             await UniTask.WaitForSeconds(attackCooldown);
             _isAttackCooldown = false;
+        }
+
+        public void Guard()
+        {
+            
         }
 
         private void OnDrawGizmosSelected()
