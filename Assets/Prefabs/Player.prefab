@@ -276,7 +276,7 @@ MonoBehaviour:
   damage: 1
   attackDelay: 0.1
   attackCooldown: 0.1
-  guardDuration: 0.12
+  guardDuration: 0.25
   guardCooldown: 0.25
 --- !u!114 &-3226373928487323148
 MonoBehaviour:

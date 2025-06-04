@@ -35,9 +35,18 @@ namespace Characters.MovementSystems
         [ValidateInput("@moveHorizontalDistance >= 0", "this value can't below than zero.")]
         [SerializeField] private float moveDuration = 0.25f;
 
+        [PropertyTooltip("The duration of movement cooldown")]  [Unit(Units.Second)] 
+        [ValidateInput("@moveHorizontalDistance >= 0", "this value can't below than zero.")]
+        [SerializeField] private float moveCooldown = 0.25f;
+
         [PropertySpace]
         [InfoBox("You can adjust movement curve. \nThe start and end point need to be zero. and the highest value should be one.")] 
         [SerializeField] private AnimationCurve moveCurve;
+
+        /// <summary>
+        /// /// Determine this character move is cooldown or not.
+        /// </summary>
+        private bool _isMoveCooldown;
         
         /// <summary>
         /// Determine this character is on ground or not.
@@ -106,9 +115,11 @@ namespace Characters.MovementSystems
         /// </summary>
         public async void TryMoveAction()
         {
+            if (_isMoveCooldown) return;
             if (!_isGrounded) return;
             if (CheckObstacle()) return;
 
+            _isMoveCooldown = true;
             OnJumpUp?.Invoke();
             _ignoreGravity = true;
 
@@ -131,6 +142,9 @@ namespace Characters.MovementSystems
                 {
                     _ignoreGravity = false;
                 });
+            
+            await UniTask.WaitForSeconds(Mathf.Max(0, moveCooldown - moveDuration));
+            _isMoveCooldown = false;
         }
 
         /// <summary>
