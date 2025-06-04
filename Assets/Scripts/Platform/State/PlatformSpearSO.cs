@@ -3,6 +3,8 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using PoolingSystem;
+using Sirenix.OdinInspector;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Platform
@@ -10,10 +12,23 @@ namespace Platform
     [CreateAssetMenu(fileName = "SpearState", menuName = "PlatformStates/Spear")]
     public class PlatformSpearSO : PlatformBaseStateSO
     {
+        [FoldoutGroup("Idle Settings")]
         [SerializeField] private float waitTime = 1f;
+        [FoldoutGroup("Idle Settings")]
         [SerializeField] private int blinkCount = 3;
+        [FoldoutGroup("Idle Settings")]
         [SerializeField] private float flashDuration = 0.33f;
+        [FoldoutGroup("Idle Settings")]
         [SerializeField] private float strikeDuration = 0.33f;
+        
+        [FoldoutGroup("Attack Settings")]
+        [SerializeField] private Vector2 attackBoxSize = new Vector2(1f, 1f);
+
+        [FoldoutGroup("Attack Settings")]
+        [SerializeField] private Vector2 attackBoxOffset = Vector2.up;
+
+        [FoldoutGroup("Attack Settings")]
+        [SerializeField] private LayerMask attackLayerMask;
 
         public override void EnterState(PlatformManager manager)
         {
@@ -51,7 +66,8 @@ namespace Platform
                     await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount, token);
                     
                     //Strike here
-                    
+                    manager.Attack(attackBoxSize, attackBoxOffset, attackLayerMask, 1);
+                   
                     Animator animator = manager.spear.GetComponent<Animator>();
                     await manager.PlayAndWait(animator,"Spike", 0.33f);
                     Hide(manager);
@@ -67,6 +83,7 @@ namespace Platform
         private void Hide(PlatformManager manager)
         {
             var animator = manager.spear.GetComponent<Animator>();
+            if (animator ==null) return;
             animator.Play("Spike", 0, 0f);
             animator.speed = 0;
         }
