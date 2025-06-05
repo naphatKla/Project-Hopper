@@ -5,20 +5,11 @@ using Random = UnityEngine.Random;
 
 namespace Platform
 {
-    [Serializable]
-    public enum PlatformType
-    {
-        Normal,
-        Falling,
-        Broken,
-        Spear,
-    }
-
+  
     [CreateAssetMenu(fileName = "PlatformDataSO", menuName = "Scriptable Objects/PlatformDataSO")]
     public class PlatformDataSO : ScriptableObject
     {
         public List<Sprite> sprites = new List<Sprite>();
-        public PlatformType platformType = PlatformType.Normal;
         public float weight;
         public PlatformBaseStateSO state;
 

@@ -5,6 +5,7 @@ namespace Platform
 {
     public abstract class PlatformBaseStateSO : ScriptableObject
     {
+        public abstract string StateID { get; }
         public abstract void OnSpawned(PlatformManager manager);
         public abstract void OnDespawned(PlatformManager manager);
         public abstract void UpdateState(PlatformManager manager);

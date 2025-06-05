@@ -13,13 +13,13 @@ namespace Platform
         [ReadOnly] public PlatformBaseStateSO currentState;
         [ReadOnly] public CancellationTokenSource attackLoopTokenSource;
 
-        private Vector2 lastAttackBoxSize;
-        private Vector2 lastAttackBoxOffset;
-
         [FoldoutGroup("Object Effect")]
         [SerializeField] public GameObject spear;
+
+        public PlatformDataSO data;
         
-        
+        private Vector2 lastAttackBoxSize;
+        private Vector2 lastAttackBoxOffset;
         [HideInInspector] public bool attackLooping;
         
         public void OnSpawned()
@@ -29,6 +29,7 @@ namespace Platform
         
         public void OnDespawned()
         {
+            data = null;
             currentState?.OnDespawned(this);
         }
 

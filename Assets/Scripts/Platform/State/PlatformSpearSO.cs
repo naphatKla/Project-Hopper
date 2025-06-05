@@ -12,6 +12,7 @@ namespace Platform
     [CreateAssetMenu(fileName = "SpearState", menuName = "PlatformStates/Spear")]
     public class PlatformSpearSO : PlatformBaseStateSO
     {
+        public override string StateID => "Spear";
         [FoldoutGroup("Idle Settings")]
         [SerializeField] private float waitTime = 1f;
         [FoldoutGroup("Idle Settings")]

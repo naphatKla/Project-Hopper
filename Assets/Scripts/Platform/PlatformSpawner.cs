@@ -92,7 +92,7 @@ namespace Spawner.Platform
         /// </summary>
         public void SpawnStartPlatform()
         {
-            var normalSO = platformDatas.Find(data => data.platformSO.platformType == PlatformType.Normal);
+            var normalSO = platformDatas.Find(data => data.platformSO.state is PlatformNormalStateSO);
             for (var i = 0; i < initialNormalPlatformCount; i++)
             {
                 var newStep = CalculateWeight();
@@ -131,7 +131,6 @@ namespace Spawner.Platform
 
             var platformGO = PoolingManager.Instance.Spawn(platformPrefab, position, Quaternion.identity, parent);
             activePlatforms.Enqueue(platformGO);
-            OnSpawned?.Invoke(platformGO);
 
             //Set Sprite
             var sr = platformGO.GetComponent<SpriteRenderer>();
@@ -141,7 +140,9 @@ namespace Spawner.Platform
             var context = platformGO.GetComponent<PlatformManager>();
             context.SetState(platformData.state);
             context.OnSpawned();
+            context.data = platformData;
 
+            OnSpawned?.Invoke(platformGO);
             spawnedPlatformCount++;
             CheckDespawn();
         }
@@ -163,13 +164,10 @@ namespace Spawner.Platform
         /// </summary>
         public void Despawn(GameObject obj)
         {
-            if (activePlatforms.Contains(obj))
-            {
-                activePlatforms.Dequeue();
-                obj.GetComponent<PlatformManager>().OnDespawned();
-                PoolingManager.Instance.Despawn(obj);
-                OnDespawned?.Invoke(obj);
-            }
+            if (obj == null) return;
+            obj.GetComponent<PlatformManager>().OnDespawned();
+            PoolingManager.Instance.Despawn(obj);
+            OnDespawned?.Invoke(obj);
         }
 
         /// <summary>

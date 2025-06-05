@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Characters.HealthSystems;
 using Platform;
 using PoolingSystem;
 using Sirenix.OdinInspector;
@@ -8,16 +10,6 @@ using Random = UnityEngine.Random;
 
 namespace Spawner.Object
 {
-    [System.Flags]
-    public enum PlatformType
-    {
-        None = 0,
-        Normal = 1 << 0,
-        Falling = 1 << 1,
-        Broken = 1 << 2,
-        Spear = 1 << 3,
-    }
-    
     [Serializable]
     public class ObjectSetting
     {
@@ -27,11 +19,20 @@ namespace Spawner.Object
         [Tooltip("Chance of object to random")]
         public float spawnChance;
         
-        [EnumToggleButtons, HideLabel] [Tooltip("Choose which platform that this object can spawn on")]
-        public PlatformType validPlatformTypes;
+        [Tooltip("Choose which platform that this object can spawn on")]
+        [ValueDropdown(nameof(GetAllPlatformStates), IsUniqueList = true)]
+        public List<PlatformBaseStateSO> validPlatformTypes;
         
         [Tooltip("Amount of object to spawn and used by pooling")]
         public int poolingAmount;
+        
+        private static IEnumerable<PlatformBaseStateSO> GetAllPlatformStates()
+        {
+            return UnityEditor.AssetDatabase
+                .FindAssets("t:PlatformBaseStateSO")
+                .Select(guid => UnityEditor.AssetDatabase.LoadAssetAtPath<PlatformBaseStateSO>(
+                    UnityEditor.AssetDatabase.GUIDToAssetPath(guid)));
+        }
     }
     public class ObjectSpawner : MonoBehaviour , ISpawner
     {
@@ -42,6 +43,7 @@ namespace Spawner.Object
         private Transform parent;
         
         private readonly Dictionary<GameObject, GameObject> platformObjectMap = new();
+        private readonly Dictionary<GameObject, int> activeObjectCount = new();
 
         public event Action<GameObject> OnSpawned;
         public event Action<GameObject> OnDespawned;
@@ -51,35 +53,45 @@ namespace Spawner.Object
             foreach (var data in objectDatas)
             {
                 PoolingManager.Instance.PreWarm(data.objectPrefab, data.poolingAmount, parent);
+                activeObjectCount[data.objectPrefab] = 0;
             }
         }
 
         public void ClearData()
         {
             platformObjectMap.Clear();
+            activeObjectCount.Clear();
         }
         
+        /// <summary>
+        /// Check the type of platform to despawn
+        /// </summary>
+        /// <param name="platform"></param>
         public void TrySpawnObjectOnPlatform(GameObject platform)
         {
-            /*var platformManager = platform.GetComponent<PlatformManager>();
-            if (platformManager == null) return;
-            
-            //Flag select
-            var typeName = platformManager.data.platformType.ToString();
-            var availableObjects = objectDatas.FindAll(obj => obj.validPlatformTypes.ToString() == typeName);
-            if (availableObjects.Count == 0) return;
-            var chosen = availableObjects[Random.Range(0, availableObjects.Count)];
-            
-            //Spawn
-            var position = platform.transform.position + Vector3.up * 0.5f;
-            var obj = PoolingManager.Instance.Spawn(chosen.objectPrefab, position, Quaternion.identity, parent);
-            if (obj == null) return;
+            var platformManager = platform.GetComponent<PlatformManager>();
+            if (platformManager == null || platformManager.data == null) return;
 
-            platformObjectMap[platform] = obj;
-            OnSpawned?.Invoke(obj);*/
+            var platformState = platformManager.data.state;
+            
+            var validSettings = objectDatas
+                .Where(setting => CanSpawnOn(platformState, setting))
+                .ToList();
+
+            if (validSettings.Count == 0) return;
+
+            var selectedSetting = GetRandomChanceObject(validSettings);
+            if (selectedSetting == null) return;
+
+            var spawnPos = platform.transform.position + Vector3.up * 0.55f;
+            Spawn(platform, spawnPos, selectedSetting);
         }
 
-        
+
+        /// <summary>
+        /// Despawn object when platform despawn
+        /// </summary>
+        /// <param name="platform"></param>
         public void OnPlatformDespawned(GameObject platform)
         {
             if (platformObjectMap.TryGetValue(platform, out var obj))
@@ -88,29 +100,43 @@ namespace Spawner.Object
             }
         }
 
-        public void Spawn(Vector3 position, object settings = null)
+        /// <summary>
+        /// Spawn the object
+        /// </summary>
+        /// <param name="platform"></param>
+        /// <param name="position"></param>
+        /// <param name="settings"></param>
+        public void Spawn(GameObject platform,Vector2 position, object settings = null)
         {
             var objectSetting = settings as ObjectSetting ?? GetRandomChanceObject(objectDatas);
+            if (objectSetting == null) { return; }
+            
+            if (activeObjectCount.TryGetValue(objectSetting.objectPrefab, out var currentCount) &&
+                currentCount >= objectSetting.poolingAmount) { return; }
+            
             var obj = PoolingManager.Instance.Spawn(objectSetting.objectPrefab, position, Quaternion.identity, parent);
             if (obj == null) return;
           
+            activeObjectCount[objectSetting.objectPrefab]++;
+            platformObjectMap[platform] = obj;
             OnSpawned?.Invoke(obj);
         }
 
+        /// <summary>
+        /// Despawn object
+        /// </summary>
+        /// <param name="obj"></param>
         public void Despawn(GameObject obj)
         {
             if (obj == null) return;
             PoolingManager.Instance.Despawn(obj);
             OnDespawned?.Invoke(obj);
-            
+
             foreach (var pair in platformObjectMap)
-            {
-                if (pair.Value == obj)
-                {
-                    platformObjectMap.Remove(pair.Key);
-                    break;
-                }
-            }
+            { if (pair.Value == obj) { platformObjectMap.Remove(pair.Key); break; } }
+
+            if (activeObjectCount.ContainsKey(obj))
+            { activeObjectCount[obj] = Mathf.Max(0, activeObjectCount[obj] - 1); }
         }
 
         /// <summary>
@@ -123,11 +149,24 @@ namespace Spawner.Object
             List<ObjectSetting> passed = new();
 
             foreach (var obj in objectDataList)
-                if (Random.value <= obj.spawnChance)
+                if (Random.value <= obj.spawnChance / 100f)
                     passed.Add(obj);
             
+            if (passed.Count == 0) { return null; }
             return passed[Random.Range(0, passed.Count)];
         }
+        
+        /// <summary>
+        /// Check that can spawn on platform
+        /// </summary>
+        /// <param name="platformState"></param>
+        /// <param name="setting"></param>
+        /// <returns></returns>
+        public bool CanSpawnOn(PlatformBaseStateSO platformState, ObjectSetting setting)
+        {
+            return setting.validPlatformTypes.Any(validState => platformState.GetType() == validState.GetType());
+        }
+
     }
 }
 
