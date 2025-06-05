@@ -22,7 +22,7 @@ namespace Spawner.Controller
             await UniTask.WaitUntil(() => PlayerController.Instance != null && PlayerController.Instance.GridMovementSystem != null);
             
             //Subscribe funtion spawn object on platform
-            _platformSpawner.OnPlatformSpawned += _objectSpawner.TrySpawnObjectOnPlatform;
+            _platformSpawner.OnSpawned += _objectSpawner.TrySpawnObjectOnPlatform;
             
             //Spawn platform when player jump
             if (!PlayerController.Instance?.GridMovementSystem) return;
@@ -32,7 +32,7 @@ namespace Spawner.Controller
         private void OnDisable()
         {
             //Unsubscribe funtion spawn object on platform
-            _platformSpawner.OnPlatformSpawned -= _objectSpawner.TrySpawnObjectOnPlatform;
+            _platformSpawner.OnDespawned -= _objectSpawner.TrySpawnObjectOnPlatform;
             
             //Unsubcribe function spawn platform when player jump
             if (!PlayerController.Instance?.GridMovementSystem) return;
@@ -56,6 +56,16 @@ namespace Spawner.Controller
             await UniTask.DelayFrame(2);
             PlayerController.Instance?.gameObject.SetActive(true);
         }
+        
+        #region Inspector Control
+
+        [Button("Spawn Platform",ButtonSizes.Large)] [Tooltip("Spawn next platform")]
+        private void SpawnPlatform()
+        {
+            _platformSpawner.SpawnNextPlatform();
+        }
+
+        #endregion
     }
 }
 
