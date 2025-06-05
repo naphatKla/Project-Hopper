@@ -978,10 +978,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectDatas:
   - objectPrefab: {fileID: 2691774995898733471, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
-    spawnChance: 80
+    spawnChance: 50
     validPlatformTypes:
     - {fileID: 11400000, guid: 28d1abb3241443a42a2407a269b5735c, type: 2}
-    poolingAmount: 3
+    poolingAmount: 5
   parent: {fileID: 1154669716}
 --- !u!114 &1710304642
 MonoBehaviour:

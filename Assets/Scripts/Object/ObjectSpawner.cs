@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Characters.Controllers;
 using Characters.HealthSystems;
 using Platform;
 using PoolingSystem;
@@ -60,7 +61,6 @@ namespace Spawner.Object
         public void ClearData()
         {
             platformObjectMap.Clear();
-            activeObjectCount.Clear();
         }
         
         /// <summary>
@@ -83,7 +83,7 @@ namespace Spawner.Object
             var selectedSetting = GetRandomChanceObject(validSettings);
             if (selectedSetting == null) return;
 
-            var spawnPos = platform.transform.position + Vector3.up * 0.55f;
+            var spawnPos = platform.transform.position;
             Spawn(platform, spawnPos, selectedSetting);
         }
 
@@ -111,13 +111,21 @@ namespace Spawner.Object
             var objectSetting = settings as ObjectSetting ?? GetRandomChanceObject(objectDatas);
             if (objectSetting == null) { return; }
             
-            if (activeObjectCount.TryGetValue(objectSetting.objectPrefab, out var currentCount) &&
-                currentCount >= objectSetting.poolingAmount) { return; }
-            
+            if (activeObjectCount.GetValueOrDefault(objectSetting.objectPrefab, 0) >= objectSetting.poolingAmount)
+            {
+                Debug.Log($"Cannot spawn {objectSetting.objectPrefab.name}: Pool limit ({objectSetting.poolingAmount}) reached.");
+                return;
+            }
+         
             var obj = PoolingManager.Instance.Spawn(objectSetting.objectPrefab, position, Quaternion.identity, parent);
             if (obj == null) return;
-          
-            activeObjectCount[objectSetting.objectPrefab]++;
+            
+            activeObjectCount[objectSetting.objectPrefab] = activeObjectCount.GetValueOrDefault(objectSetting.objectPrefab, 0) + 1;
+            var poolingDespawn = obj.GetComponent<PoolingDespawn>();
+
+            poolingDespawn.OnObjectSpawnedEvent.AddListener((obj) => OnSpawned?.Invoke(obj));
+            poolingDespawn.OnObjectDespawnedEvent.AddListener((obj) => Despawn(obj));
+            
             platformObjectMap[platform] = obj;
             OnSpawned?.Invoke(obj);
         }
@@ -131,12 +139,16 @@ namespace Spawner.Object
             if (obj == null) return;
             PoolingManager.Instance.Despawn(obj);
             OnDespawned?.Invoke(obj);
-
-            foreach (var pair in platformObjectMap)
-            { if (pair.Value == obj) { platformObjectMap.Remove(pair.Key); break; } }
-
-            if (activeObjectCount.ContainsKey(obj))
-            { activeObjectCount[obj] = Mathf.Max(0, activeObjectCount[obj] - 1); }
+            
+            var platform = platformObjectMap.FirstOrDefault(p => p.Value == obj).Key;
+            if (platform != null)
+                platformObjectMap.Remove(platform);
+            
+            foreach (var setting in objectDatas)
+            {
+                if (activeObjectCount.ContainsKey(setting.objectPrefab) && obj.name.Contains(setting.objectPrefab.name))
+                { activeObjectCount[setting.objectPrefab] = Mathf.Max(0, activeObjectCount[setting.objectPrefab] - 1); break; }
+            }
         }
 
         /// <summary>

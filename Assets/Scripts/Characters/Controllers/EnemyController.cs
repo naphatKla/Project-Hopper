@@ -8,6 +8,6 @@ namespace Characters.Controllers
     /// </summary>
     public class EnemyController : BaseController<EnemyInputSystem>
     {
-
+        
     }
 }
