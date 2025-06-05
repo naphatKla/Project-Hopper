@@ -17,24 +17,6 @@ namespace Spawner.Controller
         [BoxGroup("Dependent Context")] 
         [SerializeField] private ObjectSpawner _objectSpawner;
         
-        private async void Awake()
-        {
-            PlayerController.Instance?.gameObject.SetActive(false);
-            
-            //Clear all pool & data
-            PoolingManager.Instance.ClearPool();
-            _platformSpawner.ClearData();
-            
-            //Create pooling and despawn
-            _platformSpawner.PreWarm();
-            
-            //Start spawn platform
-            _platformSpawner.SpawnStartPlatform();
-            
-            await UniTask.DelayFrame(2);
-            PlayerController.Instance?.gameObject.SetActive(true);
-        }
-        
         private async void OnEnable()
         {
             await UniTask.WaitUntil(() => PlayerController.Instance != null && PlayerController.Instance.MovementSystem != null);
@@ -55,6 +37,24 @@ namespace Spawner.Controller
             
             //Unsubscribe funtion spawn object on platform
             _platformSpawner.OnPlatformSpawned -= _objectSpawner.TrySpawnObjectOnPlatform;
+        }
+        
+        private async void Awake()
+        {
+            PlayerController.Instance?.gameObject.SetActive(false);
+            
+            //Clear all pool & data
+            PoolingManager.Instance.ClearPool();
+            _platformSpawner.ClearData();
+            
+            //Create pooling and despawn
+            _platformSpawner.PreWarm();
+            
+            //Start spawn platform
+            _platformSpawner.SpawnStartPlatform();
+            
+            await UniTask.DelayFrame(2);
+            PlayerController.Instance?.gameObject.SetActive(true);
         }
     }
 }
