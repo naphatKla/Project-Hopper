@@ -130,7 +130,6 @@ namespace Spawner.Platform
             position = SnapToGrid(position, 0.1f);
 
             var platformGO = PoolingManager.Instance.Spawn(platformPrefab, position, Quaternion.identity, parent);
-            activePlatforms.Enqueue(platformGO);
             OnSpawned?.Invoke(platformGO);
 
             //Set Sprite
@@ -142,6 +141,7 @@ namespace Spawner.Platform
             context.SetState(platformData.state);
             context.OnSpawned();
 
+            activePlatforms.Enqueue(platformGO);
             spawnedPlatformCount++;
             CheckDespawn();
         }
@@ -163,13 +163,10 @@ namespace Spawner.Platform
         /// </summary>
         public void Despawn(GameObject obj)
         {
-            if (activePlatforms.Contains(obj))
-            {
-                activePlatforms.Dequeue();
-                obj.GetComponent<PlatformManager>().OnDespawned();
-                PoolingManager.Instance.Despawn(obj);
-                OnDespawned?.Invoke(obj);
-            }
+            if (obj == null) return;
+            obj.GetComponent<PlatformManager>().OnDespawned();
+            PoolingManager.Instance.Despawn(obj);
+            OnDespawned?.Invoke(obj);
         }
 
         /// <summary>
