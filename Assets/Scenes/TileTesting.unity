@@ -494,6 +494,10 @@ PrefabInstance:
       propertyPath: 'serializationData.PrefabModificationsReferencedUnityObjects.Array.data[1]'
       value: 
       objectReference: {fileID: 1547638303}
+    - target: {fileID: 7815347152961042695, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: managedReferences[4929453790744019016].Active
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8091964407125678213, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
       propertyPath: FeedbacksList.Array.size
       value: 2
@@ -526,6 +530,10 @@ PrefabInstance:
       propertyPath: managedReferences[4929453790744019018].Owner
       value: 
       objectReference: {fileID: 1547638305}
+    - target: {fileID: 8091964407125678213, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: managedReferences[4929453790744019016].Active
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8091964407125678213, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
       propertyPath: managedReferences[4929453790744019017].Active
       value: 1
@@ -1528,8 +1536,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectDatas:
   - objectPrefab: {fileID: 2691774995898733471, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
-    spawnChance: 10
-    validPlatformTypes: 1
+    spawnChance: 80
+    validPlatformTypes:
+    - {fileID: 11400000, guid: 28d1abb3241443a42a2407a269b5735c, type: 2}
     poolingAmount: 3
   parent: {fileID: 1154669716}
 --- !u!114 &1710304642

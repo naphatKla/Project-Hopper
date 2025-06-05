@@ -8,6 +8,7 @@ namespace Platform
     [CreateAssetMenu(fileName = "BrokenState", menuName = "PlatformStates/Broken")]
     public class PlatformBrokenSO : PlatformBaseStateSO
     {
+        public override string StateID => "Broken";
         public override void UpdateState(PlatformManager manager) { }
 
         public override async void OnStepped(PlatformManager manager, GameObject player)

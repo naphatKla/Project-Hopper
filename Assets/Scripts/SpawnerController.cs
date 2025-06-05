@@ -23,6 +23,7 @@ namespace Spawner.Controller
             
             //Subscribe funtion spawn object on platform
             _platformSpawner.OnSpawned += _objectSpawner.TrySpawnObjectOnPlatform;
+            _platformSpawner.OnDespawned += _objectSpawner.OnPlatformDespawned;
             
             //Spawn platform when player jump
             if (!PlayerController.Instance?.GridMovementSystem) return;
@@ -33,6 +34,7 @@ namespace Spawner.Controller
         {
             //Unsubscribe funtion spawn object on platform
             _platformSpawner.OnDespawned -= _objectSpawner.TrySpawnObjectOnPlatform;
+            _platformSpawner.OnDespawned -= _objectSpawner.OnPlatformDespawned;
             
             //Unsubcribe function spawn platform when player jump
             if (!PlayerController.Instance?.GridMovementSystem) return;
@@ -46,9 +48,11 @@ namespace Spawner.Controller
             //Clear all pool & data
             PoolingManager.Instance.ClearPool();
             _platformSpawner.ClearData();
+            _objectSpawner.ClearData();
             
             //Create pooling and despawn
             _platformSpawner.PreWarm();
+            _objectSpawner.PreWarm();
             
             //Start spawn platform
             _platformSpawner.SpawnStartPlatform();

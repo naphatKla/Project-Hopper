@@ -92,7 +92,7 @@ namespace Spawner.Platform
         /// </summary>
         public void SpawnStartPlatform()
         {
-            var normalSO = platformDatas.Find(data => data.platformSO.platformType == PlatformType.Normal);
+            var normalSO = platformDatas.Find(data => data.platformSO.state is PlatformNormalStateSO);
             for (var i = 0; i < initialNormalPlatformCount; i++)
             {
                 var newStep = CalculateWeight();
@@ -130,7 +130,7 @@ namespace Spawner.Platform
             position = SnapToGrid(position, 0.1f);
 
             var platformGO = PoolingManager.Instance.Spawn(platformPrefab, position, Quaternion.identity, parent);
-            OnSpawned?.Invoke(platformGO);
+            activePlatforms.Enqueue(platformGO);
 
             //Set Sprite
             var sr = platformGO.GetComponent<SpriteRenderer>();
@@ -140,8 +140,9 @@ namespace Spawner.Platform
             var context = platformGO.GetComponent<PlatformManager>();
             context.SetState(platformData.state);
             context.OnSpawned();
+            context.data = platformData;
 
-            activePlatforms.Enqueue(platformGO);
+            OnSpawned?.Invoke(platformGO);
             spawnedPlatformCount++;
             CheckDespawn();
         }

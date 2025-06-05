@@ -10,6 +10,7 @@ namespace Platform
     [CreateAssetMenu(fileName = "FallingState", menuName = "PlatformStates/Falling")]
     public class PlatformFallingSO : PlatformBaseStateSO
     {
+        public override string StateID => "Falling";
         public override void UpdateState(PlatformManager manager) { }
 
         public override async void OnStepped(PlatformManager manager, GameObject player)
