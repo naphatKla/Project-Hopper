@@ -23,7 +23,12 @@ namespace Characters.Controllers
         public MovementSystem MovementSystem => movementSystem;
         public HealthSystem HealthSystem => healthSystem;
         public CombatSystem CombatSystem => combatSystem;
-        
+
+        protected virtual void Awake()
+        {
+            movementSystem?.Initialize(this);
+        }
+
         private void OnEnable()
         {
             if (!inputSystem) return;
@@ -38,6 +43,16 @@ namespace Characters.Controllers
             inputSystem.OnMoveInputPerform -= MovementSystem.TryMoveAction;
             inputSystem.OnAttackInputPerform -= combatSystem.Attack;
             inputSystem.OnGuardInputPerform -= combatSystem.Guard;
+        }
+
+        public void SetMovementState(MovementState state)
+        {
+            movementState = state;
+        }
+
+        public void SetCombatState(CombatState state)
+        {
+            combatState = state;
         }
     }
 

@@ -7,7 +7,7 @@ namespace Characters.Controllers
     {
         public static PlayerController Instance { get; private set; }
 
-        private void Awake()
+        protected override void Awake()
         {
             if (Instance)
             {
@@ -16,6 +16,7 @@ namespace Characters.Controllers
             }
             
             Instance = this;
+            base.Awake();
         }
     }
 }
