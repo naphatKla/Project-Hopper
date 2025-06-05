@@ -109,6 +109,7 @@ namespace Characters.CombatSystems
         {
             if (!isInitialized || _isAttackCooldown) return;
 
+            owner.FeedbackSystem.PlayFeedback(FeedbackKey.Attack);
             _ct = new CancellationTokenSource();
             await UniTask.WaitForSeconds(attackDelay, cancellationToken: _ct.Token);
             if (_ct.IsCancellationRequested) return;
