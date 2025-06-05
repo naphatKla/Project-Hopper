@@ -5,16 +5,45 @@ using UnityEngine.UI;
 
 namespace Characters.InputSystems
 {
+    /// <summary>
+    /// Handles player input via UI buttons for attack, movement, and guarding.
+    /// Dispatches input events to subscribed systems such as combat and movement.
+    /// </summary>
     public class PlayerInputSystem : BaseInputSystem
     {
-        [SerializeField] private Button moveButton;
+        #region Inspectors & Variables
+
+        [PropertyTooltip("Button to trigger the player's attack action.")]
         [SerializeField] private Button attackButton;
+
+        [PropertyTooltip("Button to trigger the player's movement action.")]
+        [SerializeField] private Button moveButton;
+
+        [PropertyTooltip("Button to trigger the player's guard action.")]
         [SerializeField] private Button guardButton;
-        
-        public override Action OnMoveInputPerform { get; set; }
+
+        /// <summary>
+        /// Called when the player performs an attack input.
+        /// </summary>
         public override Action OnAttackInputPerform { get; set; }
-        public override Action OnGuardInputPerform { get; set; }
-        
+
+        /// <summary>
+        /// Called when the player performs a move input.
+        /// </summary>
+        public Action OnMoveInputPerform { get; set; }
+
+        /// <summary>
+        /// Called when the player performs a guard input.
+        /// </summary>
+        public Action OnGuardInputPerform { get; set; }
+
+        #endregion
+
+        #region Unity Methods
+
+        /// <summary>
+        /// Subscribes button click events when the component is enabled.
+        /// </summary>
         private void OnEnable()
         {
             moveButton?.onClick.AddListener(PerformMove);
@@ -22,6 +51,9 @@ namespace Characters.InputSystems
             guardButton?.onClick.AddListener(PerformGuard);
         }
 
+        /// <summary>
+        /// Unsubscribes button click events when the component is disabled.
+        /// </summary>
         private void OnDisable()
         {
             moveButton?.onClick.RemoveListener(PerformMove);
@@ -29,24 +61,40 @@ namespace Characters.InputSystems
             guardButton?.onClick.RemoveListener(PerformGuard);
         }
 
-  
+        #endregion
 
-        [BoxGroup] [Button(ButtonSizes.Large)]
+        #region Methods
+
+        /// <summary>
+        /// Invokes the attack input event. Called when the attack button is pressed.
+        /// </summary>
+        [BoxGroup("Debug Controls")]
+        [Button(ButtonSizes.Large)]
         protected override void PerformAttack()
         {
             OnAttackInputPerform?.Invoke();
         }
-        
-        [BoxGroup] [Button(ButtonSizes.Large)] 
-        protected override void PerformMove()
+
+        /// <summary>
+        /// Invokes the move input event. Called when the move button is pressed.
+        /// </summary>
+        [BoxGroup("Debug Controls")]
+        [Button(ButtonSizes.Large)]
+        protected void PerformMove()
         {
             OnMoveInputPerform?.Invoke();
         }
 
-        [BoxGroup] [Button(ButtonSizes.Large)]
-        protected override void PerformGuard()
+        /// <summary>
+        /// Invokes the guard input event. Called when the guard button is pressed.
+        /// </summary>
+        [BoxGroup("Debug Controls")]
+        [Button(ButtonSizes.Large)]
+        protected void PerformGuard()
         {
             OnGuardInputPerform?.Invoke();
         }
+
+        #endregion
     }
 }

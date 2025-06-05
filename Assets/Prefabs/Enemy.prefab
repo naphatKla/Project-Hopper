@@ -13,10 +13,9 @@ GameObject:
   - component: {fileID: 9099100481647492464}
   - component: {fileID: 8197801602367585672}
   - component: {fileID: 7911071053028565313}
-  - component: {fileID: 1601711655953272881}
-  - component: {fileID: 7994176169639284457}
-  - component: {fileID: 5342152311035199828}
   - component: {fileID: 8464559609138264350}
+  - component: {fileID: 1601711655953272881}
+  - component: {fileID: 8396091031737178444}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
@@ -179,102 +178,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2eb3debc29b774c4a8f975bd5c2faa49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputSystem: {fileID: 1601711655953272881}
-  movementSystem: {fileID: 7994176169639284457}
   healthSystem: {fileID: 8464559609138264350}
-  combatSystem: {fileID: 5342152311035199828}
-  movementState: 0
-  combatState: 0
---- !u!114 &1601711655953272881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2691774995898733471}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce7598717c8505143b12179bbf30b7a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7994176169639284457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2691774995898733471}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc98ad75d753d834895cdf0083cc7565, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gridOffset: {x: 0.5, y: 0}
-  groundLayerMask:
-    serializedVersion: 2
-    m_Bits: 1
-  obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 448
-  gravityScale: -9.81
-  moveHorizontalDistance: 1
-  moveVerticalDistance: 1
-  moveDuration: 0.3
-  moveCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 6.08374
-      outSlope: 6.08374
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.010266295
-    - serializedVersion: 3
-      time: 0.49850526
-      value: 1
-      inSlope: 0.0059791207
-      outSlope: 0.0059791207
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -4.596942
-      outSlope: -4.596942
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.021347718
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
---- !u!114 &5342152311035199828
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2691774995898733471}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00ed1f214d8d3da4b9ffcd11f93bb44c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackArea: {x: 2, y: 1}
-  offset: {x: -0.5, y: 0}
-  targetLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  damage: 1
-  attackDelay: 0.1
-  attackCooldown: 0.1
-  guardDuration: 0.12
-  guardCooldown: 0.25
+  enemyInputSystem: {fileID: 1601711655953272881}
+  enemyCombatSystem: {fileID: 8396091031737178444}
 --- !u!114 &8464559609138264350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -289,3 +195,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 2
   iframePerHitDuration: 0
+--- !u!114 &1601711655953272881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2691774995898733471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce7598717c8505143b12179bbf30b7a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8396091031737178444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2691774995898733471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c5da6e3c737b7647a7e3a95173ca9bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackArea: {x: 2, y: 1}
+  offset: {x: -0.5, y: 0}
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  damage: 1
+  attackDelay: 0.1
+  attackCooldown: 0.1

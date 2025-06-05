@@ -1,68 +1,89 @@
 using System;
+using Characters.Controllers;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using PoolingSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Characters.MovementSystems
 {
-    public class MovementSystem : MonoBehaviour
+    public class GridMovementSystem : MonoBehaviour
     {
         #region Inspectors & Variables
-        
-        [Title("Configs")] [PropertyTooltip("Offset in the grid. Depends on the pivot point of transform.")]
-        [SerializeField] private Vector2 gridOffset = new Vector2(0.5f, 0);
-        
-        [PropertyTooltip("Ground layer to detected and perform collision with.")]
-        [SerializeField] private LayerMask groundLayerMask;
-        
-        [PropertyTooltip("Obstacle layer to block the player movement.")]
-        [SerializeField] private LayerMask obstacleLayerMask;
-        
-        [PropertyTooltip("Gravity scale of this entity. the sign is mean the gravity's direction.")]
-        [SerializeField] private float gravityScale = -9.81f;
 
-        [Title("Movement Stats")] [PropertyTooltip("Movement distance in horizontal axis (Units)")] 
-        [ValidateInput("@moveHorizontalDistance >= 0", "this value can't below than zero.")]
-        [SerializeField] private int moveHorizontalDistance = 1;
+        [Title("Configs")]
+        [PropertyTooltip("Offset in the grid. Depends on the pivot point of transform.")]
+        [SerializeField]
+        private Vector2 gridOffset = new Vector2(0.5f, 0);
 
-        [PropertyTooltip("Movement distance in vertical axis (Units)")] 
-        [ValidateInput("@moveHorizontalDistance >= 0", "this value can't below than zero.")]
-        [SerializeField] private int moveVerticalDistance = 1;
+        [PropertyTooltip("Ground layer to detected and perform collision with.")] [SerializeField]
+        private LayerMask groundLayerMask;
 
-        [PropertyTooltip("The duration of movement action")]  [Unit(Units.Second)] 
-        [ValidateInput("@moveHorizontalDistance >= 0", "this value can't below than zero.")]
-        [SerializeField] private float moveDuration = 0.25f;
+        [PropertyTooltip("Obstacle layer to block the player movement.")] [SerializeField]
+        private LayerMask obstacleLayerMask;
 
-        [PropertyTooltip("The duration of movement cooldown")]  [Unit(Units.Second)] 
+        [PropertyTooltip("Gravity scale of this entity. the sign is mean the gravity's direction.")] [SerializeField]
+        private float gravityScale = -9.81f;
+
+        [Title("Movement Stats")]
+        [PropertyTooltip("Movement distance in horizontal axis (Units)")]
         [ValidateInput("@moveHorizontalDistance >= 0", "this value can't below than zero.")]
-        [SerializeField] private float moveCooldown = 0.25f;
+        [SerializeField]
+        private int moveHorizontalDistance = 1;
+
+        [PropertyTooltip("Movement distance in vertical axis (Units)")]
+        [ValidateInput("@moveHorizontalDistance >= 0", "this value can't below than zero.")]
+        [SerializeField]
+        private int moveVerticalDistance = 1;
+
+        [PropertyTooltip("The duration of movement action")]
+        [Unit(Units.Second)]
+        [ValidateInput("@moveHorizontalDistance >= 0", "this value can't below than zero.")]
+        [SerializeField]
+        private float moveDuration = 0.25f;
+
+        [PropertyTooltip("The duration of movement cooldown")]
+        [Unit(Units.Second)]
+        [ValidateInput("@moveHorizontalDistance >= 0", "this value can't below than zero.")]
+        [SerializeField]
+        private float moveCooldown = 0.25f;
 
         [PropertySpace]
-        [InfoBox("You can adjust movement curve. \nThe start and end point need to be zero. and the highest value should be one.")] 
-        [SerializeField] private AnimationCurve moveCurve;
+        [InfoBox(
+            "You can adjust movement curve. \nThe start and end point need to be zero. and the highest value should be one.")]
+        [SerializeField]
+        private AnimationCurve moveCurve;
 
         /// <summary>
-        /// /// Determine this character move is cooldown or not.
+        /// is this character initialized by the owner or not.
+        /// </summary>
+        private bool _isInitialized;
+
+        /// <summary>
+        /// Determine this character move is cooldown or not.
         /// </summary>
         private bool _isMoveCooldown;
-        
+
         /// <summary>
         /// Determine this character is on ground or not.
         /// </summary>
         private bool _isGrounded;
-        
+
         /// <summary>
         /// Determine this character touch the ground from falling or not. Should be true when touch the ground first time from falling state.
         /// </summary>
         private bool _isLanding;
-        
+
         /// <summary>
         /// True is mean use gravity calculation.
         /// </summary>
         private bool _ignoreGravity;
-        
+
+        /// <summary>
+        /// Owner of this character.
+        /// </summary>
+        private BaseController _owner;
+
         /// <summary>
         /// The box collider of this character.
         /// </summary>
@@ -72,36 +93,23 @@ namespace Characters.MovementSystems
         /// Invoke when the character start move or jump.
         /// </summary>
         public Action OnJumpUp { get; set; }
-        
+
         /// <summary>
         /// Invoke when the character on landing from the falling state first time on the ground.
         /// GameObject is means the object landed on.
         /// </summary>
         public Action<GameObject> OnLanding { get; set; }
-        
+
         #endregion
 
         #region Unity Methods
-        
-        private void Awake()
-        {
-            OnLanding += HandleLanding;
-        }
-        
-        /// <summary>
-        /// Initialize and dependency condition.
-        /// </summary>
-        private void Start()
-        {
-            if (!TryGetComponent(out _boxCollider2D) && !_boxCollider2D.isTrigger)
-                Debug.LogWarning("Need BoxCollider2D with is Trigger");
-        }
 
         /// <summary>
         /// Calculate and control the gravity.
         /// </summary>
         private void Update()
         {
+            if (!_isInitialized) return;
             GravityHandler();
         }
 
@@ -110,11 +118,27 @@ namespace Characters.MovementSystems
         #region Methods
 
         /// <summary>
+        /// Call to assign the dependency from the owner controller.
+        /// </summary>
+        /// <param name="owner"></param>
+        public void Initialize(BaseController owner)
+        {
+            OnLanding += HandleLanding;
+            _owner = owner;
+
+            if (!TryGetComponent(out _boxCollider2D) && !_boxCollider2D.isTrigger)
+                Debug.LogWarning("Need BoxCollider2D with is Trigger");
+
+            _isInitialized = true;
+        }
+
+        /// <summary>
         /// The primary movement of this game. Try to move and jump to the next grid, depend on the movement distance
         /// Move when the condition is true and return ( not do any action ) if the condition is false.
         /// </summary>
         public async void TryMoveAction()
         {
+            if (!_isInitialized) return;
             if (_isMoveCooldown) return;
             if (!_isGrounded) return;
             if (CheckObstacle()) return;
@@ -122,7 +146,7 @@ namespace Characters.MovementSystems
             _isMoveCooldown = true;
             OnJumpUp?.Invoke();
             _ignoreGravity = true;
-
+            
             Vector2 startPos = transform.position;
             Vector2 horizontalOffset = Vector2.right * moveVerticalDistance;
 
@@ -135,14 +159,10 @@ namespace Characters.MovementSystems
 
                     Vector2 curvedPos = new Vector2(horizontal.x, startPos.y + yOffset);
                     MovePosition(curvedPos);
-
                 }, 1f, moveDuration)
                 .SetEase(Ease.Linear)
-                .OnComplete(() =>
-                {
-                    _ignoreGravity = false;
-                });
-            
+                .OnComplete(() => { _ignoreGravity = false; });
+
             await UniTask.WaitForSeconds(Mathf.Max(0, moveCooldown - moveDuration));
             _isMoveCooldown = false;
         }
@@ -179,7 +199,7 @@ namespace Characters.MovementSystems
         {
             if (_ignoreGravity) return;
             //if (_isGrounded) return;
-        
+
             Vector2 currentPos = transform.position;
             Vector2 newPos = currentPos + Vector2.up * (gravityScale * Time.deltaTime);
             MovePosition(newPos);
@@ -194,7 +214,7 @@ namespace Characters.MovementSystems
         {
             return Physics2D.Raycast(transform.position, Vector2.right, moveHorizontalDistance, obstacleLayerMask);
         }
-        
+
         /// <summary>
         /// Check the ground below.
         /// </summary>
@@ -228,10 +248,10 @@ namespace Characters.MovementSystems
                 float surfaceY = hit.collider.bounds.max.y;
                 snappedPos.y = surfaceY;
             }
-            
+
             return snappedPos;
         }
-        
+
         /// <summary>
         /// Call OnStepped in platformManager
         /// </summary>
@@ -243,7 +263,7 @@ namespace Characters.MovementSystems
                 platformManager.OnStepped(gameObject);
             }
         }
-        
+
         #endregion
     }
 }
