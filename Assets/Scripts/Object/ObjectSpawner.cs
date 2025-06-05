@@ -11,6 +11,7 @@ using Random = UnityEngine.Random;
 
 namespace Spawner.Object
 {
+    #region ObjectSetting
     [Serializable]
     public class ObjectSetting
     {
@@ -21,22 +22,30 @@ namespace Spawner.Object
         public float spawnChance;
         
         [Tooltip("Choose which platform that this object can spawn on")]
-        [ValueDropdown(nameof(GetAllPlatformStates), IsUniqueList = true)]
+        [ValueDropdown(nameof(GetAllPlatformStatesDropdown), IsUniqueList = true)]
         public List<PlatformBaseStateSO> validPlatformTypes;
         
         [Tooltip("Amount of object to spawn and used by pooling")]
         public int poolingAmount;
         
-        private static IEnumerable<PlatformBaseStateSO> GetAllPlatformStates()
+        private static IEnumerable<ValueDropdownItem<PlatformBaseStateSO>> GetAllPlatformStatesDropdown()
         {
             return UnityEditor.AssetDatabase
                 .FindAssets("t:PlatformBaseStateSO")
-                .Select(guid => UnityEditor.AssetDatabase.LoadAssetAtPath<PlatformBaseStateSO>(
-                    UnityEditor.AssetDatabase.GUIDToAssetPath(guid)));
+                .Select(guid =>
+                {
+                    string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+                    var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<PlatformBaseStateSO>(path);
+                    string shortName = asset.name;
+                    return new ValueDropdownItem<PlatformBaseStateSO>(shortName, asset);
+                });
         }
+
     }
+    #endregion
     public class ObjectSpawner : MonoBehaviour , ISpawner
     {
+        #region Inspector & Value
         [FoldoutGroup("Object Context")] [Tooltip("Object data list")]
         public List<ObjectSetting> objectDatas;
        
@@ -48,7 +57,12 @@ namespace Spawner.Object
 
         public event Action<GameObject> OnSpawned;
         public event Action<GameObject> OnDespawned;
-        
+        #endregion
+
+        #region Public Methods
+        /// <summary>
+        /// Pre create object pooling
+        /// </summary>
         public void PreWarm()
         {
             foreach (var data in objectDatas)
@@ -58,6 +72,9 @@ namespace Spawner.Object
             }
         }
 
+        /// <summary>
+        /// Clear data
+        /// </summary>
         public void ClearData()
         {
             platformObjectMap.Clear();
@@ -150,7 +167,21 @@ namespace Spawner.Object
                 { activeObjectCount[setting.objectPrefab] = Mathf.Max(0, activeObjectCount[setting.objectPrefab] - 1); break; }
             }
         }
+        
+        /// <summary>
+        /// Check that can spawn on platform
+        /// </summary>
+        /// <param name="platformState"></param>
+        /// <param name="setting"></param>
+        /// <returns></returns>
+        public bool CanSpawnOn(PlatformBaseStateSO platformState, ObjectSetting setting)
+        {
+            return setting.validPlatformTypes.Any(validState => platformState.GetType() == validState.GetType());
+        }
+        
+        #endregion
 
+        #region Private Methods
         /// <summary>
         /// Random object from chance
         /// </summary>
@@ -167,18 +198,7 @@ namespace Spawner.Object
             if (passed.Count == 0) { return null; }
             return passed[Random.Range(0, passed.Count)];
         }
-        
-        /// <summary>
-        /// Check that can spawn on platform
-        /// </summary>
-        /// <param name="platformState"></param>
-        /// <param name="setting"></param>
-        /// <returns></returns>
-        public bool CanSpawnOn(PlatformBaseStateSO platformState, ObjectSetting setting)
-        {
-            return setting.validPlatformTypes.Any(validState => platformState.GetType() == validState.GetType());
-        }
-
+        #endregion
     }
 }
 
