@@ -21,22 +21,22 @@ namespace Spawner.Controller
         {
             await UniTask.WaitUntil(() => PlayerController.Instance != null && PlayerController.Instance.MovementSystem != null);
             
+            //Subscribe funtion spawn object on platform
+            _platformSpawner.OnPlatformSpawned += _objectSpawner.TrySpawnObjectOnPlatform;
+            
             //Spawn platform when player jump
             if (!PlayerController.Instance?.MovementSystem) return;
             PlayerController.Instance.MovementSystem.OnJumpUp += _platformSpawner.SpawnNextPlatform;
-            
-            //Subscribe funtion spawn object on platform
-            _platformSpawner.OnPlatformSpawned += _objectSpawner.TrySpawnObjectOnPlatform;
         }
 
         private void OnDisable()
         {
+            //Unsubscribe funtion spawn object on platform
+            _platformSpawner.OnPlatformSpawned -= _objectSpawner.TrySpawnObjectOnPlatform;
+            
             //Unsubcribe function spawn platform when player jump
             if (!PlayerController.Instance?.MovementSystem) return;
             PlayerController.Instance.MovementSystem.OnJumpUp -= _platformSpawner.SpawnNextPlatform;
-            
-            //Unsubscribe funtion spawn object on platform
-            _platformSpawner.OnPlatformSpawned -= _objectSpawner.TrySpawnObjectOnPlatform;
         }
         
         private async void Awake()

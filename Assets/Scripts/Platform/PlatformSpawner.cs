@@ -245,7 +245,7 @@ namespace Spawner.Platform
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(spawnStartPosition, 0.1f);
+            Gizmos.DrawSphere((Vector2)spawnStartPosition + new Vector2(+0.5f,0), 0.1f);
         }
 
         #endregion
