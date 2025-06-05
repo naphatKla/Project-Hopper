@@ -106,8 +106,6 @@ namespace Platform
             }
             catch (OperationCanceledException) { }
         }
-
-
         
         /// <summary>
         /// Get animation clip by name
@@ -140,7 +138,6 @@ namespace Platform
 
             foreach (var hit in hits)
             {
-                Debug.Log($"Hit: {hit.name}");
                 if (hit.TryGetComponent(out HealthSystem health)) health.TakeDamage(damage);
             }
         }

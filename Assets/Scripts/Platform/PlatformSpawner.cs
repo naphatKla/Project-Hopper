@@ -1,16 +1,19 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Characters.Controllers;
-using Characters.MovementSystems;
-using Cysharp.Threading.Tasks;
+using Platform;
 using PoolingSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Platform
+namespace Spawner.Platform
 {
+    [Serializable]
+    public class PlatformSetting
+    {
+        [Tooltip("Data of platform to assign")]
+        public PlatformDataSO platformSO;
+    }
     public class PlatformSpawner : MonoBehaviour
     {
         #region Inspector & Value
@@ -19,7 +22,7 @@ namespace Platform
         public GameObject platformPrefab;
 
         [FoldoutGroup("Platform Context")] [Tooltip("Platform data list")]
-        public List<PlatformDataSO> platformDatas;
+        public List<PlatformSetting> platformDatas;
 
         [FoldoutGroup("Height Propertie")] [Tooltip("Current platform height value")] [SerializeField]
         private int currentStep = 4;
@@ -58,50 +61,49 @@ namespace Platform
         private const int maxStep = 8;
         private const float stepHeight = 0.2f;
         private const int maxActivePlatformCount = 10;
+        
+        public event Action<GameObject> OnPlatformSpawned;
+        public event Action<GameObject> OnPlatformDespawned;
 
         #endregion
+        
+        #region Public Methods
 
-        #region Unity Methods
-        private async void Awake()
+        /// <summary>
+        /// Clear platform data
+        /// </summary>
+        public void ClearData()
         {
             activePlatforms.Clear();
             spawnedPlatformCount = 0;
-            PoolingManager.Instance.ClearPool();
-            PlayerController.Instance.gameObject.SetActive(false);
-            PoolingManager.Instance.PreWarm(platformPrefab, prewarmCount, parent);
-            
             lastSpawnPosition = spawnStartPosition;
+        }
 
+        /// <summary>
+        /// Pre create platform pooling
+        /// </summary>
+        public void PreWarm()
+        {
+            PoolingManager.Instance.PreWarm(platformPrefab, prewarmCount, parent);
+        }
+        
+        /// <summary>
+        /// Start spawning 7 platform
+        /// </summary>
+        public void SpawnStartPlatform()
+        {
             // Start spawn 7 platform
-            var normalSO = platformDatas.Find(data => data.platformType == PlatformType.Normal);
+            var normalSO = platformDatas.Find(data => data.platformSO.platformType == PlatformType.Normal);
             for (var i = 0; i < initialNormalPlatformCount; i++)
             {
                 var newStep = CalculateNextStep();
                 lastSpawnPosition.x += distancePlatform;
                 lastSpawnPosition.y = newStep * stepHeight;
                 lastSpawnPosition = SnapToGrid(lastSpawnPosition, 0.1f);
-                SpawnPlatform(lastSpawnPosition, normalSO);
+                SpawnPlatform(lastSpawnPosition, normalSO.platformSO);
             }
-
-            await UniTask.DelayFrame(2);
-            PlayerController.Instance.gameObject.SetActive(true);
         }
-
-        private void OnEnable()
-        {
-            if (!PlayerController.Instance?.MovementSystem) return;
-            PlayerController.Instance.MovementSystem.OnJumpUp += SpawnNextPlatform;
-        }
-
-        private void OnDisable()
-        {
-            if (!PlayerController.Instance?.MovementSystem) return;
-            PlayerController.Instance.MovementSystem.OnJumpUp -= SpawnNextPlatform;
-        }
-
-        #endregion
-
-        #region Public Methods
+        
         /// <summary>
         /// Spawn next platform
         /// </summary>
@@ -129,6 +131,7 @@ namespace Platform
 
             var platformGO = PoolingManager.Instance.Spawn(platformPrefab, position, Quaternion.identity, parent);
             activePlatforms.Enqueue(platformGO);
+            OnPlatformSpawned?.Invoke(platformGO);
 
             // Set Sprite
             var sr = platformGO.GetComponent<SpriteRenderer>();
@@ -154,6 +157,7 @@ namespace Platform
                 var oldPlatform = activePlatforms.Dequeue();
                 oldPlatform.GetComponent<PlatformManager>().OnDespawned();
                 PoolingManager.Instance.Despawn(oldPlatform);
+                OnPlatformSpawned?.Invoke(oldPlatform);
             }
         }
 
@@ -191,23 +195,23 @@ namespace Platform
         /// </summary>
         /// <param name="platformDataList"></param>
         /// <returns></returns>
-        private static PlatformDataSO GetRandomWeightedPlatform(List<PlatformDataSO> platformDataList)
+        private static PlatformDataSO GetRandomWeightedPlatform(List<PlatformSetting> platformDataList)
         {
             if (platformDataList == null || platformDataList.Count == 0) return null;
             var totalWeight = 0f;
 
-            foreach (var data in platformDataList) totalWeight += data.weight;
+            foreach (var data in platformDataList) totalWeight += data.platformSO.weight;
             var randomValue = Random.Range(0f, totalWeight);
 
             var cumulative = 0f;
             foreach (var data in platformDataList)
             {
-                cumulative += data.weight;
+                cumulative += data.platformSO.weight;
                 if (randomValue <= cumulative)
-                    return data;
+                    return data.platformSO;
             }
 
-            return platformDataList[platformDataList.Count - 1];
+            return platformDataList[platformDataList.Count - 1].platformSO;
         }
         
         /// <summary>

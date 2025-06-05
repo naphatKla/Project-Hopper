@@ -616,9 +616,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1710304640}
+  - component: {fileID: 1710304642}
   - component: {fileID: 1710304639}
+  - component: {fileID: 1710304641}
   m_Layer: 0
-  m_Name: PlatformSpawner
+  m_Name: SpawnerManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -638,10 +640,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   platformPrefab: {fileID: 2169834587886236752, guid: c60854f3245dc884d8611c406bc119cd, type: 3}
   platformDatas:
-  - {fileID: 11400000, guid: 43f21ea81c0c3d24492d105b1e7faf10, type: 2}
-  - {fileID: 11400000, guid: 991c83f9df899f248bf4f7c798616d5a, type: 2}
-  - {fileID: 11400000, guid: ca3c839f928716d4c9feeeda1c3dbd63, type: 2}
-  - {fileID: 11400000, guid: c350b4a28f6e2f046936eb564544637f, type: 2}
+  - platformSO: {fileID: 11400000, guid: 43f21ea81c0c3d24492d105b1e7faf10, type: 2}
+  - platformSO: {fileID: 11400000, guid: 991c83f9df899f248bf4f7c798616d5a, type: 2}
+  - platformSO: {fileID: 11400000, guid: ca3c839f928716d4c9feeeda1c3dbd63, type: 2}
+  - platformSO: {fileID: 11400000, guid: c350b4a28f6e2f046936eb564544637f, type: 2}
   currentStep: 1
   nextStep: 1
   targetStep: 3
@@ -666,6 +668,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1710304641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1710304638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db95256fb4a42a14097d482a18c9f75b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectDatas: []
+  parent: {fileID: 0}
+--- !u!114 &1710304642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1710304638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 077230127fa9f95499be761bac43e4b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _platformSpawner: {fileID: 1710304639}
+  _objectSpawner: {fileID: 1710304641}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

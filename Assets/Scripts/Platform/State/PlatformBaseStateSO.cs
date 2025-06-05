@@ -5,6 +5,9 @@ namespace Platform
 {
     public abstract class PlatformBaseStateSO : ScriptableObject
     {
+        [Tooltip("Object can spawn above platform")]
+        public abstract bool ObjectCanSpawn { get; }
+        
         public abstract void OnSpawned(PlatformManager manager);
         public abstract void OnDespawned(PlatformManager manager);
         public abstract void UpdateState(PlatformManager manager);
