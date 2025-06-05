@@ -1526,7 +1526,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db95256fb4a42a14097d482a18c9f75b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectDatas: []
+  objectDatas:
+  - objectPrefab: {fileID: 2691774995898733471, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
+    spawnChance: 10
+    validPlatformTypes: 1
+    poolingAmount: 3
   parent: {fileID: 1154669716}
 --- !u!114 &1710304642
 MonoBehaviour:
