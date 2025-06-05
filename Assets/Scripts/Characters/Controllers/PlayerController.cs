@@ -50,6 +50,7 @@ namespace Characters.Controllers
             Instance = this;
 
             gridMovementSystem?.Initialize(this);
+            guardSystem?.Initialize(this);
             base.Awake();
         }
 
