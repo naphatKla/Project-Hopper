@@ -7,52 +7,58 @@ using UnityEngine;
 
 namespace Characters.CombatSystems
 {
+    /// <summary>
+    /// Abstract base class for combat systems that handle attacking,
+    /// damage dealing, and cooldown logic for both player and enemy.
+    /// </summary>
     public abstract class BaseCombatSystem : MonoBehaviour
     {
         #region Inspectors & Variables
 
-        [Title("Configs")]  /////////////////////////////////////////////////
-        [PropertyTooltip("")]
+        [Title("Configs")]  
+        
+        [PropertyTooltip("The size of the attack area (width x height) used to detect targets.")]
         [SerializeField] private Vector2 attackArea = new Vector2(2, 1);
-        
-        [PropertyTooltip("")]
+
+        [PropertyTooltip("Offset from the character’s position to the bottom-left of the attack box.")]
         [SerializeField] private Vector2 offset = new Vector2(-0.5f, 0);
-        
-        [PropertyTooltip("")]
+
+        [PropertyTooltip("Layer mask used to detect valid targets for attacks.")]
         [SerializeField] private LayerMask targetLayer;
 
-        [Title("Stats")] /////////////////////////////////////////////////
-        [PropertyTooltip("")]
+        [Title("Stats")]
+        
+        [PropertyTooltip("Amount of damage dealt to each target hit by the attack.")]
         [SerializeField] private float damage = 1f;
-        
-        [PropertyTooltip("")]
+
+        [PropertyTooltip("Delay before the attack is executed after pressing the input.")]
         [SerializeField] private float attackDelay = 0.1f;
-        
-        [PropertyTooltip("")]
+
+        [PropertyTooltip("Cooldown duration after each attack before another can be performed.")]
         [SerializeField] private float attackCooldown = 0.1f;
-        
+
         /// <summary>
-        /// 
+        /// Cached position where the attack starts (based on offset).
         /// </summary>
         private Vector2 _attackStartPos;
-        
+
         /// <summary>
-        /// 
+        /// Indicates whether the combat system is currently in cooldown.
         /// </summary>
         private bool _isAttackCooldown;
-        
+
         /// <summary>
-        /// 
+        /// Reference to the controller that owns this combat system.
         /// </summary>
         protected BaseController owner;
-        
+
         /// <summary>
-        /// 
+        /// Whether this system has been initialized with a controller.
         /// </summary>
         protected bool isInitialized;
-        
+
         /// <summary>
-        /// 
+        /// Used to cancel ongoing attack delays if the object is disabled.
         /// </summary>
         private CancellationTokenSource _ct;
 
@@ -61,7 +67,7 @@ namespace Characters.CombatSystems
         #region Unity Methods
 
         /// <summary>
-        /// 
+        /// Cancels any attack delay in progress when the object is disabled.
         /// </summary>
         private void OnDisable()
         {
@@ -69,7 +75,7 @@ namespace Characters.CombatSystems
         }
 
         /// <summary>
-        /// 
+        /// Draws a red wireframe box in the Scene view to visualize the attack range.
         /// </summary>
         private void OnDrawGizmosSelected()
         {
@@ -85,9 +91,10 @@ namespace Characters.CombatSystems
         #region Methods
 
         /// <summary>
-        /// 
+        /// Initializes the combat system with the owning controller.
+        /// Must be called before using this system.
         /// </summary>
-        /// <param name="controller"></param>
+        /// <param name="controller">The controller that owns this combat system.</param>
         public void Initialize(BaseController controller)
         {
             owner = controller;
@@ -95,13 +102,13 @@ namespace Characters.CombatSystems
         }
 
         /// <summary>
-        /// 
+        /// Executes an attack after a delay. Deals damage to all valid targets in the attack area.
+        /// Handles attack delay, cooldown, and cancellation.
         /// </summary>
         public async void Attack()
         {
-            if (!isInitialized) return;
-            if (_isAttackCooldown) return;
-            
+            if (!isInitialized || _isAttackCooldown) return;
+
             _ct = new CancellationTokenSource();
             await UniTask.WaitForSeconds(attackDelay, cancellationToken: _ct.Token);
             if (_ct.IsCancellationRequested) return;
@@ -120,7 +127,7 @@ namespace Characters.CombatSystems
             await UniTask.WaitForSeconds(attackCooldown - attackDelay);
             _isAttackCooldown = false;
         }
-        
+
         #endregion
     }
 }
