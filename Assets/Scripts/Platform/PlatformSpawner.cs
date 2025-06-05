@@ -14,7 +14,7 @@ namespace Spawner.Platform
         [Tooltip("Data of platform to assign")]
         public PlatformDataSO platformSO;
     }
-    public class PlatformSpawner : MonoBehaviour
+    public class PlatformSpawner : MonoBehaviour, ISpawner
     {
         #region Inspector & Value
 
@@ -62,8 +62,8 @@ namespace Spawner.Platform
         private const float stepHeight = 0.2f;
         private const int maxActivePlatformCount = 10;
         
-        public event Action<GameObject> OnPlatformSpawned;
-        public event Action<GameObject> OnPlatformDespawned;
+        public event Action<GameObject> OnSpawned;
+        public event Action<GameObject> OnDespawned;
 
         #endregion
         
@@ -92,15 +92,14 @@ namespace Spawner.Platform
         /// </summary>
         public void SpawnStartPlatform()
         {
-            // Start spawn 7 platform
             var normalSO = platformDatas.Find(data => data.platformSO.platformType == PlatformType.Normal);
             for (var i = 0; i < initialNormalPlatformCount; i++)
             {
-                var newStep = CalculateNextStep();
+                var newStep = CalculateWeight();
                 lastSpawnPosition.x += distancePlatform;
                 lastSpawnPosition.y = newStep * stepHeight;
                 lastSpawnPosition = SnapToGrid(lastSpawnPosition, 0.1f);
-                SpawnPlatform(lastSpawnPosition, normalSO.platformSO);
+                Spawn(lastSpawnPosition, normalSO.platformSO);
             }
         }
         
@@ -110,13 +109,13 @@ namespace Spawner.Platform
         public void SpawnNextPlatform()
         {
             currentStep = nextStep;
-            var newStep = CalculateNextStep();
+            var newStep = CalculateWeight();
           
             lastSpawnPosition.x += distancePlatform;
             lastSpawnPosition.y = newStep * stepHeight;
             lastSpawnPosition = SnapToGrid(lastSpawnPosition, 0.1f);
 
-            SpawnPlatform(lastSpawnPosition);
+            Spawn(lastSpawnPosition);
         }
         #endregion
 
@@ -125,39 +124,51 @@ namespace Spawner.Platform
         /// Spawn Platform and Initialize
         /// </summary>
         /// <param name="position"></param>
-        private void SpawnPlatform(Vector3 position, PlatformDataSO platformData = null)
+        public void Spawn(Vector3 position, object settings = null)
         {
-            if (platformData == null) platformData = GetRandomWeightedPlatform(platformDatas);
+            var platformData = settings as PlatformDataSO ?? GetRandomWeightedPlatform(platformDatas);
+            position = SnapToGrid(position, 0.1f);
 
             var platformGO = PoolingManager.Instance.Spawn(platformPrefab, position, Quaternion.identity, parent);
             activePlatforms.Enqueue(platformGO);
-            OnPlatformSpawned?.Invoke(platformGO);
+            OnSpawned?.Invoke(platformGO);
 
-            // Set Sprite
+            //Set Sprite
             var sr = platformGO.GetComponent<SpriteRenderer>();
             sr.sprite = platformData.GetRandomSprite();
 
-            // Set State
+            //Set State
             var context = platformGO.GetComponent<PlatformManager>();
             context.SetState(platformData.state);
             context.OnSpawned();
 
             spawnedPlatformCount++;
-            CheckDespawnPlatform();
+            CheckDespawn();
         }
-
-
+        
         /// <summary>
-        /// Despawn old platform if it more than max count
+        /// Check old platform if it more than max count
         /// </summary>
-        private void CheckDespawnPlatform()
+        private void CheckDespawn()
         {
             while (activePlatforms.Count > maxActivePlatformCount)
             {
                 var oldPlatform = activePlatforms.Dequeue();
-                oldPlatform.GetComponent<PlatformManager>().OnDespawned();
-                PoolingManager.Instance.Despawn(oldPlatform);
-                OnPlatformSpawned?.Invoke(oldPlatform);
+                Despawn(oldPlatform);
+            }
+        }
+        
+        /// <summary>
+        /// Despawn platform
+        /// </summary>
+        public void Despawn(GameObject obj)
+        {
+            if (activePlatforms.Contains(obj))
+            {
+                activePlatforms.Dequeue();
+                obj.GetComponent<PlatformManager>().OnDespawned();
+                PoolingManager.Instance.Despawn(obj);
+                OnDespawned?.Invoke(obj);
             }
         }
 
@@ -165,7 +176,7 @@ namespace Spawner.Platform
         /// Calculate height platform algorithm
         /// </summary>
         /// <returns></returns>
-        private int CalculateNextStep()
+        private int CalculateWeight()
         {
             if (currentStep == targetStep)
             {
@@ -228,16 +239,6 @@ namespace Spawner.Platform
         }
 
         
-        #endregion
-
-        #region Inspector Control
-
-        [Button] [Tooltip("Test spawn next platform")]
-        private void TestSpawnPlatform()
-        {
-            SpawnNextPlatform();
-        }
-
         #endregion
 
         #region Gizmos

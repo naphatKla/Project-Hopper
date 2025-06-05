@@ -375,6 +375,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
+--- !u!1 &1154669715
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1154669716}
+  m_Layer: 0
+  m_Name: ObjectParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1154669716
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1154669715}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.10784325, y: 4.1770663, z: -0.046400893}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1547638301
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -681,7 +712,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectDatas: []
-  parent: {fileID: 0}
+  parent: {fileID: 1154669716}
 --- !u!114 &1710304642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -701,9 +732,10 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1609322148}
-  - {fileID: 1710304640}
   - {fileID: 1547638301}
+  - {fileID: 1710304640}
   - {fileID: 615574709}
+  - {fileID: 1154669716}
   - {fileID: 229613112}
   - {fileID: 1009654647}
   - {fileID: 342311038}
