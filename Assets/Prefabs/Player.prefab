@@ -223,6 +223,7 @@ MonoBehaviour:
   moveHorizontalDistance: 1
   moveVerticalDistance: 1
   moveDuration: 0.3
+  moveCooldown: 0.25
   moveCurve:
     serializedVersion: 2
     m_Curve:

@@ -11,13 +11,16 @@ namespace Platform
     public class PlatformManager : MonoBehaviour
     {
         [ReadOnly] public PlatformBaseStateSO currentState;
-        [ReadOnly] public CancellationTokenSource blinkCts;
+        [ReadOnly] public CancellationTokenSource attackLoopTokenSource;
 
         private Vector2 lastAttackBoxSize;
         private Vector2 lastAttackBoxOffset;
 
         [FoldoutGroup("Object Effect")]
-        public GameObject spear;
+        [SerializeField] public GameObject spear;
+        
+        
+        [HideInInspector] public bool attackLooping;
 
         private void Start()
         {
@@ -52,9 +55,9 @@ namespace Platform
 
         public void ResetPlatform()
         {
-            blinkCts?.Cancel();
-            blinkCts?.Dispose();
-            blinkCts = null;
+            attackLoopTokenSource?.Cancel();
+            attackLoopTokenSource?.Dispose();
+            attackLoopTokenSource = null;
             
             GetComponent<Rigidbody2D>().gravityScale = 0;
             GetComponent<SpriteRenderer>().color = Color.white;
@@ -67,18 +70,15 @@ namespace Platform
         /// <param name="colorB"></param>
         /// <param name="totalDuration"></param>
         /// <param name="blinkCount"></param>
-        public async UniTask BlinkColor(Color colorA, Color colorB, float totalDuration, int blinkCount, CancellationToken? token = null)
+        public async UniTask BlinkColor(Color colorA, Color colorB, float totalDuration, int blinkCount)
         {
             SpriteRenderer renderer = gameObject.GetComponent<SpriteRenderer>();
             float singleDuration = totalDuration / (blinkCount * 2f);
 
             for (int i = 0; i < blinkCount; i++)
             {
-                token?.ThrowIfCancellationRequested();
-                await renderer.DOColor(colorB, singleDuration).ToUniTask(cancellationToken: token ?? CancellationToken.None);
-
-                token?.ThrowIfCancellationRequested();
-                await renderer.DOColor(colorA, singleDuration).ToUniTask(cancellationToken: token ?? CancellationToken.None);
+                await renderer.DOColor(colorB, singleDuration).ToUniTask();
+                await renderer.DOColor(colorA, singleDuration).ToUniTask();
             }
         }
         

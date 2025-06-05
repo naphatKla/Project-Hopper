@@ -33,63 +33,72 @@ namespace Platform
         public override void EnterState(PlatformManager manager)
         {
             manager.ResetPlatform();
+            manager.spear.SetActive(true);
+            
+            if (manager.spear.TryGetComponent(out Animator animator))
+            { animator.Play("Spike", 0, 0f); animator.speed = 0; }
+            
+            manager.attackLooping = true;
+            manager.attackLoopTokenSource = new CancellationTokenSource();
+            LoopBehavior(manager, manager.attackLoopTokenSource.Token).Forget();
         }
 
-        public override void UpdateState(PlatformManager manager) { }
+        public override void UpdateState(PlatformManager manager) {}
 
         public override void OnStepped(PlatformManager manager, GameObject player) { }
 
-        public override void OnSpawned(PlatformManager manager)
-        {
-            manager.ResetPlatform();
-            
-            manager.blinkCts?.Cancel();
-            manager.blinkCts = new CancellationTokenSource();
-            
-            manager.spear.SetActive(true);
-            var animator = manager.spear.GetComponent<Animator>();
-            if (animator == null) { return; }
-            animator.Play("Spike", 0, 0f);
-            animator.speed = 0;
-           
-            RunLoop(manager).Forget();
-        }
+        public override void OnSpawned(PlatformManager manager) { }
 
         public override void OnDespawned(PlatformManager manager)
         {
             manager.ResetPlatform();
+    
+            if (manager.spear.TryGetComponent(out Animator animator)) 
+                animator.Play("Spike", 0, 0f); animator.speed = 0;
+            
             manager.spear.SetActive(false);
         }
         
-        private async UniTaskVoid RunLoop(PlatformManager manager)
+        
+        private async UniTaskVoid LoopBehavior(PlatformManager manager, CancellationToken token)
         {
             try
             {
-                while (true)
+                while (!token.IsCancellationRequested)
                 {
-                    await UniTask.Delay(TimeSpan.FromSeconds(waitTime));
-                    await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount, manager.blinkCts?.Token);
-                    
-                    //Strike here
+                    await UniTask.Delay(TimeSpan.FromSeconds(waitTime), cancellationToken: token);
+
+                    if (manager == null || manager.spear == null) return;
+
+                    await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount);
+
                     manager.Attack(attackBoxSize, attackBoxOffset, attackLayerMask, 1);
-                   
-                    Animator animator = manager.spear.GetComponent<Animator>();
-                    await manager.PlayAndWait(animator,"Spike", 0.33f);
+
+                    if (manager.spear != null &&
+                        manager.spear.TryGetComponent(out Animator animator) &&
+                        animator != null &&
+                        animator.gameObject.activeInHierarchy)
+                    {
+                        await manager.PlayAndWait(animator, "Spike", strikeDuration);
+                    }
+
                     Hide(manager);
                 }
             }
-            catch (Exception a)
-            {
-                throw;
-            }
+            catch (OperationCanceledException) { }
         }
-        
+
+
+
         private void Hide(PlatformManager manager)
         {
-            var animator = manager.spear.GetComponent<Animator>();
-            if (animator ==null) return;
-            animator.Play("Spike", 0, 0f);
-            animator.speed = 0;
+            if (manager.spear.TryGetComponent(out Animator animator)) 
+                animator.speed = 0; 
         }
+        /*await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount);
+        manager.Attack(attackBoxSize, attackBoxOffset, attackLayerMask, 1);
+        if (manager.spear.TryGetComponent(out Animator animator)) 
+        await manager.PlayAndWait(animator, "Spike", strikeDuration);
+        Hide(manager);*/
     }
 }
