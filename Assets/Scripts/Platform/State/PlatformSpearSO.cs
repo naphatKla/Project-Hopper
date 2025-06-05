@@ -49,8 +49,8 @@ namespace Platform
 
         public override void OnDespawned(PlatformManager manager)
         {
-            manager.spear.SetActive(false);
             manager.ResetPlatform();
+            manager.spear.SetActive(false);
         }
         
         
@@ -70,26 +70,25 @@ namespace Platform
                     //3. Attack
                     manager.Attack(attackBoxSize, attackBoxOffset, attackLayerMask, 1);
 
-                    if (manager.spear != null &&
-                        manager.spear.TryGetComponent(out Animator animator) &&
-                        animator != null &&
-                        animator.gameObject.activeInHierarchy)
+                    if (manager.spear != null && manager.spear.TryGetComponent(out Animator animator) && animator != null && animator.gameObject.activeInHierarchy) 
                     {
                         await manager.PlayAndWait(animator, "Spike", strikeDuration);
+                        
+                        //4. Hide
+                        Hide(manager);
                     }
-
-                    //4. Hide
-                    Hide(manager);
                 }
             }
             catch (OperationCanceledException) { }
         }
-
         
         private void Hide(PlatformManager manager)
         {
+            if (manager?.spear == null || !manager.spear) return;
+
             if (manager.spear.TryGetComponent(out Animator animator)) 
-                animator.speed = 0; 
+                animator.speed = 0;
         }
+
     }
 }
