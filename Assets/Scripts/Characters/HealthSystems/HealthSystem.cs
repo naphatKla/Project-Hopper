@@ -1,4 +1,5 @@
 using System;
+using Characters.Controllers;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Sirenix.OdinInspector;
@@ -42,6 +43,11 @@ namespace Characters.HealthSystems
         private bool _isInvincible;
 
         /// <summary>
+        /// owner of this health system.
+        /// </summary>
+        private BaseController _owner;
+
+        /// <summary>
         /// Invoked whenever health changes.
         /// </summary>
         public Action OnHealthChange { get; set; }
@@ -60,6 +66,16 @@ namespace Characters.HealthSystems
 
         #region Methods
 
+        /// <summary>
+        /// Initialize the owner on start and reset current health.
+        /// </summary>
+        /// <param name="owner"></param>
+        public void Initialize(BaseController owner)
+        {
+            _owner = owner;
+            ResetHealth();
+        }
+        
         private Tween feedbackTest;
 
         /// <summary>
@@ -82,11 +98,8 @@ namespace Characters.HealthSystems
 
             ModifyHealth(-damage);
             OnTakeDamage?.Invoke();
-
-            feedbackTest = GetComponent<SpriteRenderer>()
-                .DOColor(Color.red, 0.1f)
-                .SetLoops(2, LoopType.Yoyo);
-
+            _owner?.FeedbackSystem?.PlayFeedback(FeedbackKey.Hurt);
+            
             if (_currentHp > 0) return;
 
             _isDead = true;

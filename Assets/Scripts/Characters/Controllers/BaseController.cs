@@ -52,7 +52,7 @@ namespace Characters.Controllers
         /// </summary>
         protected virtual void Awake()
         {
-            HealthSystem?.ResetHealth();
+            HealthSystem?.Initialize(this);
             CombatSystem?.Initialize(this);
         }
 
