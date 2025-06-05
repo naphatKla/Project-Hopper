@@ -28,7 +28,7 @@ namespace Characters.Controllers
         /// </summary>
         protected override void Awake()
         {
-            enemyCombatSystem.Initialize(this);
+            enemyCombatSystem?.Initialize(this);
             base.Awake();
         }
 
