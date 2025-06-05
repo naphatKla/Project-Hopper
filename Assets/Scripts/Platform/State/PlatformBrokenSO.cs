@@ -8,7 +8,6 @@ namespace Platform
     [CreateAssetMenu(fileName = "BrokenState", menuName = "PlatformStates/Broken")]
     public class PlatformBrokenSO : PlatformBaseStateSO
     {
-        public override bool ObjectCanSpawn { get; }
         public override void UpdateState(PlatformManager manager) { }
 
         public override async void OnStepped(PlatformManager manager, GameObject player)

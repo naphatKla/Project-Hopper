@@ -5,8 +5,10 @@ namespace Platform
 {
     public abstract class PlatformBaseStateSO : ScriptableObject
     {
-        [Tooltip("Object can spawn above platform")]
-        public abstract bool ObjectCanSpawn { get; }
+        [SerializeField, Tooltip("Object can spawn above platform")]
+        protected bool objectCanSpawn = false;
+
+        public virtual bool ObjectCanSpawn => objectCanSpawn;
         
         public abstract void OnSpawned(PlatformManager manager);
         public abstract void OnDespawned(PlatformManager manager);

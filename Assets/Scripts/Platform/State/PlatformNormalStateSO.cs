@@ -5,7 +5,6 @@ namespace Platform
     [CreateAssetMenu(fileName = "NormalState", menuName = "PlatformStates/Normal")]
     public class PlatformNormalStateSO : PlatformBaseStateSO
     {
-        public override bool ObjectCanSpawn { get; }
         public override void UpdateState(PlatformManager manager) { }
 
         public override void OnStepped(PlatformManager manager, GameObject player) { }
