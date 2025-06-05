@@ -640,9 +640,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   platformPrefab: {fileID: 2169834587886236752, guid: c60854f3245dc884d8611c406bc119cd, type: 3}
   platformDatas:
-  - platformSO: {fileID: 11400000, guid: 43f21ea81c0c3d24492d105b1e7faf10, type: 2}
-  - platformSO: {fileID: 11400000, guid: 991c83f9df899f248bf4f7c798616d5a, type: 2}
   - platformSO: {fileID: 11400000, guid: ca3c839f928716d4c9feeeda1c3dbd63, type: 2}
+  - platformSO: {fileID: 11400000, guid: 991c83f9df899f248bf4f7c798616d5a, type: 2}
+  - platformSO: {fileID: 11400000, guid: 43f21ea81c0c3d24492d105b1e7faf10, type: 2}
   - platformSO: {fileID: 11400000, guid: c350b4a28f6e2f046936eb564544637f, type: 2}
   currentStep: 1
   nextStep: 1
