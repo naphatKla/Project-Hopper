@@ -29,8 +29,12 @@ namespace Platform
 
         [FoldoutGroup("Attack Settings")]
         [SerializeField] private LayerMask attackLayerMask;
+        
+        public override void UpdateState(PlatformManager manager) {}
 
-        public override void EnterState(PlatformManager manager)
+        public override void OnStepped(PlatformManager manager, GameObject player) { }
+
+        public override void OnSpawned(PlatformManager manager)
         {
             manager.ResetPlatform();
             manager.spear.SetActive(true);
@@ -43,22 +47,11 @@ namespace Platform
             LoopBehavior(manager, manager.attackLoopTokenSource.Token).Forget();
         }
 
-        public override void UpdateState(PlatformManager manager) {}
-
-        public override void OnStepped(PlatformManager manager, GameObject player) { }
-
-        public override void OnSpawned(PlatformManager manager) { }
-
         public override void OnDespawned(PlatformManager manager)
         {
             manager.ResetPlatform();
-    
-            if (manager.spear.TryGetComponent(out Animator animator)) 
-                animator.Play("Spike", 0, 0f); animator.speed = 0;
-            
             manager.spear.SetActive(false);
         }
-        
         
         private async UniTaskVoid LoopBehavior(PlatformManager manager, CancellationToken token)
         {
@@ -66,39 +59,35 @@ namespace Platform
             {
                 while (!token.IsCancellationRequested)
                 {
+                    //1. Wait
                     await UniTask.Delay(TimeSpan.FromSeconds(waitTime), cancellationToken: token);
-
+                    
+                    //2. Blink
                     if (manager == null || manager.spear == null) return;
-
                     await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount);
-
+                    
+                    //3. Attack
                     manager.Attack(attackBoxSize, attackBoxOffset, attackLayerMask, 1);
 
-                    if (manager.spear != null &&
-                        manager.spear.TryGetComponent(out Animator animator) &&
-                        animator != null &&
-                        animator.gameObject.activeInHierarchy)
+                    if (manager.spear != null && manager.spear.TryGetComponent(out Animator animator) && animator != null && animator.gameObject.activeInHierarchy) 
                     {
                         await manager.PlayAndWait(animator, "Spike", strikeDuration);
+                        
+                        //4. Hide
+                        Hide(manager);
                     }
-
-                    Hide(manager);
                 }
             }
             catch (OperationCanceledException) { }
         }
-
-
-
+        
         private void Hide(PlatformManager manager)
         {
+            if (manager?.spear == null || !manager.spear) return;
+
             if (manager.spear.TryGetComponent(out Animator animator)) 
-                animator.speed = 0; 
+                animator.speed = 0;
         }
-        /*await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount);
-        manager.Attack(attackBoxSize, attackBoxOffset, attackLayerMask, 1);
-        if (manager.spear.TryGetComponent(out Animator animator)) 
-        await manager.PlayAndWait(animator, "Spike", strikeDuration);
-        Hide(manager);*/
+
     }
 }

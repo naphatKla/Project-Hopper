@@ -21,10 +21,15 @@ namespace Platform
         
         
         [HideInInspector] public bool attackLooping;
-
-        private void Start()
+        
+        public void OnSpawned()
         {
-            currentState?.EnterState(this);
+            currentState?.OnSpawned(this);
+        }
+        
+        public void OnDespawned()
+        {
+            currentState?.OnDespawned(this);
         }
 
         private void Update()
@@ -36,25 +41,16 @@ namespace Platform
         {
             currentState?.OnStepped(this, player);
         }
-
-        public void OnSpawned()
-        {
-            currentState?.OnSpawned(this);
-        }
         
-        public void OnDespawned()
-        {
-            currentState?.OnDespawned(this);
-        }
-
         public void SetState(PlatformBaseStateSO newState)
         {
             currentState = newState;
-            currentState.EnterState(this);
+            currentState.OnSpawned(this);
         }
 
         public void ResetPlatform()
         {
+            attackLooping = false;
             attackLoopTokenSource?.Cancel();
             attackLoopTokenSource?.Dispose();
             attackLoopTokenSource = null;
@@ -110,8 +106,6 @@ namespace Platform
             }
             catch (OperationCanceledException) { }
         }
-
-
         
         /// <summary>
         /// Get animation clip by name
@@ -144,7 +138,6 @@ namespace Platform
 
             foreach (var hit in hits)
             {
-                Debug.Log($"Hit: {hit.name}");
                 if (hit.TryGetComponent(out HealthSystem health)) health.TakeDamage(damage);
             }
         }
