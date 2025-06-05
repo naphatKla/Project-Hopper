@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 9099100481647492464}
   - component: {fileID: 8197801602367585672}
   - component: {fileID: 7911071053028565313}
-  - component: {fileID: 8464559609138264350}
   - component: {fileID: 1601711655953272881}
-  - component: {fileID: 8396091031737178444}
+  - component: {fileID: 8464559609138264350}
+  - component: {fileID: 2881279238246293737}
+  - component: {fileID: 1968252146258710090}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
@@ -179,8 +180,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthSystem: {fileID: 8464559609138264350}
-  enemyInputSystem: {fileID: 1601711655953272881}
-  enemyCombatSystem: {fileID: 8396091031737178444}
+  combatSystem: {fileID: 2881279238246293737}
+  feedbackSystem: {fileID: 1968252146258710090}
+  inputSystem: {fileID: 1601711655953272881}
+--- !u!114 &1601711655953272881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2691774995898733471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce7598717c8505143b12179bbf30b7a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &8464559609138264350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,7 +209,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 2
   iframePerHitDuration: 0
---- !u!114 &1601711655953272881
+--- !u!114 &2881279238246293737
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -204,26 +218,61 @@ MonoBehaviour:
   m_GameObject: {fileID: 2691774995898733471}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce7598717c8505143b12179bbf30b7a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &8396091031737178444
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2691774995898733471}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c5da6e3c737b7647a7e3a95173ca9bd, type: 3}
+  m_Script: {fileID: 11500000, guid: 00ed1f214d8d3da4b9ffcd11f93bb44c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   attackArea: {x: 2, y: 1}
   offset: {x: -0.5, y: 0}
   targetLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
   damage: 1
   attackDelay: 0.1
   attackCooldown: 0.1
+--- !u!114 &1968252146258710090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2691774995898733471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e076fca60252795458c53e175cc31cb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: feedbackDictionary
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[Characters.FeedbackKey, Assembly-CSharp],[MoreMountains.Feedbacks.MMF_Player,
+        MoreMountains.Feedbacks]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[Characters.FeedbackKey,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 

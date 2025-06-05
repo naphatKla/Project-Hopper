@@ -11,29 +11,21 @@ namespace Characters.Controllers
     /// Manages player-specific systems such as input, movement, and combat.
     /// Also implements singleton access for global player references.
     /// </summary>
-    public class PlayerController : BaseController
+    public class PlayerController : BaseController<PlayerInputSystem>
     {
         #region Inspectors & Variables
-
-        [PropertyTooltip("Handles player input from keyboard, gamepad, etc.")]
-        [SerializeField] private PlayerInputSystem playerInputSystem;
-
+        
         [PropertyTooltip("Handles grid-based movement logic and interaction with the world.")]
         [SerializeField] private GridMovementSystem gridMovementSystem;
 
-        [PropertyTooltip("Handles player-specific combat behavior, such as attacking and guarding.")]
-        [SerializeField] private PlayerCombatSystem playerCombatSystem;
-
+        [PropertyTooltip("Handles protection and invincible")]
+        [SerializeField] private GuardSystem guardSystem;
+        
         /// <summary>
         /// Gets the grid-based movement system used by the player.
         /// </summary>
         public GridMovementSystem GridMovementSystem => gridMovementSystem;
-
-        /// <summary>
-        /// Gets the player's combat system which includes actions like attack and guard.
-        /// </summary>
-        public PlayerCombatSystem PlayerCombatSystem => playerCombatSystem;
-
+        
         /// <summary>
         /// Singleton reference to the player controller instance in the scene.
         /// </summary>
@@ -58,32 +50,31 @@ namespace Characters.Controllers
             Instance = this;
 
             gridMovementSystem?.Initialize(this);
-            playerCombatSystem?.Initialize(this);
             base.Awake();
         }
 
         /// <summary>
         /// Subscribes player input events to their corresponding system actions.
         /// </summary>
-        private void OnEnable()
+        protected override void OnEnable()
         {
-            if (!playerInputSystem) return;
-
-            playerInputSystem.OnAttackInputPerform += PlayerCombatSystem.Attack;
-            playerInputSystem.OnMoveInputPerform += GridMovementSystem.TryMoveAction;
-            playerInputSystem.OnGuardInputPerform += playerCombatSystem.Guard;
+            if (!inputSystem) return;
+            
+            inputSystem.OnMoveInputPerform += GridMovementSystem.TryMoveAction;
+            inputSystem.OnGuardInputPerform += guardSystem.Guard;
+            base.OnEnable();
         }
 
         /// <summary>
         /// Unsubscribes input events when the object is disabled.
         /// </summary>
-        private void OnDisable()
+        protected override void OnDisable()
         {
-            if (!playerInputSystem) return;
-
-            playerInputSystem.OnAttackInputPerform -= PlayerCombatSystem.Attack;
-            playerInputSystem.OnMoveInputPerform -= GridMovementSystem.TryMoveAction;
-            playerInputSystem.OnGuardInputPerform -= playerCombatSystem.Guard;
+            if (!inputSystem) return;
+            
+            inputSystem.OnMoveInputPerform -= GridMovementSystem.TryMoveAction;
+            inputSystem.OnGuardInputPerform -= guardSystem.Guard;
+            base.OnDisable();
         }
 
         #endregion

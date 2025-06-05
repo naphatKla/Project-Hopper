@@ -8,10 +8,10 @@ using UnityEngine;
 namespace Characters.CombatSystems
 {
     /// <summary>
-    /// Abstract base class for combat systems that handle attacking,
+    /// base class for combat systems that handle attacking,
     /// damage dealing, and cooldown logic for both player and enemy.
     /// </summary>
-    public abstract class BaseCombatSystem : MonoBehaviour
+    public class CombatSystem : MonoBehaviour
     {
         #region Inspectors & Variables
 

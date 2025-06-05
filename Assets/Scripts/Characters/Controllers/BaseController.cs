@@ -1,5 +1,7 @@
 using System;
+using Characters.CombatSystems;
 using Characters.HealthSystems;
+using Characters.InputSystems;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -12,11 +14,15 @@ namespace Characters.Controllers
     public abstract class BaseController : MonoBehaviour
     {
         #region Inspectors & Variables
-
-        [Title("Dependencies")]
         
         [PropertyTooltip("The HealthSystem component responsible for managing HP, damage, and death behavior of this character.")]
         [SerializeField] private HealthSystem healthSystem;
+
+        [PropertyTooltip("CombatSystem component of this character.")]
+        [SerializeField] private CombatSystem combatSystem;
+
+        [PropertyTooltip("FeedbackSystem component of this character.")]
+        [SerializeField] private FeedbackSystem feedbackSystem;
 
         /// <summary>
         /// Gets the character's HealthSystem, which handles HP, damage, healing, and death.
@@ -24,14 +30,49 @@ namespace Characters.Controllers
         public HealthSystem HealthSystem => healthSystem;
 
         /// <summary>
+        /// Gets the character's combat system.
+        /// </summary>
+        public CombatSystem CombatSystem => combatSystem;
+
+        /// <summary>
+        /// Gets the character's feedback system.
+        /// </summary>
+        public FeedbackSystem FeedbackSystem => feedbackSystem;
+        
+        #endregion
+    }
+
+    public abstract class BaseController<T> : BaseController where T : BaseInputSystem
+    {
+        [Title("Dependencies")] [PropertyOrder(-1)]
+        [SerializeField] protected T inputSystem;
+        
+        /// <summary>
         /// Reset health on awake.
         /// </summary>
         protected virtual void Awake()
         {
             HealthSystem?.ResetHealth();
+            CombatSystem?.Initialize(this);
         }
 
-        #endregion
+        /// <summary>
+        /// 
+        /// </summary>
+        protected virtual void OnEnable()
+        {
+            if (!inputSystem) return;
+            inputSystem.OnAttackInputPerform += CombatSystem.Attack;
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        protected virtual void OnDisable()
+        {
+            if (!inputSystem) return;
+            inputSystem.OnAttackInputPerform += CombatSystem.Attack;
+        }
     }
 
     /// <summary>

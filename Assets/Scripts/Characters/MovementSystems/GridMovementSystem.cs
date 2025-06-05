@@ -146,6 +146,7 @@ namespace Characters.MovementSystems
             _isMoveCooldown = true;
             OnJumpUp?.Invoke();
             _ignoreGravity = true;
+            _owner.FeedbackSystem.PlayFeedback(FeedbackKey.Jump);
             
             Vector2 startPos = transform.position;
             Vector2 horizontalOffset = Vector2.right * moveVerticalDistance;
@@ -182,6 +183,7 @@ namespace Characters.MovementSystems
                     if (_isLanding) return;
                     transform.position = SnapToGrid(newPos);
                     OnLanding?.Invoke(groundHit.transform.gameObject);
+                    _owner.FeedbackSystem.PlayFeedback(FeedbackKey.Land);
                     _isLanding = true;
                     return;
                 }

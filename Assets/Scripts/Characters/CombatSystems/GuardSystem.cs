@@ -5,11 +5,7 @@ using UnityEngine;
 
 namespace Characters.CombatSystems
 {
-    /// <summary>
-    /// Combat system specific to the player character.
-    /// Extends base combat with a guard mechanic that grants temporary invincibility.
-    /// </summary>
-    public class PlayerCombatSystem : BaseCombatSystem
+    public class GuardSystem : MonoBehaviour
     {
         #region Inspectors & Variables
 
@@ -20,33 +16,49 @@ namespace Characters.CombatSystems
         [SerializeField] private float guardCooldown = 0.25f;
 
         /// <summary>
+        /// Tracks whether this initialized or not.
+        /// </summary>
+        private bool _isInitialized;
+        
+        /// <summary>
         /// Tracks whether the guard action is currently on cooldown.
         /// </summary>
         private bool _isGuardCooldown;
+
+        /// <summary>
+        /// owner of this character.
+        /// </summary>
+        private BaseController _owner;
 
         #endregion
 
         #region Methods
 
+        public void Initialize(BaseController controller)
+        {
+            _owner = controller;
+            _isInitialized = true;
+        }
+        
         /// <summary>
         /// Executes a guard action, making the player temporarily invincible.
         /// Guard cannot be used again until the cooldown expires.
         /// </summary>
         public async void Guard()
         {
-            if (!isInitialized) return;
+            if (!_isInitialized) return;
             if (_isGuardCooldown) return;
-            if (!owner.HealthSystem) return;
+            if (!_owner.HealthSystem) return;
 
             _isGuardCooldown = true;
-            owner.HealthSystem.SetInvincible(true);
+            _owner.HealthSystem.SetInvincible(true);
             await UniTask.WaitForSeconds(guardDuration);
-            owner.HealthSystem.SetInvincible(false); // fixed: should turn off after duration
+            _owner.HealthSystem.SetInvincible(false); 
 
             await UniTask.WaitForSeconds(guardCooldown - guardDuration);
             _isGuardCooldown = false;
         }
-
+        
         #endregion
     }
 }
