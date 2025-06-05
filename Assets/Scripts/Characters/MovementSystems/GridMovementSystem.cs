@@ -2,13 +2,12 @@ using System;
 using Characters.Controllers;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using PoolingSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Characters.MovementSystems
 {
-    public class MovementSystem : MonoBehaviour
+    public class GridMovementSystem : MonoBehaviour
     {
         #region Inspectors & Variables
 
@@ -131,7 +130,6 @@ namespace Characters.MovementSystems
                 Debug.LogWarning("Need BoxCollider2D with is Trigger");
 
             _isInitialized = true;
-            Debug.Log("Init");
         }
 
         /// <summary>
@@ -148,8 +146,7 @@ namespace Characters.MovementSystems
             _isMoveCooldown = true;
             OnJumpUp?.Invoke();
             _ignoreGravity = true;
-
-            _owner.SetMovementState(MovementState.Jumping);
+            
             Vector2 startPos = transform.position;
             Vector2 horizontalOffset = Vector2.right * moveVerticalDistance;
 
@@ -185,7 +182,6 @@ namespace Characters.MovementSystems
                     if (_isLanding) return;
                     transform.position = SnapToGrid(newPos);
                     OnLanding?.Invoke(groundHit.transform.gameObject);
-                    _owner.SetMovementState(MovementState.Idle);
                     _isLanding = true;
                     return;
                 }

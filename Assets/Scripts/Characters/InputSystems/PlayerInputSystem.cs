@@ -7,13 +7,13 @@ namespace Characters.InputSystems
 {
     public class PlayerInputSystem : BaseInputSystem
     {
-        [SerializeField] private Button moveButton;
         [SerializeField] private Button attackButton;
+        [SerializeField] private Button moveButton;
         [SerializeField] private Button guardButton;
         
-        public override Action OnMoveInputPerform { get; set; }
         public override Action OnAttackInputPerform { get; set; }
-        public override Action OnGuardInputPerform { get; set; }
+        public Action OnMoveInputPerform { get; set; }
+        public Action OnGuardInputPerform { get; set; }
         
         private void OnEnable()
         {
@@ -28,9 +28,7 @@ namespace Characters.InputSystems
             attackButton?.onClick.RemoveListener(PerformAttack);
             guardButton?.onClick.RemoveListener(PerformGuard);
         }
-
-  
-
+        
         [BoxGroup] [Button(ButtonSizes.Large)]
         protected override void PerformAttack()
         {
@@ -38,13 +36,13 @@ namespace Characters.InputSystems
         }
         
         [BoxGroup] [Button(ButtonSizes.Large)] 
-        protected override void PerformMove()
+        protected void PerformMove()
         {
             OnMoveInputPerform?.Invoke();
         }
 
         [BoxGroup] [Button(ButtonSizes.Large)]
-        protected override void PerformGuard()
+        protected void PerformGuard()
         {
             OnGuardInputPerform?.Invoke();
         }

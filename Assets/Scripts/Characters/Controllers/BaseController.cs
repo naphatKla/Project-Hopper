@@ -1,73 +1,75 @@
 using System;
-using Characters.CombatSystems;
 using Characters.HealthSystems;
-using Characters.InputSystems;
-using Characters.MovementSystems;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Characters.Controllers
 {
+    /// <summary>
+    /// Base class for all character controllers (e.g. Player or Enemy).
+    /// Manages shared systems like HealthSystem and acts as a central point of coordination.
+    /// </summary>
     public abstract class BaseController : MonoBehaviour
     {
-        [Title("Dependencies")] 
-        [SerializeField] private BaseInputSystem inputSystem;
-        [SerializeField] private MovementSystem movementSystem;
-        [SerializeField] private HealthSystem healthSystem;
-        [SerializeField] private CombatSystem combatSystem;
+        #region Inspectors & Variables
+
+        [Title("Dependencies")]
         
-        [Title("States")] 
-        [SerializeField] private MovementState movementState;
-        [SerializeField] private CombatState combatState;
+        [PropertyTooltip("The HealthSystem component responsible for managing HP, damage, and death behavior of this character.")]
+        [SerializeField] private HealthSystem healthSystem;
 
-        public MovementSystem MovementSystem => movementSystem;
+        /// <summary>
+        /// Gets the character's HealthSystem, which handles HP, damage, healing, and death.
+        /// </summary>
         public HealthSystem HealthSystem => healthSystem;
-        public CombatSystem CombatSystem => combatSystem;
 
+        /// <summary>
+        /// Reset health on awake.
+        /// </summary>
         protected virtual void Awake()
         {
-            movementSystem?.Initialize(this);
+            HealthSystem?.ResetHealth();
         }
 
-        private void OnEnable()
-        {
-            if (!inputSystem) return;
-            inputSystem.OnMoveInputPerform += MovementSystem.TryMoveAction;
-            inputSystem.OnAttackInputPerform += combatSystem.Attack;
-            inputSystem.OnGuardInputPerform += combatSystem.Guard;
-        }
-
-        private void OnDisable()
-        {
-            if (!inputSystem) return;
-            inputSystem.OnMoveInputPerform -= MovementSystem.TryMoveAction;
-            inputSystem.OnAttackInputPerform -= combatSystem.Attack;
-            inputSystem.OnGuardInputPerform -= combatSystem.Guard;
-        }
-
-        public void SetMovementState(MovementState state)
-        {
-            movementState = state;
-        }
-
-        public void SetCombatState(CombatState state)
-        {
-            combatState = state;
-        }
+        #endregion
     }
 
+    /// <summary>
+    /// Represents the movement state of a character, such as idle or jumping.
+    /// </summary>
     [Serializable]
     public enum MovementState
     {
+        /// <summary>
+        /// Character is idle and not moving.
+        /// </summary>
         Idle = 0,
+
+        /// <summary>
+        /// Character is currently jumping or in mid-air.
+        /// </summary>
         Jumping = 1,
     }
 
+    /// <summary>
+    /// Represents the current combat behavior state of the character.
+    /// </summary>
     [Serializable]
     public enum CombatState
     {
+        /// <summary>
+        /// Character is not engaging in any combat action.
+        /// </summary>
         None = 0,
+
+        /// <summary>
+        /// Character is attacking or performing an offensive action.
+        /// </summary>
         Attacking = 1,
+
+        /// <summary>
+        /// Character is guarding or defending against incoming attacks.
+        /// </summary>
         Guarding = 2,
     }
 }
