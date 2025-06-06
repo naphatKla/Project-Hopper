@@ -95,9 +95,9 @@ namespace Characters.CombatSystems
         {
             owner = controller;
             isInitialized = true;
-            controller.HealthSystem.OnDead += _ct.Cancel;
+            controller.HealthSystem.OnDead += CancelAttack;
         }
-
+        
         /// <summary>
         /// Executes an attack after a delay. Deals damage to all valid targets in the attack area.
         /// Handles attack delay, cooldown, and cancellation.
@@ -129,6 +129,11 @@ namespace Characters.CombatSystems
 
             await UniTask.WaitForSeconds(attackCooldown);
             _isAttackCooldown = false;
+        }
+
+        public void CancelAttack()
+        {
+            _ct?.Cancel();
         }
 
         #endregion
