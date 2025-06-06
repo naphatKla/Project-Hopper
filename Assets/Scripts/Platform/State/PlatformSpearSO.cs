@@ -86,7 +86,7 @@ namespace Platform
         private void Hide(PlatformManager manager)
         {
             if (manager?.spear == null || !manager.spear) return;
-
+            manager.StopFeedbackAsync(manager.feedback, manager.transform.position);
             if (manager.spear.TryGetComponent(out Animator animator)) 
                 animator.speed = 0;
         }
