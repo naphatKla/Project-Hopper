@@ -13,6 +13,7 @@ namespace Platform
 
         public override async void OnStepped(PlatformManager manager, GameObject player)
         {
+            manager.transform.DOShakePosition(0.66f, 0.1f, 10, 0);
             await UniTask.Delay(TimeSpan.FromSeconds(0.33f));
             manager.PlayAndDestroyParticleAsync(manager.feedback, manager.transform.position);
             manager.gameObject.SetActive(false);
