@@ -16,8 +16,8 @@ MonoBehaviour:
   blinkCount: 3
   flashDuration: 0.33
   strikeDuration: 0.33
-  attackBoxSize: {x: 0.77, y: 0.5}
-  attackBoxOffset: {x: 0, y: 0.7}
+  attackBoxSize: {x: 0.7, y: 0.3}
+  attackBoxOffset: {x: 0, y: 0.12}
   attackLayerMask:
     serializedVersion: 2
     m_Bits: 64

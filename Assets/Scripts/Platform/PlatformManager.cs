@@ -3,6 +3,7 @@ using System.Threading;
 using Characters.HealthSystems;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -15,12 +16,13 @@ namespace Platform
 
         [FoldoutGroup("Object Effect")]
         [SerializeField] public GameObject spear;
-
-        public PlatformDataSO data;
         
-        private Vector2 lastAttackBoxSize;
-        private Vector2 lastAttackBoxOffset;
+        private Vector2 _lastAttackBoxSize;
+        private Vector2 _lastAttackBoxOffset;
+        
+        [HideInInspector] public ParticleSystem feedback;
         [HideInInspector] public bool attackLooping;
+        [HideInInspector] public PlatformDataSO data;
         
         public void OnSpawned()
         {
@@ -48,6 +50,11 @@ namespace Platform
             currentState = newState;
             currentState.OnSpawned(this);
         }
+        
+        public void SetFeedback(ParticleSystem feedbacks)
+        {
+            feedback = feedbacks;
+        }
 
         public void ResetPlatform()
         {
@@ -55,9 +62,10 @@ namespace Platform
             attackLoopTokenSource?.Cancel();
             attackLoopTokenSource?.Dispose();
             attackLoopTokenSource = null;
-            lastAttackBoxOffset = Vector2.zero;
-            lastAttackBoxSize = Vector2.zero;
+            _lastAttackBoxOffset = Vector2.zero;
+            _lastAttackBoxSize = Vector2.zero;
             
+            GetComponent<BoxCollider2D>().enabled = true;
             GetComponent<Rigidbody2D>().gravityScale = 0;
             GetComponent<SpriteRenderer>().color = Color.white;
         }
@@ -133,8 +141,8 @@ namespace Platform
         /// </summary>
         public void Attack(Vector2 attackBoxSize, Vector2 attackBoxOffset, LayerMask attackLayerMask, float damage)
         {
-            lastAttackBoxSize = attackBoxSize;
-            lastAttackBoxOffset = attackBoxOffset;
+            _lastAttackBoxSize = attackBoxSize;
+            _lastAttackBoxOffset = attackBoxOffset;
             
             Vector2 center = (Vector2)transform.position + attackBoxOffset;
             Collider2D[] hits = Physics2D.OverlapBoxAll(center, attackBoxSize, 0f, attackLayerMask);
@@ -148,8 +156,8 @@ namespace Platform
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
-            Vector2 center = (Vector2)transform.position + lastAttackBoxOffset;
-            Gizmos.DrawWireCube(center, lastAttackBoxSize);
+            Vector2 center = (Vector2)transform.position + _lastAttackBoxOffset;
+            Gizmos.DrawWireCube(center, _lastAttackBoxSize);
         }
 
     }

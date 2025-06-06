@@ -17,6 +17,7 @@ namespace Platform
         {
             await manager.BlinkColor(Color.white, Color.red, 0.66f, 3);
             manager.GetComponent<Rigidbody2D>().gravityScale = 1;
+            manager.GetComponent<BoxCollider2D>().enabled = false;
             await UniTask.Delay(TimeSpan.FromSeconds(1f));
             manager.gameObject.SetActive(false);
         }

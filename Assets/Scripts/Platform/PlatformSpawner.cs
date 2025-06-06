@@ -53,14 +53,14 @@ namespace Spawner.Platform
         [FoldoutGroup("Control")] [SerializeField] [Tooltip("Platform parent")]
         private Transform parent;
 
-        private readonly Queue<GameObject> activePlatforms = new();
+        private readonly LinkedList<GameObject> activePlatforms = new();
         private Vector3 lastSpawnPosition;
         private int spawnedPlatformCount;
 
         private const int minStep = 1;
         private const int maxStep = 8;
         private const float stepHeight = 0.2f;
-        private const int maxActivePlatformCount = 10;
+        private const int maxActivePlatformCount = 15;
         
         public event Action<GameObject> OnSpawned;
         public event Action<GameObject> OnDespawned;
@@ -117,6 +117,16 @@ namespace Spawner.Platform
 
             Spawn(lastSpawnPosition);
         }
+        
+        /// <summary>
+        /// Check old platform if it more than max count
+        /// </summary>
+        public GameObject CheckPreviousPlatform(GameObject obj)
+        {
+            var previousPlatform = activePlatforms.Find(obj).Previous.Value;
+            if (previousPlatform == null) return null;
+            return previousPlatform;
+        }
         #endregion
 
         #region Private Methods
@@ -130,7 +140,7 @@ namespace Spawner.Platform
             position = SnapToGrid(position, 0.1f);
 
             var platformGO = PoolingManager.Instance.Spawn(platformPrefab, position, Quaternion.identity, parent);
-            activePlatforms.Enqueue(platformGO);
+            activePlatforms.AddLast(platformGO);
 
             //Set Sprite
             var sr = platformGO.GetComponent<SpriteRenderer>();
@@ -139,6 +149,7 @@ namespace Spawner.Platform
             //Set State
             var context = platformGO.GetComponent<PlatformManager>();
             context.SetState(platformData.state);
+            context.SetFeedback(platformData.particle);
             context.OnSpawned();
             context.data = platformData;
 
@@ -154,8 +165,9 @@ namespace Spawner.Platform
         {
             while (activePlatforms.Count > maxActivePlatformCount)
             {
-                var oldPlatform = activePlatforms.Dequeue();
-                Despawn(oldPlatform);
+                var oldPlatform = activePlatforms.First.Value;
+                activePlatforms.RemoveFirst();
+                Despawn(oldPlatform); 
             }
         }
         
