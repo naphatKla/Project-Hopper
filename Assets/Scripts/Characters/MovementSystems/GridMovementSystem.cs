@@ -214,7 +214,20 @@ namespace Characters.MovementSystems
         /// <returns>True if they have the obstacle in front of this character movement</returns>
         private bool CheckObstacle()
         {
-            return Physics2D.Raycast((Vector2)transform.position + Vector2.up * 0.1f, Vector2.right, moveHorizontalDistance, obstacleLayerMask);
+            Bounds bounds = _boxCollider2D.bounds;
+            Vector2 bottom = new Vector2(bounds.center.x, bounds.min.y);
+            Vector2 middle = new Vector2(bounds.center.x, bounds.center.y);
+            Vector2 top = new Vector2(bounds.center.x, bounds.max.y);
+            
+            RaycastHit2D hitBottom = Physics2D.Raycast(bottom, Vector2.right, moveHorizontalDistance, obstacleLayerMask);
+            RaycastHit2D hitMiddle = Physics2D.Raycast(middle, Vector2.right, moveHorizontalDistance, obstacleLayerMask);
+            RaycastHit2D hitTop = Physics2D.Raycast(top, Vector2.right, moveHorizontalDistance, obstacleLayerMask);
+            
+            Debug.DrawRay(bottom, Vector2.right * moveHorizontalDistance, Color.red);
+            Debug.DrawRay(middle, Vector2.right * moveHorizontalDistance, Color.green);
+            Debug.DrawRay(top, Vector2.right * moveHorizontalDistance, Color.blue);
+            
+            return hitBottom.collider != null || hitMiddle.collider != null || hitTop.collider != null;
         }
 
         /// <summary>
