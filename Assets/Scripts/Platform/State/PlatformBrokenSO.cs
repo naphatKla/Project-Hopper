@@ -15,7 +15,7 @@ namespace Platform
         {
             manager.transform.DOShakePosition(0.33f, new Vector3(0.1f, 0f, 0f));
             await UniTask.Delay(TimeSpan.FromSeconds(0.33f));
-            manager.PlayAndDestroyParticleAsync(manager.feedback, manager.transform.position);
+            manager.PlayFeedbackAsync(manager.feedback, manager.transform.position);
             manager.gameObject.SetActive(false);
         }
 

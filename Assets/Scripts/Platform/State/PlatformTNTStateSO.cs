@@ -26,7 +26,7 @@ namespace Platform
                 }
             }
             
-            manager.PlayAndDestroyParticleAsync(manager.feedback, manager.transform.position + Vector3.down * 0.5f);
+            manager.PlayFeedbackAsync(manager.feedback, manager.transform.position + Vector3.down * 0.5f);
             manager.gameObject.SetActive(false);
         }
         

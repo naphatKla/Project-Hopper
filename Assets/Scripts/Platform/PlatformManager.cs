@@ -4,6 +4,7 @@ using Characters.HealthSystems;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using MoreMountains.Feedbacks;
+using PoolingSystem;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -156,19 +157,15 @@ namespace Platform
         /// </summary>
         /// <param name="particlePrefab"></param>
         /// <param name="position"></param>
-        public async void PlayAndDestroyParticleAsync(GameObject particlePrefab, Vector3 position)
+        public async UniTask PlayFeedbackAsync(GameObject feedbackItem, Vector3 position)
         {
-            if (particlePrefab == null) return;
-            var particleInstance = Instantiate(particlePrefab, position, Quaternion.identity);
-            ParticleSystem ps = particleInstance.GetComponent<ParticleSystem>();
-            if (ps == null) return;
-            ps.Play();
-            float totalDuration = ps.main.duration + ps.main.startLifetime.constantMax;
-            await UniTask.Delay((int)(totalDuration * 1000f));
-            Destroy(particleInstance);
+            if (feedbackItem == null) return;
+            feedbackItem.transform.position = position;
+            var mmf = feedbackItem.GetComponent<MMFeedbacks>();
+            if (mmf == null) return;
+            mmf.PlayFeedbacks();
         }
-
-
+        
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
