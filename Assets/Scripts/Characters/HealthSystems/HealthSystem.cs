@@ -23,7 +23,7 @@ namespace Characters.HealthSystems
         private float iframePerHitDuration;
 
         [SerializeField, Unit(Units.Second)] 
-        private float disappearDurationAfterDead = 0.2f;
+        private float disappearDurationAfterDead = 0.1f;
 
         /// <summary>
         /// Current health points.
