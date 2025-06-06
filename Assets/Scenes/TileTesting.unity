@@ -897,13 +897,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectDatas:
   - objectPrefab: {fileID: 2691774995898733471, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
-    spawnChance: 10
+    spawnChance: 50
     validPlatformTypes:
     - {fileID: 11400000, guid: 28d1abb3241443a42a2407a269b5735c, type: 2}
     yOffset: 0
     poolingAmount: 3
+    mustSafeBeforeSpawn: 1
   parent: {fileID: 1154669716}
-  attempObject: 0
+  attempObject: 2
 --- !u!114 &1710304642
 MonoBehaviour:
   m_ObjectHideFlags: 0

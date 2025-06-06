@@ -6,6 +6,7 @@ using Characters.HealthSystems;
 using Platform;
 using PoolingSystem;
 using Sirenix.OdinInspector;
+using Spawner.Platform;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -30,6 +31,9 @@ namespace Spawner.Object
         
         [Tooltip("Amount of object to spawn and used by pooling")]
         public int poolingAmount;
+
+        [Tooltip("if this enable mean it will not spawn near falling or danger platform")]
+        public bool mustSafeBeforeSpawn;
         
         private static IEnumerable<ValueDropdownItem<PlatformBaseStateSO>> GetAllPlatformStatesDropdown()
         {
@@ -50,14 +54,15 @@ namespace Spawner.Object
     {
         #region Inspector & Value
         [FoldoutGroup("Object Context")] [Tooltip("Object data list")]
-        public List<ObjectSetting> objectDatas;
+        [SerializeField] private List<ObjectSetting> objectDatas;
        
-        [FoldoutGroup("Object Context")] [SerializeField] [Tooltip("Object parent")]
-        private Transform parent;
+        [FoldoutGroup("Object Context")] [Tooltip("Object parent")]
+        [SerializeField] private Transform parent;
         
         [FoldoutGroup("Object Context")] [Tooltip("Attemp object to wait before spawn again")]
-        public float attempObject;
-        
+        [SerializeField] private float attempObject;
+
+        private float currentAttemp = 0;
         private readonly Dictionary<GameObject, GameObject> platformObjectMap = new();
         private readonly Dictionary<GameObject, int> activeObjectCount = new();
 
@@ -92,20 +97,25 @@ namespace Spawner.Object
         /// <param name="platform"></param>
         public void TrySpawnObjectOnPlatform(GameObject platform)
         {
+            if (!IsValidPlatform(platform)) return;
+     
+            //Get properties
             var platformManager = platform.GetComponent<PlatformManager>();
-            if (platformManager == null || platformManager.data == null) return;
-
             var platformState = platformManager.data.state;
-            
-            var validSettings = objectDatas
-                .Where(setting => CanSpawnOn(platformState, setting))
-                .ToList();
 
+            //Find type of platform and check it
+            var validSettings = GetValidSettings(platformState);
             if (validSettings.Count == 0) return;
 
+            //Random chance
             var selectedSetting = GetRandomChanceObject(validSettings);
             if (selectedSetting == null) return;
+            
+            //Check left of this platform is normal for player
+            if (selectedSetting.mustSafeBeforeSpawn)
+            { if (!IsLeftPlatformNormal(platform)) return; }
 
+            //Spawn and set position
             var spawnPos = (Vector2)platform.transform.position + Vector2.up * selectedSetting.yOffset;
             Spawn(platform, spawnPos, selectedSetting);
         }
@@ -131,24 +141,25 @@ namespace Spawner.Object
         /// <param name="settings"></param>
         public void Spawn(GameObject platform,Vector2 position, object settings = null)
         {
+            //Check Attemp to prevent it spawn next to each other
+            if (currentAttemp > 0) { currentAttemp-- ; return; }
+            currentAttemp = attempObject;
+
             var objectSetting = settings as ObjectSetting ?? GetRandomChanceObject(objectDatas);
             if (objectSetting == null) { return; }
             
-            if (activeObjectCount.GetValueOrDefault(objectSetting.objectPrefab, 0) >= objectSetting.poolingAmount)
-            {
-                Debug.Log($"Cannot spawn {objectSetting.objectPrefab.name}: Pool limit ({objectSetting.poolingAmount}) reached.");
-                return;
-            }
-         
+            //Check pool is full
+            if (activeObjectCount.GetValueOrDefault(objectSetting.objectPrefab, 0) >= objectSetting.poolingAmount) { return; }
+                
             var obj = PoolingManager.Instance.Spawn(objectSetting.objectPrefab, position, Quaternion.identity, parent);
             if (obj == null) return;
-            
-            activeObjectCount[objectSetting.objectPrefab] = activeObjectCount.GetValueOrDefault(objectSetting.objectPrefab, 0) + 1;
             var poolingDespawn = obj.GetComponent<PoolingDespawn>();
 
+            //Add Event on spawn and despawn
             poolingDespawn.OnObjectSpawnedEvent.AddListener((obj) => OnSpawned?.Invoke(obj));
             poolingDespawn.OnObjectDespawnedEvent.AddListener((obj) => Despawn(obj));
             
+            activeObjectCount[objectSetting.objectPrefab] = activeObjectCount.GetValueOrDefault(objectSetting.objectPrefab, 0) + 1;
             platformObjectMap[platform] = obj;
             OnSpawned?.Invoke(obj);
         }
@@ -184,7 +195,6 @@ namespace Spawner.Object
         {
             return setting.validPlatformTypes.Any(validState => platformState.GetType() == validState.GetType());
         }
-        
         #endregion
 
         #region Private Methods
@@ -203,6 +213,47 @@ namespace Spawner.Object
             
             if (passed.Count == 0) { return null; }
             return passed[Random.Range(0, passed.Count)];
+        }
+        
+        /// <summary>
+        /// Get platform manager
+        /// </summary>
+        /// <param name="platform"></param>
+        /// <returns></returns>
+        private bool IsValidPlatform(GameObject platform)
+        {
+            var pm = platform.GetComponent<PlatformManager>();
+            return pm != null && pm.data != null;
+        }
+
+        /// <summary>
+        /// Check left of platform is normal
+        /// </summary>
+        /// <param name="platform"></param>
+        /// <returns></returns>
+        private bool IsLeftPlatformNormal(GameObject platform)
+        {
+            var spawner = GetComponent<PlatformSpawner>();
+            if (spawner == null) return false;
+            var leftPlatform = spawner.CheckPreviousPlatform(platform);
+            if (leftPlatform == null) return true;
+
+            var leftPm = leftPlatform.GetComponent<PlatformManager>();
+            if (leftPm == null || leftPm.data == null) return false;
+
+            return leftPm.data.state is PlatformNormalStateSO;
+        }
+
+        /// <summary>
+        /// Get valid object that can spawn on custom platform type
+        /// </summary>
+        /// <param name="platformState"></param>
+        /// <returns></returns>
+        private List<ObjectSetting> GetValidSettings(PlatformBaseStateSO platformState)
+        {
+            return objectDatas
+                .Where(setting => CanSpawnOn(platformState, setting))
+                .ToList();
         }
         #endregion
     }
