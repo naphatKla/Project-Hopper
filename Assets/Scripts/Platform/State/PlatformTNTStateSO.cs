@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
@@ -26,7 +27,7 @@ namespace Platform
                 }
             }
             
-            manager.PlayFeedbackAsync(manager.feedback, manager.transform.position + Vector3.down * 0.5f);
+            manager.PlayFeedbackAsync(manager.feedback, manager.transform.position + Vector3.down * 0.5f).Forget();
             manager.gameObject.SetActive(false);
         }
         

@@ -41,7 +41,7 @@ namespace Platform
                     await UniTask.Delay(TimeSpan.FromSeconds(waitTime), cancellationToken: token);
                     
                     //2. Blink
-                    if (manager == null || manager.spear == null) return;
+                    if (manager == null ) return;
                     manager.transform.DOShakePosition(0.66f, new Vector3(0.1f, 0f, 0f));
                     await manager.BlinkColor(Color.white, Color.yellow, 0.66f, 3);
                     
