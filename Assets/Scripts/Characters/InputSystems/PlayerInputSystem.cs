@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +22,10 @@ namespace Characters.InputSystems
 
         [PropertyTooltip("Button to trigger the player's guard action.")]
         [SerializeField] private Button guardButton;
+
+        private Tween attackButtonTween;
+        private Tween moveButtonTween;
+        private Tween guardButtonTween;
 
         /// <summary>
         /// Called when the player performs an attack input.
@@ -73,6 +78,8 @@ namespace Characters.InputSystems
         protected override void PerformAttack()
         {
             OnAttackInputPerform?.Invoke();
+            attackButtonTween?.Kill();
+            attackButtonTween = attackButton.transform.DOScale(1.1f, 0.05f).SetLoops(2, LoopType.Yoyo);
         }
 
         /// <summary>
@@ -83,6 +90,8 @@ namespace Characters.InputSystems
         protected void PerformMove()
         {
             OnMoveInputPerform?.Invoke();
+            moveButtonTween?.Kill();
+            moveButtonTween = moveButton.transform.DOScale(1.1f, 0.05f).SetLoops(2, LoopType.Yoyo);
         }
 
         /// <summary>
@@ -93,6 +102,8 @@ namespace Characters.InputSystems
         protected void PerformGuard()
         {
             OnGuardInputPerform?.Invoke();
+            guardButtonTween?.Kill();
+            guardButtonTween = guardButton.transform.DOScale(1.1f, 0.05f).SetLoops(2, LoopType.Yoyo);
         }
 
         #endregion

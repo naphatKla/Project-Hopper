@@ -46,7 +46,7 @@ namespace Characters
         Land = 1,        // Triggered when landing
         Attack = 2,      // Triggered on attack
         Guard = 3,       // Triggered on guard activation
-        TakeDamage = 4,  // Triggered when taking damage
+        Hurt = 4,  // Triggered when taking damage
         Iframe = 5       // Triggered when entering invincible (iframe) state
     }
 }

@@ -50,6 +50,7 @@ namespace Characters.CombatSystems
             if (_isGuardCooldown) return;
             if (!_owner.HealthSystem) return;
 
+            _owner.FeedbackSystem.PlayFeedback(FeedbackKey.Guard);
             _isGuardCooldown = true;
             _owner.HealthSystem.SetInvincible(true);
             await UniTask.WaitForSeconds(guardDuration);
