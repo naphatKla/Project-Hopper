@@ -197,6 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce7598717c8505143b12179bbf30b7a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackRage: 1
 --- !u!114 &8464559609138264350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -223,14 +224,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00ed1f214d8d3da4b9ffcd11f93bb44c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackArea: {x: 1.9, y: 1}
-  offset: {x: -0.5, y: 0}
+  attackArea: {x: -1.9, y: 1}
+  offset: {x: 0.5, y: 0}
   targetLayer:
     serializedVersion: 2
     m_Bits: 64
   damage: 1
   attackDelay: 0.1
-  attackCooldown: 0.1
+  attackCooldown: 1
 --- !u!114 &1968252146258710090
 MonoBehaviour:
   m_ObjectHideFlags: 0

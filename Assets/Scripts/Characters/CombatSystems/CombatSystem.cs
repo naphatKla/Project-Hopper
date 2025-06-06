@@ -108,7 +108,8 @@ namespace Characters.CombatSystems
         public async void Attack()
         {
             if (!isInitialized || _isAttackCooldown) return;
-
+            
+            Debug.Log("ATTACK");
             owner.FeedbackSystem.PlayFeedback(FeedbackKey.Attack);
             _ct = new CancellationTokenSource();
             await UniTask.WaitForSeconds(attackDelay, cancellationToken: _ct.Token);
