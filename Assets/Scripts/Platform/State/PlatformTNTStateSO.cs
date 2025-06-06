@@ -1,29 +1,35 @@
-using System;
-using System.Threading;
-using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Platform
 {
-    [CreateAssetMenu(fileName = "FallingState", menuName = "PlatformStates/Falling")]
-    public class PlatformFallingSO : PlatformBaseStateSO
+    [CreateAssetMenu(fileName = "TNTState", menuName = "PlatformStates/TNT")]
+    public class PlatformTNTStateSO : PlatformBaseStateSO
     {
-        public override string StateID => "Falling";
+        [SerializeField] private float explosionOffset;
+        
+        public override string StateID => "TNT";
         public override void UpdateState(PlatformManager manager) { }
 
         public override async void OnStepped(PlatformManager manager, GameObject player)
         {
             manager.transform.DOShakePosition(0.66f, 0.1f);
             await manager.BlinkColor(Color.white, Color.red, 0.66f, 3);
-            manager.GetComponent<Rigidbody2D>().gravityScale = 1;
-            manager.GetComponent<BoxCollider2D>().enabled = false;
+            
+            //Explosion
+            Collider2D[] hits = Physics2D.OverlapCircleAll(manager.transform.position + Vector3.down * explosionOffset, 1f);
+            foreach (Collider2D hit in hits)
+            {
+                if (hit.CompareTag("Platform"))
+                {
+                    hit.gameObject.SetActive(false);
+                }
+            }
+            
             manager.PlayAndDestroyParticleAsync(manager.feedback, manager.transform.position + Vector3.down * 0.5f);
-            await UniTask.Delay(TimeSpan.FromSeconds(1f));
             manager.gameObject.SetActive(false);
         }
-
+        
         public override void OnSpawned(PlatformManager manager)
         {
             manager.ResetPlatform();

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c65c9f5c798363d43b2255e88aaf1035, type: 3}
-  m_Name: FallingPlatform
+  m_Name: TNTPlatform
   m_EditorClassIdentifier: 
   sprites:
-  - {fileID: 1049574012, guid: 3639e3b85cabf0745ac8590e6abcb901, type: 3}
-  weight: 4
-  state: {fileID: 11400000, guid: 8e0d0c56dee410c418881f98ebd47b89, type: 2}
-  particle: {fileID: 3808964171850828997, guid: abc740a5d9b470e43a009c33b4d3b8b2, type: 3}
+  - {fileID: 745776925, guid: 3639e3b85cabf0745ac8590e6abcb901, type: 3}
+  weight: 1
+  state: {fileID: 11400000, guid: 64ec1b876d05bdf4fac345c03b04ae45, type: 2}
+  particle: {fileID: 3808964171850828997, guid: ee270a10be61ce34aab3bc6642cffc3d, type: 3}

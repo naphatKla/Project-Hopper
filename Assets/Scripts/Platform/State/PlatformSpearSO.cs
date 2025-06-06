@@ -65,6 +65,7 @@ namespace Platform
                     
                     //2. Blink
                     if (manager == null || manager.spear == null) return;
+                    manager.transform.DOShakePosition(0.33f, 0.1f, 10, 0);
                     await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount);
                     
                     //3. Attack
