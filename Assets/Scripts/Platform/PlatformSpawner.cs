@@ -140,23 +140,25 @@ namespace Spawner.Platform
         /// </summary>
         public void PreWarmFeedback()
         {
-            foreach (PlatformSetting data in platformDatas)
-            {
-                var platformFeedback = PoolingManager.Instance.Spawn(data.platformSO.feedback,transform.position, Quaternion.identity , feedbackParent);
-                feedbackList.Add(data.platformSO, platformFeedback);
-            }
+            foreach (var data in platformDatas)
+                if (data.platformSO.feedback != null)
+                {
+                    var platformFeedback = Instantiate(data.platformSO.feedback, transform.position,
+                        Quaternion.identity, feedbackParent);
+                    feedbackList.Add(data.platformSO, platformFeedback);
+                }
         }
 
         /// <summary>
         /// Assign feedback to platform
         /// </summary>
         /// <param name="data"></param>
-        public void AssignFeedback(PlatformDataSO data)
+        public GameObject AssignFeedback(PlatformDataSO data)
         {
             foreach (var pair in feedbackList)
-            { 
-                if (pair.Key == data) { data.feedback = pair.Value; }
-            };
+                if (pair.Key == data)
+                    return pair.Value;
+            return null;
         }
         
         /// <summary>
@@ -170,7 +172,6 @@ namespace Spawner.Platform
 
             var platformGO = PoolingManager.Instance.Spawn(platformPrefab, position, Quaternion.identity, parent);
             activePlatforms.AddLast(platformGO);
-            AssignFeedback(platformData);
 
             //Set Sprite
             var sr = platformGO.GetComponent<SpriteRenderer>();
@@ -179,7 +180,7 @@ namespace Spawner.Platform
             //Set State
             var context = platformGO.GetComponent<PlatformManager>();
             context.SetState(platformData.state);
-            context.SetFeedback(platformData.feedback);
+            context.SetFeedback(AssignFeedback(platformData));
             context.OnSpawned();
             context.data = platformData;
 
