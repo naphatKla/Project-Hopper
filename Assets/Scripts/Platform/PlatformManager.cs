@@ -20,7 +20,7 @@ namespace Platform
         private Vector2 _lastAttackBoxSize;
         private Vector2 _lastAttackBoxOffset;
         
-        [HideInInspector] public ParticleSystem feedback;
+        [HideInInspector] public GameObject feedback;
         [HideInInspector] public bool attackLooping;
         [HideInInspector] public PlatformDataSO data;
         
@@ -51,7 +51,7 @@ namespace Platform
             currentState.OnSpawned(this);
         }
         
-        public void SetFeedback(ParticleSystem feedbacks)
+        public void SetFeedback(GameObject feedbacks)
         {
             feedback = feedbacks;
         }
@@ -152,6 +152,24 @@ namespace Platform
                 if (hit.TryGetComponent(out HealthSystem health)) health.TakeDamage(damage);
             }
         }
+        
+        /// <summary>
+        /// Play particle and destory when done
+        /// </summary>
+        /// <param name="particlePrefab"></param>
+        /// <param name="position"></param>
+        public async void PlayAndDestroyParticleAsync(GameObject particlePrefab, Vector3 position)
+        {
+            if (particlePrefab == null) return;
+            var particleInstance = Instantiate(particlePrefab, position, Quaternion.identity);
+            ParticleSystem ps = particleInstance.GetComponent<ParticleSystem>();
+            if (ps == null) return;
+            ps.Play();
+            float totalDuration = ps.main.duration + ps.main.startLifetime.constantMax;
+            await UniTask.Delay((int)(totalDuration * 1000f));
+            Destroy(particleInstance);
+        }
+
 
         private void OnDrawGizmos()
         {

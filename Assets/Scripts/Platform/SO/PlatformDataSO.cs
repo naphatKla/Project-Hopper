@@ -18,7 +18,7 @@ namespace Platform
         [BoxGroup("Data Setting")] [Tooltip("State type each platform")]
         public PlatformBaseStateSO state;
         [BoxGroup("Data Setting")] [Tooltip("Particle when stepped on platform")]
-        public ParticleSystem particle;
+        public GameObject particle;
 
         public Sprite GetRandomSprite()
         {
