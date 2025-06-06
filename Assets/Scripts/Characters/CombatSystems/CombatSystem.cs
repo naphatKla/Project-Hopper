@@ -17,6 +17,9 @@ namespace Characters.CombatSystems
 
         [Title("Configs")]  
         
+        [PropertyTooltip("True if character is facing right, false if facing left. Use in pivot point calculation")]
+        [SerializeField] private bool facingRight = true;
+        
         [PropertyTooltip("The size of the attack area (width x height) used to detect targets.")]
         [SerializeField] private Vector2 attackArea = new Vector2(2, 1);
 
@@ -56,31 +59,19 @@ namespace Characters.CombatSystems
         /// Whether this system has been initialized with a controller.
         /// </summary>
         protected bool isInitialized;
-
-        /// <summary>
-        /// Used to cancel ongoing attack delays if the object is disabled.
-        /// </summary>
-        private CancellationTokenSource _ct;
-
+        
         #endregion
 
         #region Unity Methods
-
-        /// <summary>
-        /// Cancels any attack delay in progress when the object is disabled.
-        /// </summary>
-        private void OnDisable()
-        {
-            _ct?.Cancel();
-        }
-
+        
         /// <summary>
         /// Draws a red wireframe box in the Scene view to visualize the attack range.
         /// </summary>
         private void OnDrawGizmosSelected()
         {
-            Vector2 start = (Vector2)transform.position + offset;
-            Vector2 boxCenter = start + new Vector2(attackArea.x, attackArea.y) * 0.5f;
+            float direction = facingRight ? 1f : -1f;
+            Vector2 start = (Vector2)transform.position + new Vector2(offset.x * direction, offset.y);
+            Vector2 boxCenter = start + new Vector2(attackArea.x * 0.5f * direction, attackArea.y * 0.5f);
 
             Gizmos.color = Color.red;
             Gizmos.DrawWireCube(boxCenter, attackArea);
@@ -100,7 +91,7 @@ namespace Characters.CombatSystems
             owner = controller;
             isInitialized = true;
         }
-
+        
         /// <summary>
         /// Executes an attack after a delay. Deals damage to all valid targets in the attack area.
         /// Handles attack delay, cooldown, and cancellation.
@@ -108,15 +99,21 @@ namespace Characters.CombatSystems
         public async void Attack()
         {
             if (!isInitialized || _isAttackCooldown) return;
-
-            owner.FeedbackSystem.PlayFeedback(FeedbackKey.Attack);
-            _ct = new CancellationTokenSource();
-            await UniTask.WaitForSeconds(attackDelay, cancellationToken: _ct.Token);
-            if (_ct.IsCancellationRequested) return;
-
+            
             _isAttackCooldown = true;
-            _attackStartPos = (Vector2)transform.position + offset;
-            Vector2 boxCenter = _attackStartPos + new Vector2(attackArea.x, attackArea.y) * 0.5f;
+            owner.FeedbackSystem.PlayFeedback(FeedbackKey.Attack);
+            await UniTask.WaitForSeconds(attackDelay);
+
+            if (owner.HealthSystem.IsDead)
+            {
+                owner.FeedbackSystem.StopFeedback(FeedbackKey.Attack);
+                _isAttackCooldown = false;
+                return;
+            }
+            
+            float direction = facingRight ? 1f : -1f;
+            _attackStartPos = (Vector2)transform.position + new Vector2(offset.x * direction, offset.y);
+            Vector2 boxCenter = _attackStartPos + new Vector2(attackArea.x * 0.5f * direction, attackArea.y * 0.5f);
 
             Collider2D[] hits = Physics2D.OverlapBoxAll(boxCenter, attackArea, 0f, targetLayer);
             foreach (var hit in hits)
@@ -125,10 +122,10 @@ namespace Characters.CombatSystems
                 targetHealth.TakeDamage(damage);
             }
 
-            await UniTask.WaitForSeconds(attackCooldown - attackDelay);
+            await UniTask.WaitForSeconds(attackCooldown);
             _isAttackCooldown = false;
         }
-
+        
         #endregion
     }
 }

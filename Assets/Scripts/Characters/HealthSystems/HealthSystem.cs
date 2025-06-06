@@ -22,6 +22,9 @@ namespace Characters.HealthSystems
         [SerializeField, Unit(Units.Second)] 
         private float iframePerHitDuration;
 
+        [SerializeField, Unit(Units.Second)] 
+        private float disappearDurationAfterDead = 0.2f;
+
         /// <summary>
         /// Current health points.
         /// </summary>
@@ -62,6 +65,11 @@ namespace Characters.HealthSystems
         /// </summary>
         public Action OnDead { get; set; }
 
+        /// <summary>
+        /// Whether the character is currently dead.
+        /// </summary>
+        public bool IsDead => _isDead;
+
         #endregion
 
         #region Methods
@@ -99,16 +107,22 @@ namespace Characters.HealthSystems
             ModifyHealth(-damage);
             OnTakeDamage?.Invoke();
             _owner?.FeedbackSystem?.PlayFeedback(FeedbackKey.Hurt);
-            
-            if (_currentHp > 0) return;
+
+
+            if (_currentHp > 0)
+            {
+                _isIframePerHit = true;
+                await UniTask.WaitForSeconds(iframePerHitDuration);
+                _isIframePerHit = false;
+                return;
+            }
 
             _isDead = true;
             OnDead?.Invoke();
+            _owner?.FeedbackSystem?.PlayFeedback(FeedbackKey.Dead);
+            _owner.CharacterCollider2D.enabled = false;
+            await UniTask.WaitForSeconds(disappearDurationAfterDead);
             gameObject.SetActive(false);
-
-            _isIframePerHit = true;
-            await UniTask.WaitForSeconds(iframePerHitDuration);
-            _isIframePerHit = false;
         }
 
         /// <summary>
@@ -138,6 +152,7 @@ namespace Characters.HealthSystems
         {
             _currentHp = maxHp;
             _isDead = false;
+            _owner.CharacterCollider2D.enabled = true;
             OnHealthChange?.Invoke();
         }
 
