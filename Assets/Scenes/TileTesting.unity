@@ -1086,7 +1086,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectDatas:
   - objectPrefab: {fileID: 2691774995898733471, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
-    spawnChance: 80
+    spawnChance: 10
     validPlatformTypes:
     - {fileID: 11400000, guid: 28d1abb3241443a42a2407a269b5735c, type: 2}
     poolingAmount: 3
@@ -1429,8 +1429,6 @@ SceneRoots:
   - {fileID: 615574709}
   - {fileID: 1154669716}
   - {fileID: 229613112}
-  - {fileID: 1009654647}
-  - {fileID: 342311038}
   - {fileID: 1605054150}
   - {fileID: 1870439134}
   - {fileID: 1641119822}

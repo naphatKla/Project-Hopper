@@ -55,6 +55,8 @@ namespace Platform
             attackLoopTokenSource?.Cancel();
             attackLoopTokenSource?.Dispose();
             attackLoopTokenSource = null;
+            lastAttackBoxOffset = Vector2.zero;
+            lastAttackBoxSize = Vector2.zero;
             
             GetComponent<Rigidbody2D>().gravityScale = 0;
             GetComponent<SpriteRenderer>().color = Color.white;

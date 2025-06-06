@@ -214,7 +214,7 @@ namespace Characters.MovementSystems
         /// <returns>True if they have the obstacle in front of this character movement</returns>
         private bool CheckObstacle()
         {
-            return Physics2D.Raycast(transform.position, Vector2.right, moveHorizontalDistance, obstacleLayerMask);
+            return Physics2D.Raycast((Vector2)transform.position + Vector2.up * 0.1f, Vector2.right, moveHorizontalDistance, obstacleLayerMask);
         }
 
         /// <summary>
