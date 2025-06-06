@@ -106,12 +106,16 @@ namespace Characters.CombatSystems
         {
             if (!isInitialized || _isAttackCooldown) return;
             
+            _isAttackCooldown = true;
             owner.FeedbackSystem.PlayFeedback(FeedbackKey.Attack);
             _ct = new CancellationTokenSource();
             await UniTask.WaitForSeconds(attackDelay, cancellationToken: _ct.Token);
-            if (_ct.IsCancellationRequested) return;
-
-            _isAttackCooldown = true;
+            if (_ct.IsCancellationRequested)
+            {
+                _isAttackCooldown = false;
+                return;
+            }
+            
             float direction = facingRight ? 1f : -1f;
             _attackStartPos = (Vector2)transform.position + new Vector2(offset.x * direction, offset.y);
             Vector2 boxCenter = _attackStartPos + new Vector2(attackArea.x * 0.5f * direction, attackArea.y * 0.5f);
@@ -123,7 +127,7 @@ namespace Characters.CombatSystems
                 targetHealth.TakeDamage(damage);
             }
 
-            await UniTask.WaitForSeconds(attackCooldown - attackDelay);
+            await UniTask.WaitForSeconds(attackCooldown);
             _isAttackCooldown = false;
         }
 
