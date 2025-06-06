@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      sword-illustration-with-pixel-theme-vector_0: 7712643008991229279
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
