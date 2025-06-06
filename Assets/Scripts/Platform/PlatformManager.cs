@@ -32,6 +32,7 @@ namespace Platform
         public void OnDespawned()
         {
             data = null;
+            StopFeedbackAsync(feedback, transform.position);
             currentState?.OnDespawned(this);
         }
 
@@ -164,6 +165,19 @@ namespace Platform
             var mmf = feedbackItem.GetComponent<MMFeedbacks>();
             if (mmf == null) return;
             mmf.PlayFeedbacks();
+        }
+        
+        /// <summary>
+        /// Play particle and destory when done
+        /// </summary>
+        /// <param name="particlePrefab"></param>
+        /// <param name="position"></param>
+        public void StopFeedbackAsync(GameObject feedbackItem, Vector3 position)
+        {
+            if (feedbackItem == null) return;
+            var mmf = feedbackItem.GetComponent<MMFeedbacks>();
+            if (mmf == null) return;
+            mmf.StopFeedbacks();
         }
         
         private void OnDrawGizmos()
