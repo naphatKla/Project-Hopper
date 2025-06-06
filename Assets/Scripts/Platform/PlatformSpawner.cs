@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Platform;
 using PoolingSystem;
 using Sirenix.OdinInspector;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -52,8 +53,12 @@ namespace Spawner.Platform
 
         [FoldoutGroup("Control")] [SerializeField] [Tooltip("Platform parent")]
         private Transform parent;
+        
+        [FoldoutGroup("Feedback")] [SerializeField] [Tooltip("Platform feedback parent")]
+        private Transform feedbackParent;
 
         private readonly LinkedList<GameObject> activePlatforms = new();
+        private readonly Dictionary<PlatformDataSO, GameObject> feedbackList = new();
         private Vector3 lastSpawnPosition;
         private int spawnedPlatformCount;
 
@@ -75,6 +80,7 @@ namespace Spawner.Platform
         public void ClearData()
         {
             activePlatforms.Clear();
+            feedbackList.Clear();
             spawnedPlatformCount = 0;
             lastSpawnPosition = spawnStartPosition;
         }
@@ -85,6 +91,7 @@ namespace Spawner.Platform
         public void PreWarm()
         {
             PoolingManager.Instance.PreWarm(platformPrefab, prewarmCount, parent);
+            PreWarmFeedback();
         }
         
         /// <summary>
@@ -127,9 +134,33 @@ namespace Spawner.Platform
             if (previousPlatform == null) return null;
             return previousPlatform;
         }
-        #endregion
+        
+        /// <summary>
+        /// Create feedback for platform
+        /// </summary>
+        public void PreWarmFeedback()
+        {
+            foreach (var data in platformDatas)
+                if (data.platformSO.feedback != null)
+                {
+                    var platformFeedback = Instantiate(data.platformSO.feedback, transform.position,
+                        Quaternion.identity, feedbackParent);
+                    feedbackList.Add(data.platformSO, platformFeedback);
+                }
+        }
 
-        #region Private Methods
+        /// <summary>
+        /// Assign feedback to platform
+        /// </summary>
+        /// <param name="data"></param>
+        public GameObject AssignFeedback(PlatformDataSO data)
+        {
+            foreach (var pair in feedbackList)
+                if (pair.Key == data)
+                    return pair.Value;
+            return null;
+        }
+        
         /// <summary>
         /// Spawn Platform and Initialize
         /// </summary>
@@ -149,7 +180,7 @@ namespace Spawner.Platform
             //Set State
             var context = platformGO.GetComponent<PlatformManager>();
             context.SetState(platformData.state);
-            context.SetFeedback(platformData.particle);
+            context.SetFeedback(AssignFeedback(platformData));
             context.OnSpawned();
             context.data = platformData;
 
@@ -161,7 +192,7 @@ namespace Spawner.Platform
         /// <summary>
         /// Check old platform if it more than max count
         /// </summary>
-        private void CheckDespawn()
+        public void CheckDespawn()
         {
             while (activePlatforms.Count > maxActivePlatformCount)
             {
@@ -182,6 +213,9 @@ namespace Spawner.Platform
             OnDespawned?.Invoke(obj);
         }
 
+        #endregion
+        
+        #region Private Methods
         /// <summary>
         /// Calculate height platform algorithm
         /// </summary>

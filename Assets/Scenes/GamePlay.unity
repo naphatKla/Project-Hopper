@@ -793,6 +793,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3824212555553759267, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
   m_PrefabInstance: {fileID: 1547638301}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1570342465
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1570342466}
+  m_Layer: 0
+  m_Name: FeedbackParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1570342466
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1570342465}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1605054148
 GameObject:
   m_ObjectHideFlags: 0
@@ -1139,6 +1170,7 @@ MonoBehaviour:
   spawnStartPosition: {x: -0.5, y: 0, z: 0}
   distancePlatform: 1
   parent: {fileID: 615574709}
+  feedbackParent: {fileID: 1570342466}
 --- !u!4 &1710304640
 Transform:
   m_ObjectHideFlags: 0
@@ -1599,6 +1631,7 @@ SceneRoots:
   - {fileID: 1298881071}
   - {fileID: 878975400}
   - {fileID: 615574709}
+  - {fileID: 1570342466}
   - {fileID: 1154669716}
   - {fileID: 2014777778}
   - {fileID: 454558769}

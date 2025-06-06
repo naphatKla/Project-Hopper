@@ -66,6 +66,7 @@ namespace Platform
                     if (manager == null || manager.spear == null) return;
                     manager.transform.DOShakePosition(0.33f, new Vector3(0.1f, 0f, 0f));
                     await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount);
+                    manager.PlayFeedbackAsync(manager.feedback, manager.transform.position);
                     
                     //3. Attack
                     manager.Attack(attackBoxSize, attackBoxOffset, attackLayerMask, 1);

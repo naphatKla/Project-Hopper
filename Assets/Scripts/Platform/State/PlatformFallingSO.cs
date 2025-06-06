@@ -19,7 +19,7 @@ namespace Platform
             await manager.BlinkColor(Color.white, Color.red, 0.66f, 3);
             manager.GetComponent<Rigidbody2D>().gravityScale = 1;
             manager.GetComponent<BoxCollider2D>().enabled = false;
-            manager.PlayAndDestroyParticleAsync(manager.feedback, manager.transform.position + Vector3.down * 0.5f);
+            manager.PlayFeedbackAsync(manager.feedback, manager.transform.position + Vector3.down * 0.5f);
             await UniTask.Delay(TimeSpan.FromSeconds(1f));
             manager.gameObject.SetActive(false);
         }
