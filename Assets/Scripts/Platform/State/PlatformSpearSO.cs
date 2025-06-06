@@ -43,9 +43,8 @@ namespace Platform
             if (manager.spear.TryGetComponent(out Animator animator))
             { animator.Play("Spike", 0, 0f); animator.speed = 0; }
             
-            manager.attackLooping = true;
-            manager.attackLoopTokenSource = new CancellationTokenSource();
-            LoopBehavior(manager, manager.attackLoopTokenSource.Token).Forget();
+            manager.loopTokenSource = new CancellationTokenSource();
+            LoopBehavior(manager, manager.loopTokenSource.Token).Forget();
         }
 
         public override void OnDespawned(PlatformManager manager)
@@ -65,7 +64,7 @@ namespace Platform
                     
                     //2. Blink
                     if (manager == null || manager.spear == null) return;
-                    manager.transform.DOShakePosition(0.33f, 0.1f, 10, 0);
+                    manager.transform.DOShakePosition(0.33f, new Vector3(0.1f, 0f, 0f));
                     await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount);
                     
                     //3. Attack

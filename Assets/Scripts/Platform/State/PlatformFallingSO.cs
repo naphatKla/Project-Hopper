@@ -15,7 +15,7 @@ namespace Platform
 
         public override async void OnStepped(PlatformManager manager, GameObject player)
         {
-            manager.transform.DOShakePosition(0.66f, 0.1f);
+            manager.transform.DOShakePosition(0.66f, new Vector3(0.1f, 0f, 0f));
             await manager.BlinkColor(Color.white, Color.red, 0.66f, 3);
             manager.GetComponent<Rigidbody2D>().gravityScale = 1;
             manager.GetComponent<BoxCollider2D>().enabled = false;
