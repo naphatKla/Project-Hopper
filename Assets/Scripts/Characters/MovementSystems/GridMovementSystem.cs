@@ -80,6 +80,11 @@ namespace Characters.MovementSystems
         private bool _ignoreGravity;
 
         /// <summary>
+        /// True is mean character perform jumping move.
+        /// </summary>
+        private bool _isJumpPerforming;
+        
+        /// <summary>
         /// Owner of this character.
         /// </summary>
         private BaseController _owner;
@@ -94,6 +99,11 @@ namespace Characters.MovementSystems
         /// GameObject is means the object landed on.
         /// </summary>
         public Action<GameObject> OnLanding { get; set; }
+        
+        /// <summary>
+        /// Invoke when the character on landing after jump perform only.
+        /// </summary>
+        public Action OnLandingAfterJump { get; set; }
 
         #endregion
 
@@ -135,6 +145,7 @@ namespace Characters.MovementSystems
             if (CheckObstacle()) return;
 
             _isMoveCooldown = true;
+            _isJumpPerforming = true;
             OnJumpUp?.Invoke();
             _ignoreGravity = true;
             _owner.FeedbackSystem.PlayFeedback(FeedbackKey.Jump);
@@ -174,6 +185,13 @@ namespace Characters.MovementSystems
                     if (_isLanding) return;
                     transform.position = SnapToGrid(newPos);
                     OnLanding?.Invoke(groundHit.transform.gameObject);
+                    
+                    if (_isJumpPerforming)
+                    {
+                        OnLandingAfterJump?.Invoke();
+                        _isJumpPerforming = false;
+                    }
+                    
                     _owner.FeedbackSystem.PlayFeedback(FeedbackKey.Land);
                     _isLanding = true;
                     return;

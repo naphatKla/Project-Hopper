@@ -20,6 +20,9 @@ namespace Characters.Controllers
 
         [PropertyTooltip("Handles protection and invincible")]
         [SerializeField] private GuardSystem guardSystem;
+
+        [PropertyTooltip("Handles score conter")]
+        [SerializeField] private ScoreSystem scoreSystem;
         
         /// <summary>
         /// Gets the grid-based movement system used by the player.
@@ -63,6 +66,7 @@ namespace Characters.Controllers
             
             inputSystem.OnMoveInputPerform += GridMovementSystem.TryMoveAction;
             inputSystem.OnGuardInputPerform += guardSystem.Guard;
+            gridMovementSystem.OnLandingAfterJump += scoreSystem.AddScore;
             base.OnEnable();
         }
 
@@ -75,6 +79,7 @@ namespace Characters.Controllers
             
             inputSystem.OnMoveInputPerform -= GridMovementSystem.TryMoveAction;
             inputSystem.OnGuardInputPerform -= guardSystem.Guard;
+            gridMovementSystem.OnLandingAfterJump -= scoreSystem.AddScore;
             base.OnDisable();
         }
 
