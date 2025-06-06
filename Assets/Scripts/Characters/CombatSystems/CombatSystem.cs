@@ -59,12 +59,7 @@ namespace Characters.CombatSystems
         /// Whether this system has been initialized with a controller.
         /// </summary>
         protected bool isInitialized;
-
-        /// <summary>
-        /// Used to cancel ongoing attack delays if the object is disabled.
-        /// </summary>
-        private CancellationTokenSource _ct;
-
+        
         #endregion
 
         #region Unity Methods
@@ -95,7 +90,6 @@ namespace Characters.CombatSystems
         {
             owner = controller;
             isInitialized = true;
-            controller.HealthSystem.OnDead += CancelAttack;
         }
         
         /// <summary>
@@ -108,10 +102,11 @@ namespace Characters.CombatSystems
             
             _isAttackCooldown = true;
             owner.FeedbackSystem.PlayFeedback(FeedbackKey.Attack);
-            _ct = new CancellationTokenSource();
-            await UniTask.WaitForSeconds(attackDelay, cancellationToken: _ct.Token);
-            if (_ct.IsCancellationRequested)
+            await UniTask.WaitForSeconds(attackDelay);
+
+            if (owner.HealthSystem.IsDead)
             {
+                owner.FeedbackSystem.StopFeedback(FeedbackKey.Attack);
                 _isAttackCooldown = false;
                 return;
             }
@@ -130,12 +125,7 @@ namespace Characters.CombatSystems
             await UniTask.WaitForSeconds(attackCooldown);
             _isAttackCooldown = false;
         }
-
-        public void CancelAttack()
-        {
-            _ct?.Cancel();
-        }
-
+        
         #endregion
     }
 }
