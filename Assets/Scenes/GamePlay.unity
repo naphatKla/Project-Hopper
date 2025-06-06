@@ -1128,6 +1128,8 @@ MonoBehaviour:
   - platformSO: {fileID: 11400000, guid: 991c83f9df899f248bf4f7c798616d5a, type: 2}
   - platformSO: {fileID: 11400000, guid: 43f21ea81c0c3d24492d105b1e7faf10, type: 2}
   - platformSO: {fileID: 11400000, guid: c350b4a28f6e2f046936eb564544637f, type: 2}
+  - platformSO: {fileID: 11400000, guid: 04dbf5e4056d5ae418cc384f10e4e99e, type: 2}
+  - platformSO: {fileID: 11400000, guid: f9d1de01c6e34a2489ca39df6d378858, type: 2}
   currentStep: 1
   nextStep: 1
   targetStep: 3

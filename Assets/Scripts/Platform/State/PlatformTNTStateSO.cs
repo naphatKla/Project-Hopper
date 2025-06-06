@@ -13,7 +13,7 @@ namespace Platform
 
         public override async void OnStepped(PlatformManager manager, GameObject player)
         {
-            manager.transform.DOShakePosition(0.66f, 0.1f);
+            manager.transform.DOShakePosition(0.33f, new Vector3(0.1f, 0f, 0f));
             await manager.BlinkColor(Color.white, Color.red, 0.66f, 3);
             
             //Explosion

@@ -12,7 +12,7 @@ namespace Platform
     public class PlatformManager : MonoBehaviour
     {
         [ReadOnly] public PlatformBaseStateSO currentState;
-        [ReadOnly] public CancellationTokenSource attackLoopTokenSource;
+        [ReadOnly] public CancellationTokenSource loopTokenSource;
 
         [FoldoutGroup("Object Effect")]
         [SerializeField] public GameObject spear;
@@ -21,7 +21,6 @@ namespace Platform
         private Vector2 _lastAttackBoxOffset;
         
         [HideInInspector] public GameObject feedback;
-        [HideInInspector] public bool attackLooping;
         [HideInInspector] public PlatformDataSO data;
         
         public void OnSpawned()
@@ -58,10 +57,9 @@ namespace Platform
 
         public void ResetPlatform()
         {
-            attackLooping = false;
-            attackLoopTokenSource?.Cancel();
-            attackLoopTokenSource?.Dispose();
-            attackLoopTokenSource = null;
+            loopTokenSource?.Cancel();
+            loopTokenSource?.Dispose();
+            loopTokenSource = null;
             _lastAttackBoxOffset = Vector2.zero;
             _lastAttackBoxSize = Vector2.zero;
             
