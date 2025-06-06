@@ -24,6 +24,8 @@ namespace Characters.Controllers
         [PropertyTooltip("FeedbackSystem component of this character.")]
         [SerializeField] private FeedbackSystem feedbackSystem;
 
+        protected BoxCollider2D characterCollider2D;
+        
         /// <summary>
         /// Gets the character's HealthSystem, which handles HP, damage, healing, and death.
         /// </summary>
@@ -38,7 +40,12 @@ namespace Characters.Controllers
         /// Gets the character's feedback system.
         /// </summary>
         public FeedbackSystem FeedbackSystem => feedbackSystem;
-        
+
+        /// <summary>
+        /// Box collider of this character.
+        /// </summary>
+        public BoxCollider2D CharacterCollider2D => characterCollider2D;
+
         #endregion
     }
 
@@ -52,6 +59,10 @@ namespace Characters.Controllers
         /// </summary>
         protected virtual void Awake()
         {
+            if (!TryGetComponent(out characterCollider2D) && !characterCollider2D.isTrigger)
+                Debug.LogWarning("Need BoxCollider2D with is Trigger");
+            
+            inputSystem?.Initialize(this);
             HealthSystem?.Initialize(this);
             CombatSystem?.Initialize(this);
         }

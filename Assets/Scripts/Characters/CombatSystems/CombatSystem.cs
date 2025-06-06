@@ -68,15 +68,7 @@ namespace Characters.CombatSystems
         #endregion
 
         #region Unity Methods
-
-        /// <summary>
-        /// Cancels any attack delay in progress when the object is disabled.
-        /// </summary>
-        private void OnDisable()
-        {
-            _ct?.Cancel();
-        }
-
+        
         /// <summary>
         /// Draws a red wireframe box in the Scene view to visualize the attack range.
         /// </summary>
@@ -103,6 +95,7 @@ namespace Characters.CombatSystems
         {
             owner = controller;
             isInitialized = true;
+            controller.HealthSystem.OnDead += _ct.Cancel;
         }
 
         /// <summary>
@@ -113,7 +106,6 @@ namespace Characters.CombatSystems
         {
             if (!isInitialized || _isAttackCooldown) return;
             
-            Debug.Log("ATTACK");
             owner.FeedbackSystem.PlayFeedback(FeedbackKey.Attack);
             _ct = new CancellationTokenSource();
             await UniTask.WaitForSeconds(attackDelay, cancellationToken: _ct.Token);

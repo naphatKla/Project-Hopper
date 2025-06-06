@@ -26,18 +26,18 @@ namespace Characters.InputSystems
         /// Coroutine that repeatedly performs attack inputs over time.
         /// Used for continuous attack when conditions are met.
         /// </summary>
-        private Coroutine updateCoroutine;
+        private Coroutine _updateCoroutine;
 
         private void OnEnable()
         {
-            updateCoroutine = StartCoroutine(AttackCoroutine());
+            _updateCoroutine = StartCoroutine(AttackCoroutine());
         }
 
         private void OnDisable()
         {
-            if (updateCoroutine == null) return;
-            StopCoroutine(updateCoroutine);
-            updateCoroutine = null;
+            if (_updateCoroutine == null) return;
+            StopCoroutine(_updateCoroutine);
+            _updateCoroutine = null;
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Characters.InputSystems
             float tickTime = 0.2f;
             yield return new WaitUntil(() => PlayerController.Instance);
             
-            while (gameObject.activeSelf)
+            while (!owner.HealthSystem.IsDead)
             {
                 yield return new WaitForSeconds(tickTime);
                 float horizontalDistance = Math.Abs(transform.position.x - PlayerController.Instance.transform.position.x);

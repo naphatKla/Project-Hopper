@@ -947,6 +947,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 100
   iframePerHitDuration: 0.5
+  disappearDurationAfterDead: 1
 --- !u!114 &5734533234120599579
 MonoBehaviour:
   m_ObjectHideFlags: 0

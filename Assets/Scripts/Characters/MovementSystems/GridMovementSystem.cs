@@ -83,12 +83,7 @@ namespace Characters.MovementSystems
         /// Owner of this character.
         /// </summary>
         private BaseController _owner;
-
-        /// <summary>
-        /// The box collider of this character.
-        /// </summary>
-        private BoxCollider2D _boxCollider2D;
-
+        
         /// <summary>
         /// Invoke when the character start move or jump.
         /// </summary>
@@ -125,10 +120,6 @@ namespace Characters.MovementSystems
         {
             OnLanding += HandleLanding;
             _owner = owner;
-
-            if (!TryGetComponent(out _boxCollider2D) && !_boxCollider2D.isTrigger)
-                Debug.LogWarning("Need BoxCollider2D with is Trigger");
-
             _isInitialized = true;
         }
 
@@ -214,7 +205,7 @@ namespace Characters.MovementSystems
         /// <returns>True if they have the obstacle in front of this character movement</returns>
         private bool CheckObstacle()
         {
-            Bounds bounds = _boxCollider2D.bounds;
+            Bounds bounds = _owner.CharacterCollider2D.bounds;
             Vector2 bottom = new Vector2(bounds.center.x, bounds.min.y);
             Vector2 middle = new Vector2(bounds.center.x, bounds.center.y);
             Vector2 top = new Vector2(bounds.center.x, bounds.max.y);
