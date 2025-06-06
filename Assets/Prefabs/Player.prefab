@@ -945,7 +945,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f347c943ccf0a41aca807cbc1fb6c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 3
+  maxHp: 100
   iframePerHitDuration: 0.5
 --- !u!114 &5734533234120599579
 MonoBehaviour:
@@ -959,6 +959,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00ed1f214d8d3da4b9ffcd11f93bb44c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  facingRight: 1
   attackArea: {x: 1.9, y: 1}
   offset: {x: -0.5, y: 0}
   targetLayer:

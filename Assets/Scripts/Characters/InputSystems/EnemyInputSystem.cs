@@ -14,7 +14,7 @@ namespace Characters.InputSystems
     public class EnemyInputSystem : BaseInputSystem
     {
         [PropertyTooltip("The distance within which the enemy can detect and respond to the player landing.")]
-        public float attackRage = 1f;
+        public float attackRage = 1.1f;
 
         /// <summary>
         /// Called when the enemy performs an attack input.

@@ -17,6 +17,9 @@ namespace Characters.CombatSystems
 
         [Title("Configs")]  
         
+        [PropertyTooltip("True if character is facing right, false if facing left. Use in pivot point calculation")]
+        [SerializeField] private bool facingRight = true;
+        
         [PropertyTooltip("The size of the attack area (width x height) used to detect targets.")]
         [SerializeField] private Vector2 attackArea = new Vector2(2, 1);
 
@@ -79,8 +82,9 @@ namespace Characters.CombatSystems
         /// </summary>
         private void OnDrawGizmosSelected()
         {
-            Vector2 start = (Vector2)transform.position + offset;
-            Vector2 boxCenter = start + new Vector2(attackArea.x, attackArea.y) * 0.5f;
+            float direction = facingRight ? 1f : -1f;
+            Vector2 start = (Vector2)transform.position + new Vector2(offset.x * direction, offset.y);
+            Vector2 boxCenter = start + new Vector2(attackArea.x * 0.5f * direction, attackArea.y * 0.5f);
 
             Gizmos.color = Color.red;
             Gizmos.DrawWireCube(boxCenter, attackArea);
@@ -116,8 +120,9 @@ namespace Characters.CombatSystems
             if (_ct.IsCancellationRequested) return;
 
             _isAttackCooldown = true;
-            _attackStartPos = (Vector2)transform.position + offset;
-            Vector2 boxCenter = _attackStartPos + new Vector2(attackArea.x, attackArea.y) * 0.5f;
+            float direction = facingRight ? 1f : -1f;
+            _attackStartPos = (Vector2)transform.position + new Vector2(offset.x * direction, offset.y);
+            Vector2 boxCenter = _attackStartPos + new Vector2(attackArea.x * 0.5f * direction, attackArea.y * 0.5f);
 
             Collider2D[] hits = Physics2D.OverlapBoxAll(boxCenter, attackArea, 0f, targetLayer);
             foreach (var hit in hits)
