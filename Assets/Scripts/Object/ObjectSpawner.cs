@@ -25,6 +25,9 @@ namespace Spawner.Object
         [ValueDropdown(nameof(GetAllPlatformStatesDropdown), IsUniqueList = true)]
         public List<PlatformBaseStateSO> validPlatformTypes;
         
+        [Tooltip("Increase Height from platform")]
+        public float yOffset;
+        
         [Tooltip("Amount of object to spawn and used by pooling")]
         public int poolingAmount;
         
@@ -51,6 +54,9 @@ namespace Spawner.Object
        
         [FoldoutGroup("Object Context")] [SerializeField] [Tooltip("Object parent")]
         private Transform parent;
+        
+        [FoldoutGroup("Object Context")] [Tooltip("Attemp object to wait before spawn again")]
+        public float attempObject;
         
         private readonly Dictionary<GameObject, GameObject> platformObjectMap = new();
         private readonly Dictionary<GameObject, int> activeObjectCount = new();
@@ -100,7 +106,7 @@ namespace Spawner.Object
             var selectedSetting = GetRandomChanceObject(validSettings);
             if (selectedSetting == null) return;
 
-            var spawnPos = platform.transform.position;
+            var spawnPos = (Vector2)platform.transform.position + Vector2.up * selectedSetting.yOffset;
             Spawn(platform, spawnPos, selectedSetting);
         }
 
