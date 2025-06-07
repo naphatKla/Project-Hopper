@@ -31,7 +31,7 @@ namespace Platform
         private async UniTask RunAsync(PlatformManager manager)
         {
             manager.transform.DOShakePosition(0.33f, new Vector3(0.1f, 0f, 0f));
-            manager.transform.DOPunchScale(new Vector3(0.5f, 0f, 0f), 0.99f, 10);
+            manager.transform.DOPunchScale(new Vector3(0.3f, 0f, 0f), 0.99f, 5);
             await manager.BlinkColor(Color.white, Color.red, 0.66f, 3);
             
             //Explosion
