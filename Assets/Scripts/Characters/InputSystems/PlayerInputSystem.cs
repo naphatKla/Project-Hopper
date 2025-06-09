@@ -62,6 +62,27 @@ namespace Characters.InputSystems
             guardButton?.onClick.RemoveListener(PerformGuard);
         }
 
+        /// <summary>
+        /// Debug 
+        /// </summary>
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                PerformMove();
+            }
+
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                PerformAttack();
+            }
+
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                PerformGuard();
+            }
+        }
+
         #endregion
 
         #region Methods
