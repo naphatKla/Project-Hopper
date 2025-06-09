@@ -64,11 +64,15 @@ namespace Characters.HealthSystems
         /// Invoked when the character's HP reaches zero.
         /// </summary>
         public Action OnDead { get; set; }
-
+        
         /// <summary>
         /// Whether the character is currently dead.
         /// </summary>
         public bool IsDead => _isDead;
+
+        public float MaxHp => maxHp;
+
+        public float CurrentHp => _currentHp;
 
         #endregion
 
