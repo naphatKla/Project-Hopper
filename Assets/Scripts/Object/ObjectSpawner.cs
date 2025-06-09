@@ -14,6 +14,7 @@ namespace Spawner.Object
 {
     #region ObjectSetting
     [Serializable]
+    [InlineProperty]
     public class ObjectSetting
     {
         [Tooltip("Prefab of object to spawn")]
@@ -56,8 +57,9 @@ namespace Spawner.Object
     public class ObjectSpawner : MonoBehaviour , ISpawner
     {
         #region Inspector & Value
-        [FoldoutGroup("Object Context")] [Tooltip("Object data list")]
-        [SerializeField] private List<ObjectSetting> objectDatas;
+        [FoldoutGroup("Object Data")] [Tooltip("Object data list")]
+        [TableList(ShowIndexLabels = true)]
+        [SerializeField] private ObjectSetting[] objectDatas;
        
         [FoldoutGroup("Object Context")] [Tooltip("Object parent")]
         [SerializeField] private Transform parent;
@@ -72,6 +74,8 @@ namespace Spawner.Object
 
         public event Action<GameObject> OnSpawned;
         public event Action<GameObject> OnDespawned;
+        private List<ObjectSetting> ObjectDataList => objectDatas.ToList();
+
         #endregion
 
         #region Public Methods
@@ -151,7 +155,7 @@ namespace Spawner.Object
         /// <param name="settings"></param>
         public void Spawn(GameObject platform,Vector2 position, object settings = null)
         {
-            var objectSetting = settings as ObjectSetting ?? GetRandomChanceObject(objectDatas);
+            var objectSetting = settings as ObjectSetting ?? GetRandomChanceObject(ObjectDataList);
             if (objectSetting == null) { return; }
             
             //Check pool is full
