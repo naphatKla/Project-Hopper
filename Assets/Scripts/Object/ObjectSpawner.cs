@@ -35,6 +35,9 @@ namespace Spawner.Object
         [Tooltip("if this enable mean it will not spawn near falling or danger platform")]
         public bool mustSafeBeforeSpawn;
         
+        [Tooltip("if this enable mean it will not calculate attemp")]
+        public bool bypassAttemp;
+        
         private static IEnumerable<ValueDropdownItem<PlatformBaseStateSO>> GetAllPlatformStatesDropdown()
         {
             return UnityEditor.AssetDatabase
@@ -61,10 +64,11 @@ namespace Spawner.Object
         
         [FoldoutGroup("Object Context")] [Tooltip("Attemp object to wait before spawn again")]
         [SerializeField] private float attempObject;
-
+      
         private float currentAttemp = 0;
-        private readonly Dictionary<GameObject, GameObject> platformObjectMap = new();
+        
         private readonly Dictionary<GameObject, int> activeObjectCount = new();
+        private readonly Dictionary<GameObject, GameObject> platformObjectMap = new();
 
         public event Action<GameObject> OnSpawned;
         public event Action<GameObject> OnDespawned;
@@ -88,6 +92,7 @@ namespace Spawner.Object
         /// </summary>
         public void ClearData()
         {
+            activeObjectCount.Clear();
             platformObjectMap.Clear();
         }
         
@@ -114,23 +119,28 @@ namespace Spawner.Object
             //Check left of this platform is normal for player
             if (selectedSetting.mustSafeBeforeSpawn)
             { if (!IsLeftPlatformNormal(platform)) return; }
-
+            
+            //Bypass attemp object
+            //Check Attemp to prevent it spawn next to each other
+            if (CalculateAttemp(selectedSetting)) return;
+            
             //Spawn and set position
             var spawnPos = (Vector2)platform.transform.position + Vector2.up * selectedSetting.yOffset;
             Spawn(platform, spawnPos, selectedSetting);
         }
-
-
+        
         /// <summary>
-        /// Despawn object when platform despawn
+        /// Calculate attemp to prevent it spawn next to each other
         /// </summary>
-        /// <param name="platform"></param>
-        public void OnPlatformDespawned(GameObject platform)
+        private bool CalculateAttemp(ObjectSetting selectedSetting)
         {
-            if (platformObjectMap.TryGetValue(platform, out var obj))
+            if (selectedSetting.bypassAttemp) return false;
+            if (currentAttemp > 0)
             {
-                Despawn(obj);
+                currentAttemp-- ; return true;
             }
+            currentAttemp = attempObject;
+            return false;
         }
 
         /// <summary>
@@ -141,10 +151,6 @@ namespace Spawner.Object
         /// <param name="settings"></param>
         public void Spawn(GameObject platform,Vector2 position, object settings = null)
         {
-            //Check Attemp to prevent it spawn next to each other
-            if (currentAttemp > 0) { currentAttemp-- ; return; }
-            currentAttemp = attempObject;
-
             var objectSetting = settings as ObjectSetting ?? GetRandomChanceObject(objectDatas);
             if (objectSetting == null) { return; }
             
@@ -156,12 +162,24 @@ namespace Spawner.Object
             var poolingDespawn = obj.GetComponent<PoolingDespawn>();
 
             //Add Event on spawn and despawn
-            poolingDespawn.OnObjectSpawnedEvent.AddListener((obj) => OnSpawned?.Invoke(obj));
-            poolingDespawn.OnObjectDespawnedEvent.AddListener((obj) => Despawn(obj));
+            AddListener(obj , poolingDespawn);
             
             activeObjectCount[objectSetting.objectPrefab] = activeObjectCount.GetValueOrDefault(objectSetting.objectPrefab, 0) + 1;
+            poolingDespawn.currentPlatform = platform;
             platformObjectMap[platform] = obj;
             OnSpawned?.Invoke(obj);
+        }
+        
+        /// <summary>
+        /// Add listener to object
+        /// </summary>
+        /// <param name="itemObj"></param>
+        /// <param name="poolingDespawn"></param>
+        public void AddListener(GameObject itemObj, PoolingDespawn poolingDespawn)
+        {
+            poolingDespawn.OnObjectDespawnedEvent.RemoveAllListeners();
+            poolingDespawn.OnObjectSpawnedEvent.RemoveAllListeners();
+            poolingDespawn.OnObjectSpawnedEvent.AddListener((obj) => OnSpawned?.Invoke(itemObj));
         }
 
         /// <summary>
@@ -174,14 +192,25 @@ namespace Spawner.Object
             PoolingManager.Instance.Despawn(obj);
             OnDespawned?.Invoke(obj);
             
-            var platform = platformObjectMap.FirstOrDefault(p => p.Value == obj).Key;
-            if (platform != null)
-                platformObjectMap.Remove(platform);
-            
             foreach (var setting in objectDatas)
             {
                 if (activeObjectCount.ContainsKey(setting.objectPrefab) && obj.name.Contains(setting.objectPrefab.name))
-                { activeObjectCount[setting.objectPrefab] = Mathf.Max(0, activeObjectCount[setting.objectPrefab] - 1); break; }
+                {
+                    activeObjectCount[setting.objectPrefab] = Mathf.Max(0, activeObjectCount[setting.objectPrefab] - 1); break;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Trigger when platform despawn
+        /// </summary>
+        /// <param name="platform"></param>
+        public void OnPlatformDespawned(GameObject platform)
+        {
+            if (platformObjectMap.TryGetValue(platform, out var obj))
+            {
+                Despawn(obj);
+                platformObjectMap.Remove(platform);
             }
         }
         

@@ -5,6 +5,8 @@ using UnityEngine.Events;
 
 public class PoolingDespawn : MonoBehaviour
 {
+    public GameObject currentPlatform { get; set; }
+
     [SerializeField] public UnityEvent<GameObject> OnObjectSpawnedEvent;
     [SerializeField] public UnityEvent<GameObject> OnObjectDespawnedEvent;
     

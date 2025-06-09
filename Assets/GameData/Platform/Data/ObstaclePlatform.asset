@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c65c9f5c798363d43b2255e88aaf1035, type: 3}
-  m_Name: FallingPlatform
+  m_Name: ObstaclePlatform
   m_EditorClassIdentifier: 
   sprites:
-  - {fileID: 1049574012, guid: 3639e3b85cabf0745ac8590e6abcb901, type: 3}
-  weight: 3
-  state: {fileID: 11400000, guid: 8e0d0c56dee410c418881f98ebd47b89, type: 2}
-  feedback: {fileID: 4851070957362740516, guid: 1a99d4961d0da7a47aa0671a1b74aff1, type: 3}
+  - {fileID: 986759388, guid: 3639e3b85cabf0745ac8590e6abcb901, type: 3}
+  weight: 1
+  state: {fileID: 11400000, guid: 73d20c62116a5904fac40ac81428c498, type: 2}
+  feedback: {fileID: 0}
