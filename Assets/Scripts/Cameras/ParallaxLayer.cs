@@ -6,30 +6,65 @@ namespace Cameras
     public class ParallaxLayer : MonoBehaviour
     {
         [PropertyTooltip("0, parallax does not move, 1, parallax move instantly along with camera position")]
-        [SerializeField] private float parallaxEffectMultiplier;
-        [SerializeField] private bool loopParallax = true;
+        [SerializeField] private float parallaxEffectMultiplierX;
+
+        [SerializeField] private bool useYAxis = false;
         
-        private float startPos;
-        private float length;
+        [ShowIf(nameof(useYAxis))]
+        [PropertyTooltip("0, parallax does not move, 1, parallax move instantly along with camera position")]
+        [SerializeField] private float parallaxEffectMultiplierY; 
+
+        [SerializeField] private bool loopParallaxX = true; 
+        
+        [ShowIf(nameof(useYAxis))]
+        [SerializeField] private bool loopParallaxY = false; 
+        
+        private float startPosX;
+        private float lengthX;
+        
+        private float startPosY; 
+        private float lengthY; 
         
         void Start()
         {
-            startPos = transform.position.x;
-            length = GetComponent<SpriteRenderer>().bounds.size.x;
+            startPosX = transform.position.x;
+            lengthX = GetComponent<SpriteRenderer>().bounds.size.x;
+
+            startPosY = transform.position.y; 
+            lengthY = GetComponent<SpriteRenderer>().bounds.size.y; 
         }
         
         void FixedUpdate()
         {
             Vector2 camPos = Camera.main.transform.position;
-            float distance = camPos.x * parallaxEffectMultiplier;
-            float movement = camPos.x * (1 - parallaxEffectMultiplier);
-
-            transform.position = new Vector3(startPos + distance, transform.position.y, transform.position.z);
-
-            if (movement > startPos + length)
-                startPos += length;
-            else if (movement < startPos - length)
-                startPos -= length;
+            
+            float distanceX = camPos.x * parallaxEffectMultiplierX;
+            float movementX = camPos.x * (1 - parallaxEffectMultiplierX);
+            
+            float distanceY = camPos.y * parallaxEffectMultiplierY; // คำนวณ distance สำหรับ Y
+            float movementY = camPos.y * (1 - parallaxEffectMultiplierY); // คำนวณ movement สำหรับ Y
+            
+            transform.position = new Vector3(
+                startPosX + distanceX,
+                 useYAxis? startPosY + distanceY : transform.position.y, 
+                transform.position.z
+            );
+            
+            if (loopParallaxX)
+            {
+                if (movementX > startPosX + lengthX)
+                    startPosX += lengthX;
+                else if (movementX < startPosX - lengthX)
+                    startPosX -= lengthX;
+            }
+            
+            if (loopParallaxY)
+            {
+                if (movementY > startPosY + lengthY)
+                    startPosY += lengthY;
+                else if (movementY < startPosY - lengthY)
+                    startPosY -= lengthY;
+            }
         }
     }
 }

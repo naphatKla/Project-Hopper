@@ -1,5 +1,6 @@
 using Characters.Controllers;
 using Characters.HealthSystems;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ public class Lava : MonoBehaviour
 
     [Title("Lava Oscillation Settings")] 
     [SerializeField] private float oscillateAmplitude = 0.2f; 
-    [SerializeField] private float oscillateFrequency = 1f; 
+    [SerializeField] private float oscillateFrequency = 1f;
     
     private void Start()
     {
@@ -34,7 +35,7 @@ public class Lava : MonoBehaviour
         elapsed = Mathf.Max(0, elapsed);
     }
     
-    void Update()
+    void FixedUpdate()
     {
         if (riseUpDuration > 0)
             elapsed += Time.deltaTime / riseUpDuration;
@@ -46,14 +47,15 @@ public class Lava : MonoBehaviour
         float targetYPos = Mathf.Lerp(minMaxHight.x, minMaxHight.y, elapsed);
         float oscillation = Mathf.Sin(Time.time * oscillateFrequency) * oscillateAmplitude; 
         float finalYPos = targetYPos + oscillation;
-        
-        transform.position = new Vector3(transform.position.x, finalYPos, transform.position.z);
+        Vector2 newPos = new Vector3(transform.position.x, finalYPos, transform.position.z);
+        transform.position = newPos;
     }
 
-    private async void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log("Call");
         if (!other.TryGetComponent(out HealthSystem healthSystem)) return;
-        await healthSystem.ForceDead(); 
+        healthSystem.ForceDead().Forget(); 
     }
 
     [Button("Reset Elapsed")]
