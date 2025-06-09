@@ -23,18 +23,15 @@ namespace PoolingSystem
         /// <param name="position">The position to spawn the object at.</param>
         /// <param name="rotation">The rotation to apply to the spawned object.</param>
         /// <param name="parent">The parent Transform for the spawned object (optional).</param>
-        /// <param name="forceNew">If true, forces instantiation of a new object instead of reusing one.</param>
         /// <returns>The spawned GameObject, or null if the prefab is null.</returns>
-        public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null,
-            bool forceNew = false)
+        public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null)
         {
             if (prefab == null) return null;
-
             var poolKey = prefab.name;
             var pool = _pools.GetOrAdd(poolKey, () => new Queue<GameObject>());
 
             GameObject obj;
-            if (!forceNew && pool.Count > 0 && (obj = pool.Dequeue()) != null)
+            if (pool.Count > 0 && (obj = pool.Dequeue()) != null)
                 obj.SetActive(true);
             else
                 obj = Object.Instantiate(prefab);
@@ -70,44 +67,24 @@ namespace PoolingSystem
         }
 
         /// <summary>
-        ///     Clears all objects in the pool, optionally filtering by a parent Transform.
+        ///     Clears all objects in the pool.
         /// </summary>
-        /// <param name="parent">The parent Transform whose children's pools should be cleared (optional).</param>
-        public void ClearPool(Transform parent = null)
+        public void ClearPool()
         {
-            if (parent != null)
-            {
-                // Despawn all children
-                var childCount = parent.childCount;
-                for (var i = 0; i < childCount; i++) Despawn(parent.GetChild(i).gameObject);
-
-                // Collect keys to clear
-                var keysToClear = new List<string>();
-                foreach (var pair in _pools)
-                    while (pair.Value.Count > 0)
+            foreach (var pool in _pools.Values)
+                while (pool.Count > 0)
+                {
+                    var obj = pool.Dequeue();
+                    if (obj != null)
                     {
-                        var obj = pair.Value.Peek();
-
-                        if (obj == null || obj.Equals(null))
-                        {
-                            pair.Value.Dequeue();
-                            continue;
-                        }
-
-                        if (obj.transform.IsChildOf(parent)) keysToClear.Add(pair.Key);
-
-                        break;
+                        if (Application.isPlaying)
+                            Object.Destroy(obj);
+                        else
+                            Object.DestroyImmediate(obj);
                     }
+                }
 
-
-                foreach (var key in keysToClear) DestroyPool(key);
-            }
-            else
-            {
-                var keys = new List<string>(_pools.Keys);
-                foreach (var key in keys) DestroyPool(key);
-                _pools.Clear();
-            }
+            _pools.Clear();
         }
 
         /// <summary>

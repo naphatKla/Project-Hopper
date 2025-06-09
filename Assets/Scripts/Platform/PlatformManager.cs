@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Characters.HealthSystems;
 using Cysharp.Threading.Tasks;
@@ -16,14 +18,36 @@ namespace Platform
         [ReadOnly] public CancellationTokenSource loopTokenSource;
 
         [FoldoutGroup("Object Effect")]
-        [SerializeField] public GameObject spear;
+        public List<ObjectPlatformEffect> objectEffects;
         
+        private Dictionary<string, ObjectPlatformEffect> _effectDict;
         private Vector2 _lastAttackBoxSize;
         private Vector2 _lastAttackBoxOffset;
-        
+        public Rigidbody2D RigidbodyPlatform { get; private set; }
+        public BoxCollider2D ColliderPlatform { get; private set; }
+        public SpriteRenderer RendererPlatform { get; private set; }
+        public ObjectPlatformEffect currentObjectEffect;
+
         [HideInInspector] public GameObject feedback;
         [HideInInspector] public PlatformDataSO data;
-        
+
+        private void Awake()
+        {
+            RigidbodyPlatform = GetComponent<Rigidbody2D>();
+            ColliderPlatform = GetComponent<BoxCollider2D>();
+            RendererPlatform = GetComponent<SpriteRenderer>();
+
+            _effectDict = new Dictionary<string, ObjectPlatformEffect>();
+            foreach (var effect in objectEffects)
+            {
+                if (effect != null && !_effectDict.ContainsKey(effect.name))
+                {
+                    _effectDict.Add(effect.name, effect);
+                    effect.Init();
+                }
+            }
+        }
+
         public void OnSpawned()
         {
             currentState?.OnSpawned(this);
@@ -32,7 +56,7 @@ namespace Platform
         public void OnDespawned()
         {
             data = null;
-            StopFeedbackAsync(feedback, transform.position);
+            StopFeedbackAsync(feedback);
             currentState?.OnDespawned(this);
         }
 
@@ -65,10 +89,18 @@ namespace Platform
             _lastAttackBoxOffset = Vector2.zero;
             _lastAttackBoxSize = Vector2.zero;
             
-            GetComponent<BoxCollider2D>().enabled = true;
-            GetComponent<Rigidbody2D>().gravityScale = 0;
-            GetComponent<SpriteRenderer>().color = Color.white;
+            ColliderPlatform.enabled = true;
+            RigidbodyPlatform.gravityScale = 0;
+            RendererPlatform.color = Color.white;
         }
+        
+        
+        public ObjectPlatformEffect GetObject(string name)
+        {
+            if (_effectDict.TryGetValue(name, out var result)) return result;
+            return null;
+        }
+
         
         /// <summary>
         /// Blink the game object
@@ -79,13 +111,12 @@ namespace Platform
         /// <param name="blinkCount"></param>
         public async UniTask BlinkColor(Color colorA, Color colorB, float totalDuration, int blinkCount)
         {
-            SpriteRenderer renderer = gameObject.GetComponent<SpriteRenderer>();
             float singleDuration = totalDuration / (blinkCount * 2f);
 
             for (int i = 0; i < blinkCount; i++)
             {
-                await renderer.DOColor(colorB, singleDuration).ToUniTask();
-                await renderer.DOColor(colorA, singleDuration).ToUniTask();
+                await RendererPlatform.DOColor(colorB, singleDuration).ToUniTask();
+                await RendererPlatform.DOColor(colorA, singleDuration).ToUniTask();
             }
         }
         
@@ -172,7 +203,7 @@ namespace Platform
         /// </summary>
         /// <param name="particlePrefab"></param>
         /// <param name="position"></param>
-        public void StopFeedbackAsync(GameObject feedbackItem, Vector3 position)
+        public void StopFeedbackAsync(GameObject feedbackItem)
         {
             if (feedbackItem == null) return;
             var mmf = feedbackItem.GetComponent<MMFeedbacks>();

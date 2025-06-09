@@ -11,12 +11,9 @@ namespace Platform
         public override string StateID => "Broken";
         public override void UpdateState(PlatformManager manager) { }
 
-        public override async void OnStepped(PlatformManager manager, GameObject player)
+        public override void OnStepped(PlatformManager manager, GameObject player)
         {
-            manager.transform.DOShakePosition(0.33f, new Vector3(0.1f, 0f, 0f));
-            await UniTask.Delay(TimeSpan.FromSeconds(0.33f));
-            manager.PlayFeedbackAsync(manager.feedback, manager.transform.position);
-            manager.gameObject.SetActive(false);
+            RunAsync(manager).Forget();
         }
 
         public override void OnSpawned(PlatformManager manager)
@@ -28,5 +25,14 @@ namespace Platform
         {
             manager.ResetPlatform();
         }
+
+        private async UniTask RunAsync(PlatformManager manager)
+        {
+            manager.transform.DOShakePosition(0.33f, new Vector3(0.1f, 0f, 0f));
+            await UniTask.Delay(TimeSpan.FromSeconds(0.33f));
+            manager.PlayFeedbackAsync(manager.feedback, manager.transform.position);
+            manager.gameObject.SetActive(false);
+        }
+        
     }
 }

@@ -663,6 +663,54 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 864279921759942479, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 864279921759942479, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 864279921759942479, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 864279921759942479, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 864279921759942479, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 864279921759942479, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905831675193977384, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905831675193977384, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905831675193977384, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905831675193977384, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905831675193977384, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905831675193977384, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3824212555553759267, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.5
@@ -706,6 +754,30 @@ PrefabInstance:
     - target: {fileID: 4378311090812985516, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711641428150114373, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711641428150114373, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711641428150114373, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711641428150114373, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711641428150114373, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711641428150114373, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6047717760598154196, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
       propertyPath: serializationData.Prefab
@@ -1235,7 +1307,7 @@ MonoBehaviour:
     validPlatformTypes:
     - {fileID: 11400000, guid: 28d1abb3241443a42a2407a269b5735c, type: 2}
     yOffset: 0
-    poolingAmount: 3
+    poolingAmount: 8
     mustSafeBeforeSpawn: 1
   parent: {fileID: 1154669716}
   attempObject: 2

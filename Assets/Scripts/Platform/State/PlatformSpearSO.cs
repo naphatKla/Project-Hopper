@@ -38,10 +38,14 @@ namespace Platform
         public override void OnSpawned(PlatformManager manager)
         {
             manager.ResetPlatform();
-            manager.spear.SetActive(true);
-            
-            if (manager.spear.TryGetComponent(out Animator animator))
-            { animator.Play("Spike", 0, 0f); animator.speed = 0; }
+            var spearData = manager.GetObject("Spear");
+            spearData.gameObject.SetActive(true);
+
+            if (spearData != null && spearData.animator != null)
+            {
+                spearData.animator.Play("Spike", 0, 0f);
+                spearData.animator.speed = 0;
+            }
             
             manager.loopTokenSource = new CancellationTokenSource();
             LoopBehavior(manager, manager.loopTokenSource.Token).Forget();
@@ -50,7 +54,7 @@ namespace Platform
         public override void OnDespawned(PlatformManager manager)
         {
             manager.ResetPlatform();
-            manager.spear.SetActive(false);
+            manager.GetObject("Spear")?.gameObject.SetActive(false);
         }
         
         private async UniTaskVoid LoopBehavior(PlatformManager manager, CancellationToken token)
@@ -59,36 +63,42 @@ namespace Platform
             {
                 while (!token.IsCancellationRequested)
                 {
+                    var spearData = manager.GetObject("Spear");
+                    
                     //1. Wait
                     await UniTask.Delay(TimeSpan.FromSeconds(waitTime), cancellationToken: token);
                     
                     //2. Blink
-                    if (manager == null || manager.spear == null) return;
+                    if (manager == null || spearData == null) return;
                     manager.transform.DOShakePosition(0.33f, new Vector3(0.1f, 0f, 0f));
                     await manager.BlinkColor(Color.white, Color.red, flashDuration, blinkCount);
-                    manager.PlayFeedbackAsync(manager.feedback, manager.transform.position);
+                    manager.PlayFeedbackAsync(manager.feedback, manager.transform.position).Forget();
                     
                     //3. Attack
                     manager.Attack(attackBoxSize, attackBoxOffset, attackLayerMask, 1);
 
-                    if (manager.spear != null && manager.spear.TryGetComponent(out Animator animator) && animator != null && animator.gameObject.activeInHierarchy) 
+                    if (spearData != null && spearData.animator && spearData.animator != null && spearData.animator.gameObject.activeInHierarchy) 
                     {
-                        await manager.PlayAndWait(animator, "Spike", strikeDuration);
+                        await manager.PlayAndWait(spearData.animator, "Spike", strikeDuration);
                         
                         //4. Hide
-                        Hide(manager);
+                        Hide(manager, spearData);
                     }
                 }
             }
             catch (OperationCanceledException) { }
         }
         
-        private void Hide(PlatformManager manager)
+        private void Hide(PlatformManager manager, ObjectPlatformEffect spearData)
         {
-            if (manager?.spear == null || !manager.spear) return;
-            manager.StopFeedbackAsync(manager.feedback, manager.transform.position);
-            if (manager.spear.TryGetComponent(out Animator animator)) 
-                animator.speed = 0;
+            if (spearData == null || !spearData) return;
+            manager.StopFeedbackAsync(manager.feedback);
+            
+            if (spearData != null && spearData.animator != null)
+            {
+                spearData.animator.Play("Spike", 0, 0f);
+                spearData.animator.speed = 0;
+            }
         }
 
     }

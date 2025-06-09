@@ -122,7 +122,7 @@ namespace Spawner.Platform
             lastSpawnPosition.y = newStep * stepHeight;
             lastSpawnPosition = SnapToGrid(lastSpawnPosition, 0.1f);
 
-            Spawn(lastSpawnPosition);
+            Spawn(lastSpawnPosition, GetRandomWeightedPlatform(platformDatas));
         }
         
         /// <summary>
@@ -155,19 +155,16 @@ namespace Spawner.Platform
         /// <param name="data"></param>
         public GameObject AssignFeedback(PlatformDataSO data)
         {
-            foreach (var pair in feedbackList)
-                if (pair.Key == data)
-                    return pair.Value;
-            return null;
+            return feedbackList.TryGetValue(data, out var feedback) ? feedback : null;
         }
+
         
         /// <summary>
         /// Spawn Platform and Initialize
         /// </summary>
         /// <param name="position"></param>
-        public void Spawn(Vector3 position, object settings = null)
+        public void Spawn(Vector3 position, PlatformDataSO platformData)
         {
-            var platformData = settings as PlatformDataSO ?? GetRandomWeightedPlatform(platformDatas);
             position = SnapToGrid(position, 0.1f);
 
             var platformGO = PoolingManager.Instance.Spawn(platformPrefab, position, Quaternion.identity, parent);
