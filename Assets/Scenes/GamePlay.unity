@@ -1847,9 +1847,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed41696efc2ef044faf8143c77578412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  riseUpDuration: 5
+  riseUpDuration: 7
   minMaxHight: {x: -3, y: 0.5}
-  reduceElapsedOnLand: 0.25
+  reduceElapsedOnLand: 0.1
 --- !u!1 &1870439132
 GameObject:
   m_ObjectHideFlags: 0
