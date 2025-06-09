@@ -3509,7 +3509,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4edd4a50746fabb4db797bc9925dd708, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackButton: {fileID: 0}
+  attackButton: {fileID: 7204504072635806073}
   moveButton: {fileID: 5375087028360272197}
   guardButton: {fileID: 3232766140160161915}
   attackButtonFeedback: {fileID: 1134334647309821533}
