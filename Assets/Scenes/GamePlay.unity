@@ -2341,6 +2341,8 @@ MonoBehaviour:
   riseUpDuration: 7
   minMaxHight: {x: -3, y: 0.5}
   reduceElapsedOnLand: 0.1
+  oscillateAmplitude: 0.2
+  oscillateFrequency: 3
 --- !u!1 &1870439132
 GameObject:
   m_ObjectHideFlags: 0
