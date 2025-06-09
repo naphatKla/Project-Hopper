@@ -8519,6 +8519,7 @@ MonoBehaviour:
   - platformSO: {fileID: 11400000, guid: c350b4a28f6e2f046936eb564544637f, type: 2}
   - platformSO: {fileID: 11400000, guid: 04dbf5e4056d5ae418cc384f10e4e99e, type: 2}
   - platformSO: {fileID: 11400000, guid: f9d1de01c6e34a2489ca39df6d378858, type: 2}
+  - platformSO: {fileID: 11400000, guid: 03fbcad385218e94d98a0c86d38b3c71, type: 2}
   currentStep: 1
   nextStep: 1
   targetStep: 3
@@ -8564,6 +8565,7 @@ MonoBehaviour:
     yOffset: 0
     poolingAmount: 8
     mustSafeBeforeSpawn: 1
+    bypassAttemp: 0
   - objectPrefab: {fileID: 2691774995898733471, guid: ab0bfbeb9533a81438c0f0ed10383a82, type: 3}
     spawnChance: 15
     validPlatformTypes:
@@ -8571,6 +8573,7 @@ MonoBehaviour:
     yOffset: 0
     poolingAmount: 8
     mustSafeBeforeSpawn: 1
+    bypassAttemp: 0
   - objectPrefab: {fileID: 2691774995898733471, guid: daca16d91597c044c9561962d75ae77f, type: 3}
     spawnChance: 15
     validPlatformTypes:
@@ -8578,6 +8581,7 @@ MonoBehaviour:
     yOffset: 0
     poolingAmount: 8
     mustSafeBeforeSpawn: 1
+    bypassAttemp: 0
   - objectPrefab: {fileID: 2691774995898733471, guid: cfea1e390c3caca4c82546a0ce6f428c, type: 3}
     spawnChance: 10
     validPlatformTypes:
@@ -8585,8 +8589,17 @@ MonoBehaviour:
     yOffset: 0
     poolingAmount: 8
     mustSafeBeforeSpawn: 1
+    bypassAttemp: 0
+  - objectPrefab: {fileID: 9118354823518209840, guid: edbf17aad0fab9a47abefbc160cc67f4, type: 3}
+    spawnChance: 100
+    validPlatformTypes:
+    - {fileID: 11400000, guid: 73d20c62116a5904fac40ac81428c498, type: 2}
+    yOffset: 1.5
+    poolingAmount: 8
+    mustSafeBeforeSpawn: 0
+    bypassAttemp: 1
   parent: {fileID: 1154669716}
-  attempObject: 1
+  attempObject: 2
 --- !u!114 &1710304642
 MonoBehaviour:
   m_ObjectHideFlags: 0

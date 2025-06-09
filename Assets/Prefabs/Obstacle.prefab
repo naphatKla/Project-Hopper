@@ -178,15 +178,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   idleTimer: 1.5
   distanceIdle: 5.5
-  damage: 0
+  damage: 1
   lastAttackBoxSize: {x: 0.75, y: 1}
   lastAttackBoxOffset: {x: 0, y: 0.5}
   attackLayer:
     serializedVersion: 2
     m_Bits: 64
-  saveOldPosition: {x: 0, y: 0, z: 0}
-  originalPosition: {x: 0, y: 0, z: 0}
-  endPosition: {x: 0, y: 0, z: 0}
+  originalPosition: {x: 0, y: 0}
 --- !u!114 &7708926553920435636
 MonoBehaviour:
   m_ObjectHideFlags: 0
