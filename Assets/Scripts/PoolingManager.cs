@@ -31,7 +31,7 @@ namespace PoolingSystem
             var pool = _pools.GetOrAdd(poolKey, () => new Queue<GameObject>());
 
             GameObject obj = null;
-            if (pool.Count > 0 && (obj = pool.Dequeue()) != null && !obj.activeInHierarchy)
+            if (pool.Count > 0 && (obj = pool.Dequeue()) != null)
                 obj.SetActive(true);
             else
                 obj = Object.Instantiate(prefab);

@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 755628399983145534}
   - component: {fileID: 1823722549804608175}
   - component: {fileID: 8298917704446366007}
-  - component: {fileID: 2439007261018944232}
+  - component: {fileID: 6906386847654530506}
+  - component: {fileID: 7927321471543469723}
   - component: {fileID: 7708926553920435636}
   m_Layer: 8
   m_Name: Obstacle
@@ -164,7 +165,7 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &2439007261018944232
+--- !u!114 &6906386847654530506
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -173,14 +174,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 9118354823518209840}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15cb9e899f399384d807a0626c71f247, type: 3}
+  m_Script: {fileID: 11500000, guid: dace87ba423a10c4d9020bf4686a96d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentState: {fileID: 7927321471543469723}
+--- !u!114 &7927321471543469723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9118354823518209840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f118727b7dd9b4e4cbc9a896dc1f01bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   idleTimer: 1.5
   distanceIdle: 5.5
   damage: 1
-  lastAttackBoxSize: {x: 0.75, y: 1}
-  lastAttackBoxOffset: {x: 0, y: 0.5}
+  lastAttackBoxSize: {x: 0.5, y: 1}
+  lastAttackBoxOffset: {x: 0, y: 0}
   attackLayer:
     serializedVersion: 2
     m_Bits: 64

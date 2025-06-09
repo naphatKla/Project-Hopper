@@ -33,6 +33,5 @@ namespace Platform
             manager.PlayFeedbackAsync(manager.feedback, manager.transform.position);
             manager.gameObject.SetActive(false);
         }
-        
     }
 }
