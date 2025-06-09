@@ -2088,6 +2088,7 @@ MonoBehaviour:
   - platformSO: {fileID: 11400000, guid: c350b4a28f6e2f046936eb564544637f, type: 2}
   - platformSO: {fileID: 11400000, guid: 04dbf5e4056d5ae418cc384f10e4e99e, type: 2}
   - platformSO: {fileID: 11400000, guid: f9d1de01c6e34a2489ca39df6d378858, type: 2}
+  - platformSO: {fileID: 11400000, guid: 03fbcad385218e94d98a0c86d38b3c71, type: 2}
   currentStep: 1
   nextStep: 1
   targetStep: 3
@@ -2133,13 +2134,15 @@ MonoBehaviour:
     yOffset: 0
     poolingAmount: 8
     mustSafeBeforeSpawn: 1
+    bypassAttemp: 0
   - objectPrefab: {fileID: 9118354823518209840, guid: edbf17aad0fab9a47abefbc160cc67f4, type: 3}
     spawnChance: 100
     validPlatformTypes:
-    - {fileID: 11400000, guid: 28d1abb3241443a42a2407a269b5735c, type: 2}
+    - {fileID: 11400000, guid: 73d20c62116a5904fac40ac81428c498, type: 2}
     yOffset: 1.5
-    poolingAmount: 5
+    poolingAmount: 20
     mustSafeBeforeSpawn: 0
+    bypassAttemp: 1
   parent: {fileID: 1154669716}
   attempObject: 2
 --- !u!114 &1710304642

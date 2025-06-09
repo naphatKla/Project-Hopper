@@ -35,6 +35,9 @@ namespace Spawner.Object
         [Tooltip("if this enable mean it will not spawn near falling or danger platform")]
         public bool mustSafeBeforeSpawn;
         
+        [Tooltip("if this enable mean it will not calculate attemp")]
+        public bool bypassAttemp;
+        
         private static IEnumerable<ValueDropdownItem<PlatformBaseStateSO>> GetAllPlatformStatesDropdown()
         {
             return UnityEditor.AssetDatabase
@@ -116,10 +119,28 @@ namespace Spawner.Object
             //Check left of this platform is normal for player
             if (selectedSetting.mustSafeBeforeSpawn)
             { if (!IsLeftPlatformNormal(platform)) return; }
-
+            
+            //Bypass attemp object
+            //Check Attemp to prevent it spawn next to each other
+            if (CalculateAttemp(selectedSetting)) return;
+            
             //Spawn and set position
             var spawnPos = (Vector2)platform.transform.position + Vector2.up * selectedSetting.yOffset;
             Spawn(platform, spawnPos, selectedSetting);
+        }
+        
+        /// <summary>
+        /// Calculate attemp to prevent it spawn next to each other
+        /// </summary>
+        private bool CalculateAttemp(ObjectSetting selectedSetting)
+        {
+            if (selectedSetting.bypassAttemp) return false;
+            if (currentAttemp > 0)
+            {
+                currentAttemp-- ; return true;
+            }
+            currentAttemp = attempObject;
+            return false;
         }
 
         /// <summary>
@@ -130,10 +151,6 @@ namespace Spawner.Object
         /// <param name="settings"></param>
         public void Spawn(GameObject platform,Vector2 position, object settings = null)
         {
-            //Check Attemp to prevent it spawn next to each other
-            if (currentAttemp > 0) { currentAttemp-- ; return; }
-            currentAttemp = attempObject;
-
             var objectSetting = settings as ObjectSetting ?? GetRandomChanceObject(objectDatas);
             if (objectSetting == null) { return; }
             
@@ -174,14 +191,13 @@ namespace Spawner.Object
             if (obj == null) return;
             PoolingManager.Instance.Despawn(obj);
             OnDespawned?.Invoke(obj);
-            var poolingDespawn = obj.GetComponent<PoolingDespawn>();
-            if (poolingDespawn != null)
-                poolingDespawn.currentPlatform = null;
             
             foreach (var setting in objectDatas)
             {
                 if (activeObjectCount.ContainsKey(setting.objectPrefab) && obj.name.Contains(setting.objectPrefab.name))
-                { activeObjectCount[setting.objectPrefab] = Mathf.Max(0, activeObjectCount[setting.objectPrefab] - 1); break; }
+                {
+                    activeObjectCount[setting.objectPrefab] = Mathf.Max(0, activeObjectCount[setting.objectPrefab] - 1); break;
+                }
             }
         }
         
@@ -193,9 +209,7 @@ namespace Spawner.Object
         {
             if (platformObjectMap.TryGetValue(platform, out var obj))
             {
-                var poolingDespawn = obj.GetComponent<PoolingDespawn>();
-                if (poolingDespawn != null && poolingDespawn.currentPlatform == platform)
-                { Despawn(obj); }
+                Despawn(obj);
                 platformObjectMap.Remove(platform);
             }
         }

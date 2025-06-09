@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprites:
   - {fileID: 8915592984020964820, guid: 3639e3b85cabf0745ac8590e6abcb901, type: 3}
-  platformType: 0
-  weight: 10
+  weight: 15
   state: {fileID: 11400000, guid: 28d1abb3241443a42a2407a269b5735c, type: 2}
+  feedback: {fileID: 0}

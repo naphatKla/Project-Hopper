@@ -8,7 +8,6 @@ using Platform;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
-using Vector3 = UnityEngine.Vector3;
 
 public class ObstacleBlock : MonoBehaviour
 {
@@ -31,6 +30,10 @@ public class ObstacleBlock : MonoBehaviour
     [SerializeField]
     [ReadOnly] private Vector2 originalPosition;
     
+    /// <summary>
+    /// Do damage on touch
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter2D(Collider2D other)
     {
         Vector2 center = (Vector2)transform.position + lastAttackBoxOffset;
@@ -53,14 +56,19 @@ public class ObstacleBlock : MonoBehaviour
         originalPosition = transform.position;
 
         _cts = new CancellationTokenSource().Token;
-        //LoopBehavior(_cts).Forget();
+        await UniTask.WaitUntil(() => originalPosition == (Vector2)transform.position);
+        LoopBehavior(_cts).Forget();
     }
 
+    /// <summary>
+    /// Loop behavier
+    /// </summary>
+    /// <param name="token"></param>
     private async UniTaskVoid LoopBehavior(CancellationToken token)
     {
         try
         {
-            while (!token.IsCancellationRequested)
+            while (!token.IsCancellationRequested && gameObject.activeInHierarchy)
             {
                 await transform.DOMoveY(originalPosition.y + distanceIdle, idleTimer).ToUniTask();
                 await UniTask.Delay(TimeSpan.FromSeconds(idleTimer/2));
