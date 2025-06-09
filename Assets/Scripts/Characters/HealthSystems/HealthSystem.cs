@@ -90,7 +90,7 @@ namespace Characters.HealthSystems
         /// Applies damage to the character. Includes invincibility checks and feedback effects.
         /// </summary>
         /// <param name="damage">The amount of damage to apply.</param>
-        public async void TakeDamage(float damage)
+        public async UniTask TakeDamage(float damage)
         {
             if (_isDead || _isIframePerHit) return;
 
@@ -117,12 +117,22 @@ namespace Characters.HealthSystems
                 return;
             }
 
+            await Dead();
+        }
+
+        private async UniTask Dead()
+        {
             _isDead = true;
             OnDead?.Invoke();
             _owner?.FeedbackSystem?.PlayFeedback(FeedbackKey.Dead);
             _owner.CharacterCollider2D.enabled = false;
             await UniTask.WaitForSeconds(disappearDurationAfterDead);
             gameObject.SetActive(false);
+        }
+        
+        public async UniTask ForceDead()
+        {
+            await Dead();
         }
 
         /// <summary>
