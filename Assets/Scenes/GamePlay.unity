@@ -2093,7 +2093,7 @@ MonoBehaviour:
   targetStep: 3
   retainStep: 1
   initialNormalPlatformCount: 7
-  prewarmCount: 10
+  prewarmCount: 20
   spawnStartPosition: {x: -0.5, y: 0, z: 0}
   distancePlatform: 1
   parent: {fileID: 615574709}
@@ -2127,12 +2127,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectDatas:
   - objectPrefab: {fileID: 2691774995898733471, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
-    spawnChance: 50
+    spawnChance: 30
     validPlatformTypes:
     - {fileID: 11400000, guid: 28d1abb3241443a42a2407a269b5735c, type: 2}
     yOffset: 0
     poolingAmount: 8
     mustSafeBeforeSpawn: 1
+  - objectPrefab: {fileID: 9118354823518209840, guid: edbf17aad0fab9a47abefbc160cc67f4, type: 3}
+    spawnChance: 100
+    validPlatformTypes:
+    - {fileID: 11400000, guid: 28d1abb3241443a42a2407a269b5735c, type: 2}
+    yOffset: 1.5
+    poolingAmount: 5
+    mustSafeBeforeSpawn: 0
   parent: {fileID: 1154669716}
   attempObject: 2
 --- !u!114 &1710304642
@@ -2169,7 +2176,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1798474177
 Transform:
   m_ObjectHideFlags: 0

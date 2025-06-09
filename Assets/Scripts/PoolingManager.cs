@@ -30,12 +30,12 @@ namespace PoolingSystem
             var poolKey = prefab.name;
             var pool = _pools.GetOrAdd(poolKey, () => new Queue<GameObject>());
 
-            GameObject obj;
-            if (pool.Count > 0 && (obj = pool.Dequeue()) != null)
+            GameObject obj = null;
+            if (pool.Count > 0 && (obj = pool.Dequeue()) != null && !obj.activeInHierarchy)
                 obj.SetActive(true);
             else
                 obj = Object.Instantiate(prefab);
-
+            
             obj.transform.SetPositionAndRotation(position, rotation);
             obj.transform.SetParent(parent);
             return obj;

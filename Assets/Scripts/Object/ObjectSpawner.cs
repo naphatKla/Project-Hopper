@@ -61,10 +61,11 @@ namespace Spawner.Object
         
         [FoldoutGroup("Object Context")] [Tooltip("Attemp object to wait before spawn again")]
         [SerializeField] private float attempObject;
-
+      
         private float currentAttemp = 0;
-        private readonly Dictionary<GameObject, GameObject> platformObjectMap = new();
+        
         private readonly Dictionary<GameObject, int> activeObjectCount = new();
+        private readonly Dictionary<GameObject, GameObject> platformObjectMap = new();
 
         public event Action<GameObject> OnSpawned;
         public event Action<GameObject> OnDespawned;
@@ -88,6 +89,7 @@ namespace Spawner.Object
         /// </summary>
         public void ClearData()
         {
+            activeObjectCount.Clear();
             platformObjectMap.Clear();
         }
         
@@ -120,19 +122,6 @@ namespace Spawner.Object
             Spawn(platform, spawnPos, selectedSetting);
         }
 
-
-        /// <summary>
-        /// Despawn object when platform despawn
-        /// </summary>
-        /// <param name="platform"></param>
-        public void OnPlatformDespawned(GameObject platform)
-        {
-            if (platformObjectMap.TryGetValue(platform, out var obj))
-            {
-                Despawn(obj);
-            }
-        }
-
         /// <summary>
         /// Spawn the object
         /// </summary>
@@ -156,12 +145,24 @@ namespace Spawner.Object
             var poolingDespawn = obj.GetComponent<PoolingDespawn>();
 
             //Add Event on spawn and despawn
-            poolingDespawn.OnObjectSpawnedEvent.AddListener((obj) => OnSpawned?.Invoke(obj));
-            poolingDespawn.OnObjectDespawnedEvent.AddListener((obj) => Despawn(obj));
+            AddListener(obj , poolingDespawn);
             
             activeObjectCount[objectSetting.objectPrefab] = activeObjectCount.GetValueOrDefault(objectSetting.objectPrefab, 0) + 1;
+            poolingDespawn.currentPlatform = platform;
             platformObjectMap[platform] = obj;
             OnSpawned?.Invoke(obj);
+        }
+        
+        /// <summary>
+        /// Add listener to object
+        /// </summary>
+        /// <param name="itemObj"></param>
+        /// <param name="poolingDespawn"></param>
+        public void AddListener(GameObject itemObj, PoolingDespawn poolingDespawn)
+        {
+            poolingDespawn.OnObjectDespawnedEvent.RemoveAllListeners();
+            poolingDespawn.OnObjectSpawnedEvent.RemoveAllListeners();
+            poolingDespawn.OnObjectSpawnedEvent.AddListener((obj) => OnSpawned?.Invoke(itemObj));
         }
 
         /// <summary>
@@ -173,15 +174,29 @@ namespace Spawner.Object
             if (obj == null) return;
             PoolingManager.Instance.Despawn(obj);
             OnDespawned?.Invoke(obj);
-            
-            var platform = platformObjectMap.FirstOrDefault(p => p.Value == obj).Key;
-            if (platform != null)
-                platformObjectMap.Remove(platform);
+            var poolingDespawn = obj.GetComponent<PoolingDespawn>();
+            if (poolingDespawn != null)
+                poolingDespawn.currentPlatform = null;
             
             foreach (var setting in objectDatas)
             {
                 if (activeObjectCount.ContainsKey(setting.objectPrefab) && obj.name.Contains(setting.objectPrefab.name))
                 { activeObjectCount[setting.objectPrefab] = Mathf.Max(0, activeObjectCount[setting.objectPrefab] - 1); break; }
+            }
+        }
+        
+        /// <summary>
+        /// Trigger when platform despawn
+        /// </summary>
+        /// <param name="platform"></param>
+        public void OnPlatformDespawned(GameObject platform)
+        {
+            if (platformObjectMap.TryGetValue(platform, out var obj))
+            {
+                var poolingDespawn = obj.GetComponent<PoolingDespawn>();
+                if (poolingDespawn != null && poolingDespawn.currentPlatform == platform)
+                { Despawn(obj); }
+                platformObjectMap.Remove(platform);
             }
         }
         
