@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,7 @@ namespace Characters.InputSystems
     {
         #region Inspectors & Variables
 
+        [Title("Input Button")]
         [PropertyTooltip("Button to trigger the player's attack action.")]
         [SerializeField] private Button attackButton;
 
@@ -22,6 +24,13 @@ namespace Characters.InputSystems
 
         [PropertyTooltip("Button to trigger the player's guard action.")]
         [SerializeField] private Button guardButton;
+
+        [Title("Button Feedbacks")] 
+        [SerializeField] private MMF_Player attackButtonFeedback;
+        
+        [SerializeField] private MMF_Player moveButtonFeedback;
+        
+        [SerializeField] private MMF_Player guardButtonFeedback;
         
         /// <summary>
         /// Called when the player performs an attack input.
@@ -70,16 +79,19 @@ namespace Characters.InputSystems
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 PerformMove();
+                moveButtonFeedback?.PlayFeedbacks();
             }
 
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 PerformAttack();
+                attackButtonFeedback?.PlayFeedbacks();
             }
 
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 PerformGuard();
+                guardButtonFeedback?.PlayFeedbacks();
             }
         }
 

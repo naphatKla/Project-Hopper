@@ -1,6 +1,7 @@
 using Characters.CombatSystems;
 using Characters.InputSystems;
 using Characters.MovementSystems;
+using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -63,7 +64,7 @@ namespace Characters.Controllers
         protected override void OnEnable()
         {
             if (!inputSystem) return;
-            
+
             inputSystem.OnMoveInputPerform += GridMovementSystem.TryMoveAction;
             inputSystem.OnGuardInputPerform += guardSystem.Guard;
             gridMovementSystem.OnLandingAfterJump += scoreSystem.AddScore;

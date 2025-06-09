@@ -14,6 +14,17 @@ namespace Characters.CombatSystems
 
         [PropertyTooltip("Cooldown time (in seconds) before the player can guard again.")]
         [SerializeField] private float guardCooldown = 0.25f;
+        
+        [Title("Input Buffering")]
+        [SerializeField]
+        private bool useInputBuffering;
+        
+        [SerializeField] [ShowIf(nameof(useInputBuffering))]
+        private float _inputBufferTime = 0.1f;
+
+        private float _inputBufferTimeCount = 0f;
+
+        private bool _isBuffer;
 
         /// <summary>
         /// Tracks whether this initialized or not.
@@ -32,6 +43,18 @@ namespace Characters.CombatSystems
 
         #endregion
 
+        #region Unity Methods
+
+        private void FixedUpdate()
+        {
+            if (!_isBuffer) return;
+            _inputBufferTimeCount += Time.fixedDeltaTime;
+            if (_inputBufferTimeCount <_inputBufferTime) return;
+            Guard();
+        }
+        
+        #endregion
+        
         #region Methods
 
         public void Initialize(BaseController controller)
@@ -47,9 +70,21 @@ namespace Characters.CombatSystems
         public async void Guard()
         {
             if (!_isInitialized) return;
-            if (_isGuardCooldown) return;
+            if (_isGuardCooldown)
+            {
+                if (_isBuffer)
+                {
+                    _isBuffer = false;
+                    return;
+                }
+                _isBuffer = useInputBuffering;
+                return;
+            }
             if (!_owner.HealthSystem) return;
 
+            _isBuffer = false;
+            _inputBufferTimeCount = 0;
+            
             _owner.FeedbackSystem.PlayFeedback(FeedbackKey.Guard);
             _isGuardCooldown = true;
             _owner.HealthSystem.SetInvincible(true);

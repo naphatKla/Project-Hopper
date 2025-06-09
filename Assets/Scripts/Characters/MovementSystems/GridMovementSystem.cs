@@ -47,13 +47,24 @@ namespace Characters.MovementSystems
         [ValidateInput("@moveHorizontalDistance >= 0", "this value can't below than zero.")]
         [SerializeField]
         private float moveCooldown = 0.25f;
-
+        
         [PropertySpace]
         [InfoBox(
             "You can adjust movement curve. \nThe start and end point need to be zero. and the highest value should be one.")]
         [SerializeField]
         private AnimationCurve moveCurve;
 
+        [Title("Input Buffering")]
+        [SerializeField]
+        private bool useInputBuffering;
+        
+        [SerializeField] [ShowIf(nameof(useInputBuffering))]
+        private float _inputBufferTime = 0.1f;
+
+        private float _inputBufferTimeCount = 0f;
+
+        private bool _isBuffer;
+        
         /// <summary>
         /// is this character initialized by the owner or not.
         /// </summary>
@@ -118,6 +129,14 @@ namespace Characters.MovementSystems
             GravityHandler();
         }
 
+        private void FixedUpdate()
+        {
+            if (!_isBuffer) return;
+            _inputBufferTimeCount += Time.fixedDeltaTime;
+            if (_inputBufferTimeCount <_inputBufferTime) return;
+            TryMoveAction();
+        }
+
         #endregion
 
         #region Methods
@@ -140,10 +159,22 @@ namespace Characters.MovementSystems
         public async void TryMoveAction()
         {
             if (!_isInitialized) return;
-            if (_isMoveCooldown) return;
-            if (!_isGrounded) return;
+            if (_isMoveCooldown || !_isGrounded)
+            {
+                if (_isBuffer)
+                {
+                    _isBuffer = false;
+                    return;
+                }
+                
+                _isBuffer = useInputBuffering;
+                return;
+            }
             if (CheckObstacle()) return;
 
+            _isBuffer = false;
+            _inputBufferTimeCount = 0;
+            
             _isMoveCooldown = true;
             _isJumpPerforming = true;
             OnJumpUp?.Invoke();

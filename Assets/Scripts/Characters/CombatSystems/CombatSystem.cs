@@ -39,6 +39,17 @@ namespace Characters.CombatSystems
 
         [PropertyTooltip("Cooldown duration after each attack before another can be performed.")]
         [SerializeField] private float attackCooldown = 0.1f;
+        
+        [Title("Input Buffering")]
+        [SerializeField]
+        private bool useInputBuffering;
+        
+        [SerializeField] [ShowIf(nameof(useInputBuffering))]
+        private float _inputBufferTime = 0.1f;
+
+        private float _inputBufferTimeCount = 0f;
+
+        private bool _isBuffer;
 
         /// <summary>
         /// Cached position where the attack starts (based on offset).
@@ -63,6 +74,14 @@ namespace Characters.CombatSystems
         #endregion
 
         #region Unity Methods
+        
+        private void FixedUpdate()
+        {
+            if (!_isBuffer) return;
+            _inputBufferTimeCount += Time.fixedDeltaTime;
+            if (_inputBufferTimeCount <_inputBufferTime) return;
+            Attack();
+        }
         
         /// <summary>
         /// Draws a red wireframe box in the Scene view to visualize the attack range.
@@ -98,7 +117,21 @@ namespace Characters.CombatSystems
         /// </summary>
         public async void Attack()
         {
-            if (!isInitialized || _isAttackCooldown) return;
+            if (!isInitialized || _isAttackCooldown)
+            {
+                if (_isBuffer)
+                {
+                    _isBuffer = false;
+                    return;
+                }
+                
+                _isBuffer = useInputBuffering;
+                return;
+            }
+
+            _isBuffer = false;
+            _inputBufferTimeCount = 0;
+            Debug.Log("ATTACK");
             
             _isAttackCooldown = true;
             owner.FeedbackSystem.PlayFeedback(FeedbackKey.Attack);

@@ -2064,9 +2064,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4edd4a50746fabb4db797bc9925dd708, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackButton: {fileID: 7204504072635806073}
+  attackButton: {fileID: 0}
   moveButton: {fileID: 5375087028360272197}
   guardButton: {fileID: 3232766140160161915}
+  attackButtonFeedback: {fileID: 1134334647309821533}
+  moveButtonFeedback: {fileID: 6648066949343595377}
+  guardButtonFeedback: {fileID: 8192620635148172299}
 --- !u!114 &-3226373928487323148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2103,6 +2106,8 @@ MonoBehaviour:
   damage: 1
   attackDelay: 0.1
   attackCooldown: 0.15
+  useInputBuffering: 1
+  _inputBufferTime: 0.1
 --- !u!114 &6047717760598154196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2272,6 +2277,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  useInputBuffering: 1
+  _inputBufferTime: 0.1
 --- !u!114 &4028566261681287166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2286,6 +2293,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   guardDuration: 0.25
   guardCooldown: 0.3
+  useInputBuffering: 1
+  _inputBufferTime: 0.1
 --- !u!114 &1281896013086193435
 MonoBehaviour:
   m_ObjectHideFlags: 0
