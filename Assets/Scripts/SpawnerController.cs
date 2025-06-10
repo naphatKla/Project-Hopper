@@ -74,13 +74,7 @@ namespace Spawner.Controller
 
         private void HandlePlatformDespawned(GameObject despawnedPlatform)
         {
-            if (_activePlatformHistory.Count > 0)
-            {
-                if (_activePlatformHistory[0] == despawnedPlatform)
-                    _activePlatformHistory.RemoveAt(0);
-                else
-                    _activePlatformHistory.Remove(despawnedPlatform);
-            }
+            _activePlatformHistory.Remove(despawnedPlatform);
         }
         
         /// <summary>
@@ -92,13 +86,9 @@ namespace Spawner.Controller
         public (IEnumerable<GameObject> left, IEnumerable<GameObject> right) GetNeighbors(GameObject currentPlatform, int range)
         {
             int currentIndex = _activePlatformHistory.IndexOf(currentPlatform);
-            if (currentIndex == -1)
-                return (Enumerable.Empty<GameObject>(), Enumerable.Empty<GameObject>());
-            
+            if (currentIndex == -1) return (Enumerable.Empty<GameObject>(), Enumerable.Empty<GameObject>());
             var left = _activePlatformHistory.Take(currentIndex).TakeLast(range);
-            
             var right = _activePlatformHistory.Skip(currentIndex + 1).Take(range);
-
             return (left, right);
         }
 

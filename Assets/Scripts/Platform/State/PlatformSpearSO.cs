@@ -95,7 +95,14 @@ namespace Platform
                     Hide(manager, spearData);
                 }
             }
-            catch (OperationCanceledException) { }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("LoopBehavior cancelled.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"An unexpected error occurred in LoopBehavior: {ex.Message}");
+            }
             finally
             {
                 if (manager != null && manager.feedback != null)
