@@ -2,6 +2,7 @@ using Characters.CombatSystems;
 using Characters.InputSystems;
 using Characters.MovementSystems;
 using Cysharp.Threading.Tasks;
+using Dan.Main;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -35,6 +36,8 @@ namespace Characters.Controllers
         /// </summary>
         public static PlayerController Instance { get; private set; }
 
+        private static string playerName;
+        
         #endregion
 
         #region Unity Methods
@@ -85,5 +88,21 @@ namespace Characters.Controllers
         }
 
         #endregion
-    }
+        
+        public static void SetName(string name)
+        {
+            if (name.Length <= 0) return;
+            playerName = name;
+        }
+        
+        public static void SetHighestScore(int score)
+        {
+            Leaderboards.ProjectHopper.GetPersonalEntry(entry =>
+            {
+                if (playerName.Length <= 0) return;
+                if (entry.Score >= score) return;
+                Leaderboards.ProjectHopper.UploadNewEntry(playerName, score);
+            });
+        }
+    } 
 }
