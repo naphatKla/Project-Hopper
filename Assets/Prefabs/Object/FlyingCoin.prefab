@@ -585,7 +585,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   idleTimer: 1
-  distanceIdle: 3.5
+  distanceIdle: 1.5
   originalPosition: {x: 0, y: 0}
 --- !u!114 &7708926553920435636
 MonoBehaviour:
