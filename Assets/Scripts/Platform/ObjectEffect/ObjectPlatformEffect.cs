@@ -5,12 +5,12 @@ public class ObjectPlatformEffect : MonoBehaviour
 {
     public string name;
     public GameObject gameObject;
-    [HideInInspector] public Animator animator;
+    [HideInInspector] public SpriteRenderer spriteRenderer;
     [HideInInspector] public Collider2D collider;
 
     public void Init()
     {
-        animator = gameObject?.GetComponent<Animator>();
+        spriteRenderer = gameObject?.GetComponent<SpriteRenderer>();
         collider = gameObject?.GetComponent<Collider2D>();
     }
 }

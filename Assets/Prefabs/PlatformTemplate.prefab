@@ -230,6 +230,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3123011576717542423, guid: 8846bcee1bb5ee64ca5e5bb4834c72aa, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -3804453786874968470, guid: 6fb1ebfd7dbdb464883287fb252dde30, type: 3}
     - target: {fileID: 8943122419801436343, guid: 8846bcee1bb5ee64ca5e5bb4834c72aa, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.01
@@ -297,7 +301,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Spear
   gameObject: {fileID: 2443453787760197376}
-  animator: {fileID: 0}
+  spriteRenderer: {fileID: 0}
   collider: {fileID: 0}
 --- !u!4 &5466243694213569859 stripped
 Transform:
