@@ -90,7 +90,6 @@ namespace Characters.HealthSystems
             ResetHealth();
         }
         
-        private Tween feedbackTest;
 
         /// <summary>
         /// Applies damage to the character. Includes invincibility checks and feedback effects.
@@ -99,14 +98,10 @@ namespace Characters.HealthSystems
         public async UniTask TakeDamage(float damage)
         {
             if (_isDead || _isIframePerHit) return;
-
-            feedbackTest.Kill();
-
+            
             if (_isInvincible)
             {
-                feedbackTest = GetComponent<SpriteRenderer>()
-                    .DOColor(Color.blue, 0.1f)
-                    .SetLoops(2, LoopType.Yoyo);
+                _owner?.FeedbackSystem?.PlayFeedback(FeedbackKey.Iframe);
                 return;
             }
 
