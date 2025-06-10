@@ -183,6 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: {fileID: 776453868710436240}
+  feedback: {fileID: 0}
 --- !u!114 &776453868710436240
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,6 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b051767ef40138c4f9ddd25b5cb419e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackPerform: {fileID: 4945280534036122098}
   weaponObject: {fileID: 3541589560397783831}
 --- !u!114 &3325449177164941349
 MonoBehaviour:
@@ -309,6 +311,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rotateSpeed: 100
+  _isAttack: 0
 --- !u!1 &2647314966703391793
 GameObject:
   m_ObjectHideFlags: 0

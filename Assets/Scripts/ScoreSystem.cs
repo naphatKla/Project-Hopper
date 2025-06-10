@@ -10,8 +10,18 @@ public class ScoreSystem : MonoBehaviour
     
     public void AddScore()
     {
-        score++;
+        IncreaseScore(1);
         scoreChangeFeedback?.PlayFeedbacks();
+    }
+
+    public void IncreaseScore(int num)
+    {
+        score += num;
+        UpdateScoreUI();
+    }
+
+    private void UpdateScoreUI()
+    {
         if (!scoreText) return;
         scoreText.text = $"Score : {score}";
     }

@@ -12,6 +12,7 @@ namespace ObjectItem
     public class ObstacleAxeState : ObjectBaseState
     {
         public override string StateID { get; }
+        public AxePerformRotate attackPerform;
         public Collider2D weaponObject;
         
         public override void OnSpawned(ObjectManager manager) { }
@@ -22,6 +23,7 @@ namespace ObjectItem
 
         public override void OnTriggerEnterObject(Collider2D other, ObjectManager manager)
         {
+            if (!attackPerform._isAttack) return;
             if (weaponObject.bounds.Intersects(other.bounds))
             {
                 if (other.CompareTag("Player"))
