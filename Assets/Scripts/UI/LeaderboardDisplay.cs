@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Characters.Controllers;
 using Dan.Main;
-using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,11 +15,25 @@ namespace UI
         [SerializeField] private Button playButton;
         
         [SerializeField] private int maxDisplayAmount = 10;
-        private List<LeaderboardElement> elementList;
+        private List<LeaderboardElement> elementList = new List<LeaderboardElement>();
+        private bool _isInitialized;
 
-        private void Start()
+        private async void Start()
         {
-            playButton.onClick.AddListener(() => PlayerController.SetName(nameInput.text));
+            playButton.gameObject.SetActive(false);
+            nameInput.gameObject.SetActive(false);
+            
+            // load data from leader board
+            Leaderboards.ProjectHopper.GetPersonalEntry(entry =>
+            {
+                PlayerController.SetName(entry.Username);
+                PlayerController.SetHighestScore(entry.Score);
+                _isInitialized = true;
+                
+                nameInput.text = PlayerController.PlayerName;
+                playButton.onClick.AddListener(() => PlayerController.SetName(nameInput.text));
+                
+            });
             
             elementPrefab.gameObject?.SetActive(false);
             Leaderboards.ProjectHopper.GetEntries(entries =>
@@ -37,18 +50,7 @@ namespace UI
                     elementList[i].AssignText(elementName, elementScore);
                 }
             });
-        }
-
-        [Button]
-        public void SetName(string name)
-        {
-            PlayerController.SetName(name);
-        }
-
-        [Button]
-        public void SetHighScore(int score)
-        {
-            PlayerController.SetHighestScore(score);
+            
         }
     }
 }

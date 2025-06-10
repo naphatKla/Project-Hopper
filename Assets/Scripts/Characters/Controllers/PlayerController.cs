@@ -37,7 +37,13 @@ namespace Characters.Controllers
         public static PlayerController Instance { get; private set; }
 
         private static string playerName;
-        
+
+        private static int highestScore;
+
+        public static string PlayerName => playerName;
+
+        public static int HighestScore => highestScore;
+
         #endregion
 
         #region Unity Methods
@@ -58,6 +64,7 @@ namespace Characters.Controllers
 
             gridMovementSystem?.Initialize(this);
             guardSystem?.Initialize(this);
+            
             base.Awake();
         }
 
@@ -97,12 +104,19 @@ namespace Characters.Controllers
         
         public static void SetHighestScore(int score)
         {
-            Leaderboards.ProjectHopper.GetPersonalEntry(entry =>
+            if (playerName.Length <= 0)
             {
-                if (playerName.Length <= 0) return;
-                if (entry.Score >= score) return;
-                Leaderboards.ProjectHopper.UploadNewEntry(playerName, score);
-            });
+                Debug.Log("empty name, leaderboard will not save");
+                return;
+            }
+
+            if (highestScore >= score)
+            {
+                Debug.Log("score is less than high score, leaderboard will not save");
+                return;
+            }
+            
+            Leaderboards.ProjectHopper.UploadNewEntry(playerName, score);
         }
     } 
 }
