@@ -3,6 +3,7 @@ using System.Threading;
 using Characters.HealthSystems;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using ObjectItem;
@@ -12,11 +13,14 @@ namespace ObjectItem
     public class ObjectManager : MonoBehaviour
     {
         public ObjectBaseState currentState;
+        public MMF_Player feedback;
         [ReadOnly] public CancellationTokenSource loopTokenSource;
         
         public Rigidbody2D RigidbodyPlatform { get; private set; }
         public BoxCollider2D ColliderPlatform { get; private set; }
         public SpriteRenderer RendererPlatform { get; private set; }
+
+        public Sequence Loop;
 
         private void Awake()
         {
@@ -77,53 +81,6 @@ namespace ObjectItem
                 await RendererPlatform.DOColor(colorB, singleDuration).ToUniTask();
                 await RendererPlatform.DOColor(colorA, singleDuration).ToUniTask();
             }
-        }
-        
-        /// <summary>
-        /// Play Animator with desired speed
-        /// </summary>
-        /// <param name="Name"></param>
-        /// <param name="speed"></param>
-        public async UniTask PlayAndWait(Animator animator, string name, float desiredDuration)
-        {
-            if (!animator || !animator.gameObject.activeInHierarchy) return;
-
-            var clip = GetClipByName(animator, name);
-            if (clip == null) return;
-
-            float speed = clip.length / desiredDuration;
-
-            animator.Play(name, 0, 0f);
-            animator.speed = speed;
-
-            try
-            {
-                await UniTask.WaitUntil(() =>
-                {
-                    if (!Application.isPlaying || animator == null || !animator.gameObject.activeInHierarchy) return true;
-                    var state = animator.GetCurrentAnimatorStateInfo(0);
-                    return state.IsName(name) && state.normalizedTime >= 1f;
-                }, cancellationToken: animator.GetCancellationTokenOnDestroy());
-            }
-            catch (OperationCanceledException) { }
-        }
-        
-        /// <summary>
-        /// Get animation clip by name
-        /// </summary>
-        /// <param name="animator"></param>
-        /// <param name="clipName"></param>
-        /// <returns></returns>
-        private AnimationClip GetClipByName(Animator animator, string clipName)
-        {
-            if (animator.runtimeAnimatorController == null) { return null; }
-
-            foreach (var clip in animator.runtimeAnimatorController.animationClips)
-            {
-                if (clip.name == clipName)
-                    return clip;
-            }
-            return null;
         }
         
         /// <summary>

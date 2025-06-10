@@ -53,7 +53,6 @@ namespace Platform
                         .AppendInterval(0.33f) 
                         .AppendCallback(() => manager.GetComponent<Collider2D>().enabled = true)
                         .Append(renderer.DOFade(1f, 0.1f));  
-                    
                 }
             }
             catch (OperationCanceledException) { }

@@ -60,6 +60,11 @@ namespace Platform
             currentState?.OnDespawned(this);
         }
 
+        public void OnDisable()
+        {
+            ResetPlatform();
+        }
+
         private void Update()
         {
             currentState?.UpdateState(this);

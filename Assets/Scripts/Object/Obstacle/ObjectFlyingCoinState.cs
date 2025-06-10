@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace ObjectItem
 {
-    public class ObstacleFlyingState : ObjectBaseState
+    public class ObjectFlyingCoinState : ObjectBaseState
     {
         public override string StateID { get; }
         
@@ -17,15 +17,6 @@ namespace ObjectItem
         [SerializeField] private float idleTimer;
         [FoldoutGroup("Idle Setting")] 
         [SerializeField] private float distanceIdle;
-    
-        [FoldoutGroup("Attack Setting")]
-        [SerializeField] private float damage;
-        [FoldoutGroup("Attack Setting")]
-        [SerializeField] private Vector2 lastAttackBoxSize;
-        [FoldoutGroup("Attack Setting")]
-        [SerializeField] private Vector2 lastAttackBoxOffset;
-        [FoldoutGroup("Attack Setting")]
-        [SerializeField] private LayerMask attackLayer;
         
         [SerializeField]
         [ReadOnly] private Vector2 originalPosition;
@@ -47,8 +38,9 @@ namespace ObjectItem
 
         public override void OnTriggerEnterObject(Collider2D other, ObjectManager manager)
         {
-            Vector2 center = (Vector2)manager.transform.position + lastAttackBoxOffset;
-            manager.Attack(center, lastAttackBoxSize, attackLayer, damage);
+            if (other.TryGetComponent(out ScoreSystem score)) score.AddScore();
+            manager.feedback.PlayFeedbacks();
+            manager.gameObject.SetActive(false);
         }
         
         private async UniTask InitializeAsync(ObjectManager manager)
@@ -65,5 +57,6 @@ namespace ObjectItem
             manager.Loop.AppendInterval(0.33f);
             manager.Loop.SetLoops(-1, LoopType.Yoyo);
         }
+        
     }
 }
