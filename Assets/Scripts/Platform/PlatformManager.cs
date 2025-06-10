@@ -88,6 +88,7 @@ namespace Platform
 
         public void ResetPlatform()
         {
+            DOTween.Kill(gameObject);
             loopTokenSource?.Cancel();
             loopTokenSource?.Dispose();
             loopTokenSource = null;

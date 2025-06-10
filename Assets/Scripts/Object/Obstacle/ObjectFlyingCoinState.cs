@@ -53,7 +53,7 @@ namespace ObjectItem
             manager.Loop.SetDelay(0.33f);
             manager.Loop.Append(manager.transform.DOMoveY(distanceIdle, idleTimer)
                 .SetRelative()
-                .SetEase(Ease.InOutSine));
+                .SetEase(Ease.OutSine));
             manager.Loop.AppendInterval(0.33f);
             manager.Loop.SetLoops(-1, LoopType.Yoyo);
         }

@@ -10,13 +10,25 @@ public class AxePerformRotate : MonoBehaviour
     void Start()
     {
         transform.rotation = Quaternion.Euler(new Vector3(0,0,90));
-        Sequence rotate = DOTween.Sequence();
-        rotate.SetDelay(0.33f);
-        rotate.AppendCallback(() => _isAttack = true);
-        rotate.Append(transform.DORotate(new Vector3(0, 0, -90), 1).SetEase(Ease.InOutSine));
-        rotate.AppendCallback(() => _isAttack = false);
-        rotate.AppendInterval(0.33f);
-        rotate.SetLoops(-1, LoopType.Yoyo);
+        Sequence attackSeq = DOTween.Sequence();
+        // หมุนไป
+        attackSeq.AppendCallback(() => _isAttack = true);
+        attackSeq.Append(transform.DORotate(new Vector3(0, 0, -180), 1, RotateMode.LocalAxisAdd).SetEase(Ease.InOutSine));
+        
+        //รอ
+        attackSeq.AppendCallback(() => _isAttack = false);
+        attackSeq.AppendInterval(0.33f);
+        
+        //หมุนกลับ
+        attackSeq.AppendCallback(() => _isAttack = true);
+        attackSeq.Append(transform.DORotate(new Vector3(0, 0, 180), 1, RotateMode.LocalAxisAdd).SetEase(Ease.InOutSine));
+        
+        //รอ
+        attackSeq.AppendCallback(() => _isAttack = false);
+        attackSeq.AppendInterval(0.33f);
+        attackSeq.SetLoops(-1);
+
+
     }
     
 }

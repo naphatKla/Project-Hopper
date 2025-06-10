@@ -191,13 +191,14 @@ namespace Spawner.Platform
         /// </summary>
         public void CheckDespawn()
         {
-            while (activePlatforms.Count > maxActivePlatformCount)
+            while (activePlatforms.Count > maxActivePlatformCount && activePlatforms.First?.Value != null)
             {
-                var oldPlatform = activePlatforms.First.Value;
+                var old = activePlatforms.First.Value;
                 activePlatforms.RemoveFirst();
-                Despawn(oldPlatform); 
+                Despawn(old);
             }
         }
+
         
         /// <summary>
         /// Despawn platform
