@@ -31,6 +31,9 @@ namespace Platform
         [FoldoutGroup("Attack Settings")]
         [SerializeField] private LayerMask attackLayerMask;
         
+        [FoldoutGroup("Sprite")]
+        [SerializeField] private Sprite[] sprites;
+        
         public override void UpdateState(PlatformManager manager) {}
 
         public override void OnStepped(PlatformManager manager, GameObject player) { }
@@ -40,12 +43,8 @@ namespace Platform
             manager.ResetPlatform();
             var spearData = manager.GetObject("Spear");
             spearData.gameObject.SetActive(true);
-
-            if (spearData != null && spearData.animator != null)
-            {
-                spearData.animator.Play("Spike", 0, 0f);
-                spearData.animator.speed = 0;
-            }
+            SpriteRenderer spriteSpear = manager.GetObject("Spear").spriteRenderer;
+            spriteSpear.sprite = sprites[0];
             
             manager.loopTokenSource = new CancellationTokenSource();
             LoopBehavior(manager, manager.loopTokenSource.Token).Forget();
@@ -77,13 +76,19 @@ namespace Platform
                     //3. Attack
                     manager.Attack(attackBoxSize, attackBoxOffset, attackLayerMask, 1);
 
-                    if (spearData != null && spearData.animator && spearData.animator != null && spearData.animator.gameObject.activeInHierarchy) 
+                    //4. Strike
+                    SpriteRenderer spriteSpear = manager.GetObject("Spear").spriteRenderer;
+                    float frameTime = 0.33f / sprites.Length;
+                    var seq = DOTween.Sequence();
+                    foreach (var sprite in sprites)
                     {
-                        await manager.PlayAndWait(spearData.animator, "Spike", strikeDuration);
-                        
-                        //4. Hide
-                        Hide(manager, spearData);
+                        seq.AppendCallback(() => spriteSpear.sprite = sprite)
+                            .AppendInterval(frameTime);
                     }
+
+                    await seq.ToUniTask();
+                    
+                    Hide(manager, spearData);
                 }
             }
             catch (OperationCanceledException) { }
@@ -93,12 +98,8 @@ namespace Platform
         {
             if (spearData == null || !spearData) return;
             manager.StopFeedbackAsync(manager.feedback);
-            
-            if (spearData != null && spearData.animator != null)
-            {
-                spearData.animator.Play("Spike", 0, 0f);
-                spearData.animator.speed = 0;
-            }
+            SpriteRenderer spriteSpear = manager.GetObject("Spear").spriteRenderer;
+            spriteSpear.sprite = sprites[0];
         }
 
     }

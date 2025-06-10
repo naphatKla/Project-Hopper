@@ -21,3 +21,14 @@ MonoBehaviour:
   attackLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  sprites:
+  - {fileID: -3804453786874968470, guid: 6fb1ebfd7dbdb464883287fb252dde30, type: 3}
+  - {fileID: 783106776, guid: 6fb1ebfd7dbdb464883287fb252dde30, type: 3}
+  - {fileID: -1724764748, guid: 6fb1ebfd7dbdb464883287fb252dde30, type: 3}
+  - {fileID: 8687040, guid: 6fb1ebfd7dbdb464883287fb252dde30, type: 3}
+  - {fileID: 1265844120, guid: 6fb1ebfd7dbdb464883287fb252dde30, type: 3}
+  - {fileID: -54406754, guid: 6fb1ebfd7dbdb464883287fb252dde30, type: 3}
+  - {fileID: 21193732, guid: 6fb1ebfd7dbdb464883287fb252dde30, type: 3}
+  - {fileID: 503297933, guid: 6fb1ebfd7dbdb464883287fb252dde30, type: 3}
+  - {fileID: 823774973, guid: 6fb1ebfd7dbdb464883287fb252dde30, type: 3}
+  - {fileID: 1696869384, guid: 6fb1ebfd7dbdb464883287fb252dde30, type: 3}
