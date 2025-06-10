@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Characters.Controllers;
 using Cysharp.Threading.Tasks;
+using MoreMountains.Tools;
 using PoolingSystem;
 using Sirenix.OdinInspector;
 using Spawner.Object;
@@ -11,7 +12,7 @@ using UnityEngine;
 
 namespace Spawner.Controller
 {
-    public class SpawnerController : MonoBehaviour
+    public class SpawnerController : MMSingleton<SpawnerController>
     {
         [BoxGroup("Dependent Context")] 
         [SerializeField] private PlatformSpawner _platformSpawner;
@@ -28,9 +29,6 @@ namespace Spawner.Controller
             //Spawn platform when player jump
             if (!PlayerController.Instance?.GridMovementSystem) return;
             PlayerController.Instance.GridMovementSystem.OnJumpUp += _platformSpawner.SpawnNextPlatform;
-            
-            //Subscribe funtion spawn object on platform
-            _platformSpawner.OnSpawned += _objectSpawner.TrySpawnObjectOnPlatform;
             _platformSpawner.OnDespawned += _objectSpawner.OnPlatformDespawned;
             
             _platformSpawner.OnSpawned += HandlePlatformSpawned;
@@ -39,13 +37,11 @@ namespace Spawner.Controller
 
         private void OnDisable()
         {
-            //Unsubscribe funtion spawn object on platform
-            _platformSpawner.OnSpawned -= _objectSpawner.TrySpawnObjectOnPlatform;
-            _platformSpawner.OnDespawned -= _objectSpawner.OnPlatformDespawned;
-            
             //Unsubcribe function spawn platform when player jump
             if (!PlayerController.Instance?.GridMovementSystem) return;
             PlayerController.Instance.GridMovementSystem.OnJumpUp -= _platformSpawner.SpawnNextPlatform;
+          
+            _platformSpawner.OnDespawned -= _objectSpawner.OnPlatformDespawned;
             
             _platformSpawner.OnSpawned -= HandlePlatformSpawned;
             _platformSpawner.OnDespawned -= HandlePlatformDespawned;
@@ -73,6 +69,7 @@ namespace Spawner.Controller
         private void HandlePlatformSpawned(GameObject platform)
         {
             _activePlatformHistory.Add(platform);
+            _objectSpawner.TrySpawnObjectOnPlatform(platform);
         }
 
         private void HandlePlatformDespawned(GameObject despawnedPlatform)

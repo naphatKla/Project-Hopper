@@ -6,6 +6,7 @@ using Characters.HealthSystems;
 using Platform;
 using PoolingSystem;
 using Sirenix.OdinInspector;
+using Spawner.Controller;
 using Spawner.Platform;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -113,7 +114,7 @@ namespace Spawner.Object
             var platformState = platformManager.data.state;
             
             //Check first
-            /*bool isLeftSafe = IsLeftPlatformNormal(platform);*/
+            bool isLeftSafe = IsLeftPlatformNormal(platform);
             
             //Find type of platform and check it
             var validSettings = GetValidSettings(platformState);
@@ -124,7 +125,7 @@ namespace Spawner.Object
             if (selectedSetting == null) return;
             
             //Check left of this platform is normal for player
-            /*if (selectedSetting.mustSafeBeforeSpawn && !isLeftSafe) return;*/
+            if (selectedSetting.mustSafeBeforeSpawn && !isLeftSafe) return;
             
             //Bypass attemp object
             //Check Attemp to prevent it spawn next to each other
@@ -261,17 +262,25 @@ namespace Spawner.Object
             return pm != null && pm.data != null;
         }
 
-        /*/// <summary>
+        /// <summary>
         /// Check left of platform is normal
         /// </summary>
         /// <param name="platform"></param>
         /// <returns></returns>
+        /// <summary>
+        /// Checks if the two platforms to the left are of the Normal state.
+        /// </summary>
+        /// <param name="platform">The current platform to check from.</param>
+        /// <returns>True only if there are exactly 2 left neighbors and both are normal.</returns>
         private bool IsLeftPlatformNormal(GameObject platform)
         {
-            var spawner = GetComponent<PlatformSpawner>();
-            if (spawner == null) return false;
-            return spawner.AreTwoPreviousPlatformsNormal(platform);
-        }*/
+            var leftNeighbors = SpawnerController.Instance.GetNeighbors(platform, 2).left;
+            if (leftNeighbors.Count() != 2)
+            {
+                return false;
+            }
+            return leftNeighbors.All(p => p.GetComponent<PlatformManager>().data.state is PlatformNormalStateSO);
+        }
 
         /// <summary>
         /// Get valid object that can spawn on custom platform type
