@@ -8,6 +8,7 @@ using DG.Tweening;
 using MoreMountains.Feedbacks;
 using PoolingSystem;
 using Sirenix.OdinInspector;
+using Spawner.Platform;
 using UnityEngine;
 
 namespace Platform
@@ -23,6 +24,7 @@ namespace Platform
         private Dictionary<string, ObjectPlatformEffect> _effectDict;
         private Vector2 _lastAttackBoxSize;
         private Vector2 _lastAttackBoxOffset;
+        
         public Rigidbody2D RigidbodyPlatform { get; private set; }
         public BoxCollider2D ColliderPlatform { get; private set; }
         public SpriteRenderer RendererPlatform { get; private set; }
@@ -106,7 +108,6 @@ namespace Platform
             if (_effectDict.TryGetValue(name, out var result)) return result;
             return null;
         }
-
         
         /// <summary>
         /// Blink the game object

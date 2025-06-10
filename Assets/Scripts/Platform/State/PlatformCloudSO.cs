@@ -26,7 +26,11 @@ namespace Platform
         public override void OnDespawned(PlatformManager manager)
         {
             manager.ResetPlatform();
+            manager.loopTokenSource?.Cancel();
+            manager.loopTokenSource?.Dispose();
+            manager.loopTokenSource = null;
         }
+        
         public override void UpdateState(PlatformManager manager) { }
 
         public override void OnStepped(PlatformManager manager, GameObject player) { }
@@ -35,7 +39,7 @@ namespace Platform
         {
             try
             {
-                while (!token.IsCancellationRequested)
+                while (!token.IsCancellationRequested && manager != null)
                 {
                     //1. Wait
                     await UniTask.Delay(TimeSpan.FromSeconds(waitTime), cancellationToken: token);
@@ -46,13 +50,20 @@ namespace Platform
                     await manager.BlinkColor(Color.white, Color.yellow, 0.66f, 3);
                     
                     //3. Dissapear
-                    Sequence fadeSequence = DOTween.Sequence();
-                    SpriteRenderer renderer = manager.GetComponent<SpriteRenderer>();
-                    fadeSequence.Append(renderer.DOFade(0f, 0.1f))
-                        .AppendCallback(() => manager.GetComponent<Collider2D>().enabled = false)
-                        .AppendInterval(0.33f) 
-                        .AppendCallback(() => manager.GetComponent<Collider2D>().enabled = true)
-                        .Append(renderer.DOFade(1f, 0.1f));  
+                    if (!token.IsCancellationRequested && manager != null)
+                    {
+                        var renderer = manager.RendererPlatform;
+                        var collider = manager.ColliderPlatform;
+    
+                        Sequence fade = DOTween.Sequence()
+                            .Append(renderer.DOFade(0f, 0.1f))
+                            .AppendCallback(() => collider.enabled = false)
+                            .AppendInterval(0.33f)
+                            .AppendCallback(() => collider.enabled = true)
+                            .Append(renderer.DOFade(1f, 0.1f));
+                    }
+                    else
+                        return;
                 }
             }
             catch (OperationCanceledException) { }

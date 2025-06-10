@@ -111,18 +111,20 @@ namespace Spawner.Object
             //Get properties
             var platformManager = platform.GetComponent<PlatformManager>();
             var platformState = platformManager.data.state;
-
+            
+            //Check first
+            /*bool isLeftSafe = IsLeftPlatformNormal(platform);*/
+            
             //Find type of platform and check it
             var validSettings = GetValidSettings(platformState);
             if (validSettings.Count == 0) return;
-
+            
             //Random chance
             var selectedSetting = GetRandomChanceObject(validSettings);
             if (selectedSetting == null) return;
             
             //Check left of this platform is normal for player
-            if (selectedSetting.mustSafeBeforeSpawn)
-            { if (!IsLeftPlatformNormal(platform)) return; }
+            /*if (selectedSetting.mustSafeBeforeSpawn && !isLeftSafe) return;*/
             
             //Bypass attemp object
             //Check Attemp to prevent it spawn next to each other
@@ -259,7 +261,7 @@ namespace Spawner.Object
             return pm != null && pm.data != null;
         }
 
-        /// <summary>
+        /*/// <summary>
         /// Check left of platform is normal
         /// </summary>
         /// <param name="platform"></param>
@@ -268,14 +270,8 @@ namespace Spawner.Object
         {
             var spawner = GetComponent<PlatformSpawner>();
             if (spawner == null) return false;
-            var leftPlatform = spawner.CheckPreviousPlatform(platform);
-            if (leftPlatform == null) return true;
-
-            var leftPm = leftPlatform.GetComponent<PlatformManager>();
-            if (leftPm == null || leftPm.data == null) return false;
-
-            return leftPm.data.state is PlatformNormalStateSO;
-        }
+            return spawner.AreTwoPreviousPlatformsNormal(platform);
+        }*/
 
         /// <summary>
         /// Get valid object that can spawn on custom platform type

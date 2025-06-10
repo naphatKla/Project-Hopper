@@ -54,6 +54,10 @@ namespace Platform
         {
             manager.ResetPlatform();
             manager.GetObject("Spear")?.gameObject.SetActive(false);
+            
+            manager.loopTokenSource?.Cancel();
+            manager.loopTokenSource?.Dispose();
+            manager.loopTokenSource = null;
         }
         
         private async UniTaskVoid LoopBehavior(PlatformManager manager, CancellationToken token)
@@ -78,7 +82,7 @@ namespace Platform
 
                     //4. Strike
                     SpriteRenderer spriteSpear = manager.GetObject("Spear").spriteRenderer;
-                    float frameTime = 0.33f / sprites.Length;
+                    float frameTime = strikeDuration / sprites.Length;
                     var seq = DOTween.Sequence();
                     foreach (var sprite in sprites)
                     {
@@ -92,6 +96,13 @@ namespace Platform
                 }
             }
             catch (OperationCanceledException) { }
+            finally
+            {
+                if (manager != null && manager.feedback != null)
+                {
+                    manager.StopFeedbackAsync(manager.feedback);
+                }
+            }
         }
         
         private void Hide(PlatformManager manager, ObjectPlatformEffect spearData)

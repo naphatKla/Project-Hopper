@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Characters.Controllers;
 using Cysharp.Threading.Tasks;
 using PoolingSystem;
@@ -17,28 +19,36 @@ namespace Spawner.Controller
         [BoxGroup("Dependent Context")] 
         [SerializeField] private ObjectSpawner _objectSpawner;
         
+        private readonly List<GameObject> _activePlatformHistory = new();
+        
         private async void OnEnable()
         {
             await UniTask.WaitUntil(() => PlayerController.Instance != null && PlayerController.Instance.GridMovementSystem != null);
+            
+            //Spawn platform when player jump
+            if (!PlayerController.Instance?.GridMovementSystem) return;
+            PlayerController.Instance.GridMovementSystem.OnJumpUp += _platformSpawner.SpawnNextPlatform;
             
             //Subscribe funtion spawn object on platform
             _platformSpawner.OnSpawned += _objectSpawner.TrySpawnObjectOnPlatform;
             _platformSpawner.OnDespawned += _objectSpawner.OnPlatformDespawned;
             
-            //Spawn platform when player jump
-            if (!PlayerController.Instance?.GridMovementSystem) return;
-            PlayerController.Instance.GridMovementSystem.OnJumpUp += _platformSpawner.SpawnNextPlatform;
+            _platformSpawner.OnSpawned += HandlePlatformSpawned;
+            _platformSpawner.OnDespawned += HandlePlatformDespawned;
         }
 
         private void OnDisable()
         {
             //Unsubscribe funtion spawn object on platform
-            _platformSpawner.OnDespawned -= _objectSpawner.TrySpawnObjectOnPlatform;
+            _platformSpawner.OnSpawned -= _objectSpawner.TrySpawnObjectOnPlatform;
             _platformSpawner.OnDespawned -= _objectSpawner.OnPlatformDespawned;
             
             //Unsubcribe function spawn platform when player jump
             if (!PlayerController.Instance?.GridMovementSystem) return;
             PlayerController.Instance.GridMovementSystem.OnJumpUp -= _platformSpawner.SpawnNextPlatform;
+            
+            _platformSpawner.OnSpawned -= HandlePlatformSpawned;
+            _platformSpawner.OnDespawned -= HandlePlatformDespawned;
         }
         
         private void Awake()
@@ -58,6 +68,41 @@ namespace Spawner.Controller
             //Start spawn platform
             _platformSpawner.SpawnStartPlatform();
             PlayerController.Instance?.gameObject.SetActive(true);
+        }
+        
+        private void HandlePlatformSpawned(GameObject platform)
+        {
+            _activePlatformHistory.Add(platform);
+        }
+
+        private void HandlePlatformDespawned(GameObject despawnedPlatform)
+        {
+            if (_activePlatformHistory.Count > 0)
+            {
+                if (_activePlatformHistory[0] == despawnedPlatform)
+                    _activePlatformHistory.RemoveAt(0);
+                else
+                    _activePlatformHistory.Remove(despawnedPlatform);
+            }
+        }
+        
+        /// <summary>
+        /// Search neighbor platform with Linq
+        /// </summary>
+        /// <param name="currentPlatform"></param>
+        /// <param name="range"></param>
+        /// <returns></returns>
+        public (IEnumerable<GameObject> left, IEnumerable<GameObject> right) GetNeighbors(GameObject currentPlatform, int range)
+        {
+            int currentIndex = _activePlatformHistory.IndexOf(currentPlatform);
+            if (currentIndex == -1)
+                return (Enumerable.Empty<GameObject>(), Enumerable.Empty<GameObject>());
+            
+            var left = _activePlatformHistory.Take(currentIndex).TakeLast(range);
+            
+            var right = _activePlatformHistory.Skip(currentIndex + 1).Take(range);
+
+            return (left, right);
         }
 
         #region Inspector Control
