@@ -34,7 +34,7 @@ namespace PoolingSystem
             if (pool.Count > 0 && (obj = pool.Dequeue()) != null)
                 obj.SetActive(true);
             else
-                obj = Object.Instantiate(prefab);
+                obj = Object.Instantiate(prefab); obj.name = prefab.name;
             
             obj.transform.SetPositionAndRotation(position, rotation);
             obj.transform.SetParent(parent);
@@ -50,7 +50,7 @@ namespace PoolingSystem
             if (obj == null) return;
 
             obj.SetActive(false);
-            var poolKey = obj.name;
+            var poolKey = obj.name.EndsWith("(Clone)") ? obj.name[..^7] : obj.name;
             _pools.GetOrAdd(poolKey, () => new Queue<GameObject>()).Enqueue(obj);
         }
 
