@@ -41,10 +41,8 @@ namespace Spawner.Controller
             PlayerController.Instance.GridMovementSystem.OnJumpUp -= _platformSpawner.SpawnNextPlatform;
         }
         
-        private async void Awake()
+        private void Awake()
         {
-            PlayerController.Instance?.gameObject.SetActive(false);
-            
             //Clear all pool & data
             PoolingManager.Instance.ClearPool();
             _platformSpawner.ClearData();
@@ -53,14 +51,15 @@ namespace Spawner.Controller
             //Create pooling and despawn
             _platformSpawner.PreWarm();
             _objectSpawner.PreWarm();
-            
+        }
+
+        private void Start()
+        {
             //Start spawn platform
             _platformSpawner.SpawnStartPlatform();
-            
-            await UniTask.DelayFrame(2);
             PlayerController.Instance?.gameObject.SetActive(true);
         }
-        
+
         #region Inspector Control
 
         [Button("Spawn Platform",ButtonSizes.Large)] [Tooltip("Spawn next platform")]

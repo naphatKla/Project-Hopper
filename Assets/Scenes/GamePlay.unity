@@ -7907,6 +7907,54 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 864279921759942479, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 864279921759942479, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 864279921759942479, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 864279921759942479, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 864279921759942479, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 864279921759942479, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905831675193977384, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905831675193977384, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905831675193977384, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905831675193977384, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905831675193977384, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905831675193977384, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3824212555553759267, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.5
@@ -7950,6 +7998,30 @@ PrefabInstance:
     - target: {fileID: 4378311090812985516, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711641428150114373, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711641428150114373, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711641428150114373, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711641428150114373, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711641428150114373, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5711641428150114373, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6047717760598154196, guid: 6abd617289ad85a45ae8b425a6bf00c6, type: 3}
       propertyPath: serializationData.Prefab
@@ -8795,7 +8867,7 @@ MonoBehaviour:
     mustSafeBeforeSpawn: 1
     bypassAttemp: 0
   - objectPrefab: {fileID: 9118354823518209840, guid: 78aa337818acbb94e90aa1d89f581676, type: 3}
-    spawnChance: 10
+    spawnChance: 20
     validPlatformTypes:
     - {fileID: 11400000, guid: 0ba9b7e15c5524f409d08ed7ba08f248, type: 2}
     - {fileID: 11400000, guid: 8e0d0c56dee410c418881f98ebd47b89, type: 2}
@@ -8806,7 +8878,7 @@ MonoBehaviour:
     yOffset: 1
     poolingAmount: 20
     mustSafeBeforeSpawn: 0
-    bypassAttemp: 0
+    bypassAttemp: 1
   parent: {fileID: 1154669716}
   attempObject: 2
 --- !u!114 &1710304642
