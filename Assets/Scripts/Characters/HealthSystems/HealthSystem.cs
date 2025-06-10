@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Characters.HealthSystems
 {
@@ -58,12 +59,13 @@ namespace Characters.HealthSystems
         /// <summary>
         /// Invoked when damage is successfully taken.
         /// </summary>
-        public Action OnTakeDamage { get; set; }
+        [Title("Events")]
+        public UnityEvent OnTakeDamage;
 
         /// <summary>
         /// Invoked when the character's HP reaches zero.
         /// </summary>
-        public Action OnDead { get; set; }
+        public UnityEvent OnDead; 
         
         /// <summary>
         /// Whether the character is currently dead.
@@ -136,6 +138,7 @@ namespace Characters.HealthSystems
         
         public async UniTask ForceDead()
         {
+            ModifyHealth(-_currentHp);
             await Dead();
         }
 
