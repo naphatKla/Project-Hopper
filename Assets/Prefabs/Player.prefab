@@ -6678,7 +6678,7 @@ MonoBehaviour:
         RemapRangeFalloff: {x: 0, y: 1}
         Owner: {fileID: 7176566920368207167}
         DebugActive: 0
-        Duration: 0.8
+        Duration: 0.5
         ResetShakerValuesAfterShake: 1
         ResetTargetValuesAfterShake: 1
         RelativeIntensity: 0
@@ -6779,7 +6779,7 @@ MonoBehaviour:
           m_PostInfinity: 2
           m_RotationOrder: 4
         RemapIntensityZero: 0
-        RemapIntensityOne: 0.5
+        RemapIntensityOne: 0.4
 --- !u!1 &5843647538161963881
 GameObject:
   m_ObjectHideFlags: 0
