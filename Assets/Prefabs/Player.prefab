@@ -2727,7 +2727,7 @@ MonoBehaviour:
         DebugActive: 0
         AnimatePositionTarget: {fileID: 3281185564804139888}
         Mode: 0
-        Space: 0
+        Space: 2
         RandomizeRemap: 0
         AnimatePositionDuration: 0.75
         AnimatePositionTween:
@@ -2913,10 +2913,10 @@ MonoBehaviour:
             m_RotationOrder: 4
           Initialized: 0
         AllowAdditivePlays: 0
-        RelativePosition: 1
+        RelativePosition: 0
         DeterminePositionsOnPlay: 0
         InitialPosition: {x: 0, y: -250, z: 0}
-        DestinationPosition: {x: 0, y: 0, z: 0}
+        DestinationPosition: {x: 0, y: 274.58, z: 0}
         InitialPositionTransform: {fileID: 0}
         DestinationPositionTransform: {fileID: 0}
         AnimatePositionCurveX:
@@ -3013,7 +3013,7 @@ MonoBehaviour:
         DebugActive: 0
         AnimatePositionTarget: {fileID: 3281185564804139888}
         Mode: 0
-        Space: 0
+        Space: 2
         RandomizeRemap: 0
         AnimatePositionDuration: 0
         AnimatePositionTween:
@@ -3190,7 +3190,7 @@ MonoBehaviour:
             m_RotationOrder: 4
           Initialized: 0
         AllowAdditivePlays: 0
-        RelativePosition: 1
+        RelativePosition: 0
         DeterminePositionsOnPlay: 0
         InitialPosition: {x: 0, y: -500, z: 0}
         DestinationPosition: {x: 0, y: -500, z: 0}
@@ -3327,7 +3327,7 @@ GameObject:
   - component: {fileID: 7820305111873195912}
   m_Layer: 6
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
