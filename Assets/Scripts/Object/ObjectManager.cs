@@ -18,7 +18,7 @@ namespace ObjectItem
         
         public Rigidbody2D RigidbodyPlatform { get; private set; }
         public BoxCollider2D ColliderPlatform { get; private set; }
-        public SpriteRenderer RendererPlatform { get; private set; }
+        public SpriteRenderer RendererObject { get; private set; }
 
         public Sequence Loop;
 
@@ -26,7 +26,7 @@ namespace ObjectItem
         {
             RigidbodyPlatform = GetComponent<Rigidbody2D>();
             ColliderPlatform = GetComponent<BoxCollider2D>();
-            RendererPlatform = GetComponent<SpriteRenderer>();
+            RendererObject = GetComponent<SpriteRenderer>();
         }
 
         public void OnEnable()
@@ -62,7 +62,7 @@ namespace ObjectItem
             loopTokenSource = null;
             
             RigidbodyPlatform.gravityScale = 0;
-            RendererPlatform.color = Color.white;
+            RendererObject.color = Color.white;
         }
         
         /// <summary>
@@ -78,8 +78,8 @@ namespace ObjectItem
 
             for (int i = 0; i < blinkCount; i++)
             {
-                await RendererPlatform.DOColor(colorB, singleDuration).ToUniTask();
-                await RendererPlatform.DOColor(colorA, singleDuration).ToUniTask();
+                await RendererObject.DOColor(colorB, singleDuration).ToUniTask();
+                await RendererObject.DOColor(colorA, singleDuration).ToUniTask();
             }
         }
         

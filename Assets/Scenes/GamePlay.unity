@@ -8901,6 +8901,20 @@ MonoBehaviour:
     poolingAmount: 10
     mustSafeBeforeSpawn: 0
     bypassAttemp: 0
+  - objectPrefab: {fileID: 9118354823518209840, guid: c68a5d8fb4b2a414da89662d5ff94632, type: 3}
+    spawnChance: 2
+    validPlatformTypes:
+    - {fileID: 11400000, guid: 0ba9b7e15c5524f409d08ed7ba08f248, type: 2}
+    - {fileID: 11400000, guid: 94ad2cca21afd3c479cec7cfc4217a09, type: 2}
+    - {fileID: 11400000, guid: 8e0d0c56dee410c418881f98ebd47b89, type: 2}
+    - {fileID: 11400000, guid: 28d1abb3241443a42a2407a269b5735c, type: 2}
+    - {fileID: 11400000, guid: 73d20c62116a5904fac40ac81428c498, type: 2}
+    - {fileID: 11400000, guid: 18b69e97f4d9c04418897f7cc006d9a7, type: 2}
+    - {fileID: 11400000, guid: 64ec1b876d05bdf4fac345c03b04ae45, type: 2}
+    yOffset: 0
+    poolingAmount: 10
+    mustSafeBeforeSpawn: 0
+    bypassAttemp: 1
   parent: {fileID: 1154669716}
   attempObject: 1
 --- !u!114 &1710304642
