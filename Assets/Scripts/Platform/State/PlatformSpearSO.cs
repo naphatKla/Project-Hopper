@@ -60,14 +60,14 @@ namespace Platform
             manager.loopTokenSource = null;
         }
         
-        private async UniTaskVoid LoopBehavior(PlatformManager manager, CancellationToken token)
+        private async UniTask LoopBehavior(PlatformManager manager, CancellationToken token)
         {
             try
             {
                 while (!token.IsCancellationRequested)
                 {
+                    if (token.IsCancellationRequested || manager == null) return; 
                     var spearData = manager.GetObject("Spear");
-                    
                     //1. Wait
                     await UniTask.Delay(TimeSpan.FromSeconds(waitTime), cancellationToken: token);
                     
@@ -81,17 +81,7 @@ namespace Platform
                     manager.Attack(attackBoxSize, attackBoxOffset, attackLayerMask, 1);
 
                     //4. Strike
-                    SpriteRenderer spriteSpear = manager.GetObject("Spear").spriteRenderer;
-                    float frameTime = strikeDuration / sprites.Length;
-                    var seq = DOTween.Sequence();
-                    foreach (var sprite in sprites)
-                    {
-                        seq.AppendCallback(() => spriteSpear.sprite = sprite)
-                            .AppendInterval(frameTime);
-                    }
-
-                    await seq.ToUniTask();
-                    
+                    await StrikePhase(manager, token);
                     Hide(manager, spearData);
                 }
             }
@@ -120,5 +110,20 @@ namespace Platform
             spriteSpear.sprite = sprites[0];
         }
 
+        private async UniTask StrikePhase(PlatformManager manager, CancellationToken token)
+        {
+            var spear = manager.GetObject("Spear");
+            if (spear == null) return;
+            SpriteRenderer spriteSpear = spear.spriteRenderer;
+            float frameTime = strikeDuration / sprites.Length;
+            var seq = DOTween.Sequence();
+            foreach (var sprite in sprites)
+            {
+                seq.AppendCallback(() => spriteSpear.sprite = sprite)
+                    .AppendInterval(frameTime);
+            }
+
+            await seq.ToUniTask(cancellationToken: token);
+        }
     }
 }
