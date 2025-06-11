@@ -27,19 +27,24 @@ namespace PoolingSystem
         public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null)
         {
             if (prefab == null) return null;
+
             var poolKey = prefab.name;
             var pool = _pools.GetOrAdd(poolKey, () => new Queue<GameObject>());
-
             GameObject obj = null;
-            if (pool.Count > 0 && (obj = pool.Dequeue()) != null)
-                obj.SetActive(true);
+
+            if (pool.Count > 0)
+                obj = pool.Dequeue();
             else
-                obj = Object.Instantiate(prefab); obj.name = prefab.name;
-            
-            obj.transform.SetPositionAndRotation(position, rotation);
-            obj.transform.SetParent(parent);
+                obj = Object.Instantiate(prefab);
+            obj.transform.SetParent(parent, false);
+            obj.transform.position = position;
+            obj.transform.rotation = rotation;
+            Debug.Log($"Pooling Spawner: position ${position}");
+            obj.SetActive(true);
             return obj;
         }
+
+
 
         /// <summary>
         ///     Add object key to pool
@@ -61,10 +66,18 @@ namespace PoolingSystem
         public void Despawn(GameObject obj)
         {
             if (obj == null) return;
-            if (obj.activeInHierarchy) obj.SetActive(false);
+            if (obj.activeInHierarchy)
+                obj.SetActive(false);
             var poolKey = obj.name.EndsWith("(Clone)") ? obj.name[..^7] : obj.name;
             _pools.GetOrAdd(poolKey, () => new Queue<GameObject>()).Enqueue(obj);
         }
+
+        
+        private string ExtractPrefabName(string name)
+        {
+            return name.EndsWith("(Clone)") ? name[..^7] : name;
+        }
+
 
         /// <summary>
         ///     Clears all objects in the pool.

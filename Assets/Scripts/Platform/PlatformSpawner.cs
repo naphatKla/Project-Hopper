@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
 using Platform;
 using PoolingSystem;
 using Sirenix.OdinInspector;
+using Spawner.Controller;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -57,10 +60,10 @@ namespace Spawner.Platform
         [FoldoutGroup("Feedback")] [SerializeField] [Tooltip("Platform feedback parent")]
         private Transform feedbackParent;
 
-        private readonly LinkedList<GameObject> activePlatforms = new();
+        private readonly Queue<GameObject> activePlatforms = new();
+        
         private readonly Dictionary<PlatformDataSO, GameObject> feedbackList = new();
         private Vector3 lastSpawnPosition;
-        private int spawnedPlatformCount;
 
         private const int minStep = 1;
         private const int maxStep = 8;
@@ -81,7 +84,6 @@ namespace Spawner.Platform
         {
             activePlatforms.Clear();
             feedbackList.Clear();
-            spawnedPlatformCount = 0;
             lastSpawnPosition = spawnStartPosition;
         }
 
@@ -99,14 +101,14 @@ namespace Spawner.Platform
         /// </summary>
         public void SpawnStartPlatform()
         {
-            var normalSO = platformDatas.Find(data => data.platformSO.state is PlatformNormalStateSO);
+            var normalSo = platformDatas.Find(data => data.platformSO.state is PlatformNormalStateSO);
             for (var i = 0; i < initialNormalPlatformCount; i++)
             {
                 var newStep = CalculateWeight();
                 lastSpawnPosition.x += distancePlatform;
                 lastSpawnPosition.y = newStep * stepHeight;
                 lastSpawnPosition = SnapToGrid(lastSpawnPosition, 0.1f);
-                Spawn(lastSpawnPosition, normalSO.platformSO);
+                Spawn(lastSpawnPosition, normalSo.platformSO);
             }
         }
         
@@ -117,25 +119,16 @@ namespace Spawner.Platform
         {
             currentStep = nextStep;
             var newStep = CalculateWeight();
-          
+
             lastSpawnPosition.x += distancePlatform;
             lastSpawnPosition.y = newStep * stepHeight;
-            lastSpawnPosition = SnapToGrid(lastSpawnPosition, 0.1f);
+            lastSpawnPosition = SnapToGrid(lastSpawnPosition, 0.05f);
 
             Spawn(lastSpawnPosition, GetRandomWeightedPlatform(platformDatas));
         }
+
         
-        /// <summary>
-        /// Check old platform if it more than max count
-        /// </summary>
-        public GameObject CheckPreviousPlatform(GameObject obj)
-        {
-            var previousPlatform = activePlatforms.Find(obj).Previous.Value;
-            if (previousPlatform == null) return null;
-            return previousPlatform;
-        }
-        
-        /// <summary>
+        ///<summary>
         /// Create feedback for platform
         /// </summary>
         public void PreWarmFeedback()
@@ -165,11 +158,8 @@ namespace Spawner.Platform
         /// <param name="position"></param>
         public void Spawn(Vector3 position, PlatformDataSO platformData)
         {
-            position = SnapToGrid(position, 0.1f);
-
             var platformGO = PoolingManager.Instance.Spawn(platformPrefab, position, Quaternion.identity, parent);
-            activePlatforms.AddLast(platformGO);
-
+            SetPosition(platformGO, position).Forget();
             //Set Sprite
             var sr = platformGO.GetComponent<SpriteRenderer>();
             sr.sprite = platformData.GetRandomSprite();
@@ -182,8 +172,14 @@ namespace Spawner.Platform
             context.data = platformData;
 
             OnSpawned?.Invoke(platformGO);
-            spawnedPlatformCount++;
+            activePlatforms.Enqueue(platformGO);
             CheckDespawn();
+        }
+
+        private async UniTask SetPosition(GameObject obj, Vector3 position)
+        {
+            await UniTask.WaitForSeconds(2f);
+            obj.transform.position = position;
         }
         
         /// <summary>
@@ -191,11 +187,10 @@ namespace Spawner.Platform
         /// </summary>
         public void CheckDespawn()
         {
-            while (activePlatforms.Count > maxActivePlatformCount && activePlatforms.First?.Value != null)
+            while (activePlatforms.Count > maxActivePlatformCount)
             {
-                var old = activePlatforms.First.Value;
-                activePlatforms.RemoveFirst();
-                Despawn(old);
+                var oldPlatform = activePlatforms.Dequeue();
+                Despawn(oldPlatform);
             }
         }
 
@@ -206,10 +201,16 @@ namespace Spawner.Platform
         public void Despawn(GameObject obj)
         {
             if (obj == null) return;
-            obj.GetComponent<PlatformManager>().OnDespawned();
+
+            var manager = obj.GetComponent<PlatformManager>();
+            if (manager != null)
+            {
+                manager.OnDespawned();
+                OnDespawned?.Invoke(obj);
+            }
             PoolingManager.Instance.Despawn(obj);
-            OnDespawned?.Invoke(obj);
         }
+
 
         #endregion
         
@@ -248,7 +249,7 @@ namespace Spawner.Platform
         /// </summary>
         /// <param name="platformDataList"></param>
         /// <returns></returns>
-        private static PlatformDataSO GetRandomWeightedPlatform(List<PlatformSetting> platformDataList)
+        private PlatformDataSO GetRandomWeightedPlatform(List<PlatformSetting> platformDataList)
         {
             if (platformDataList == null || platformDataList.Count == 0) return null;
             var totalWeight = 0f;
@@ -277,8 +278,15 @@ namespace Spawner.Platform
         {
             position.x = Mathf.Round(position.x / gridSize) * gridSize;
             position.y = Mathf.Round(position.y / gridSize) * gridSize;
+            position.z = 0f;
             return position;
         }
+        
+        bool IsSamePosition(Vector3 a, Vector3 b, float tolerance = 0.01f)
+        {
+            return Vector3.Distance(a, b) < tolerance;
+        }
+
 
         
         #endregion

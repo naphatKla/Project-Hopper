@@ -8880,7 +8880,7 @@ MonoBehaviour:
     mustSafeBeforeSpawn: 0
     bypassAttemp: 1
   parent: {fileID: 1154669716}
-  attempObject: 2
+  attempObject: 1
 --- !u!114 &1710304642
 MonoBehaviour:
   m_ObjectHideFlags: 0

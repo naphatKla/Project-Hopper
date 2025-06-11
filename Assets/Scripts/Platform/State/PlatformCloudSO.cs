@@ -26,17 +26,22 @@ namespace Platform
         public override void OnDespawned(PlatformManager manager)
         {
             manager.ResetPlatform();
+            manager.loopTokenSource?.Cancel();
+            manager.loopTokenSource?.Dispose();
+            manager.loopTokenSource = null;
         }
+        
         public override void UpdateState(PlatformManager manager) { }
 
         public override void OnStepped(PlatformManager manager, GameObject player) { }
         
-        private async UniTaskVoid LoopBehavior(PlatformManager manager, CancellationToken token)
+        private async UniTask LoopBehavior(PlatformManager manager, CancellationToken token)
         {
-            try
+            while (!token.IsCancellationRequested && manager != null)
             {
-                while (!token.IsCancellationRequested)
+                try
                 {
+                    if (token.IsCancellationRequested || manager == null) return; 
                     //1. Wait
                     await UniTask.Delay(TimeSpan.FromSeconds(waitTime), cancellationToken: token);
                     
@@ -46,16 +51,28 @@ namespace Platform
                     await manager.BlinkColor(Color.white, Color.yellow, 0.66f, 3);
                     
                     //3. Dissapear
-                    Sequence fadeSequence = DOTween.Sequence();
-                    SpriteRenderer renderer = manager.GetComponent<SpriteRenderer>();
-                    fadeSequence.Append(renderer.DOFade(0f, 0.1f))
-                        .AppendCallback(() => manager.GetComponent<Collider2D>().enabled = false)
-                        .AppendInterval(0.33f) 
-                        .AppendCallback(() => manager.GetComponent<Collider2D>().enabled = true)
-                        .Append(renderer.DOFade(1f, 0.1f));  
+                    await DisappearPhase(manager, token);
+                }
+                catch (Exception a)
+                {
+                    Console.WriteLine(a);
+                    throw;
                 }
             }
-            catch (OperationCanceledException) { }
+        }
+        
+        private async UniTask DisappearPhase(PlatformManager manager, CancellationToken token)
+        {
+            var renderer = manager.RendererPlatform;
+            var collider = manager.ColliderPlatform;
+
+            await DOTween.Sequence()
+                .Append(renderer.DOFade(0f, 0.1f))
+                .AppendCallback(() => collider.enabled = false)
+                .AppendInterval(0.33f)
+                .AppendCallback(() => collider.enabled = true)
+                .Append(renderer.DOFade(1f, 0.1f))
+                .ToUniTask(cancellationToken: token);
         }
     }
 }
