@@ -29,7 +29,6 @@ namespace Spawner.Controller
             //Spawn platform when player jump
             if (!PlayerController.Instance?.GridMovementSystem) return;
             PlayerController.Instance.GridMovementSystem.OnJumpUp += _platformSpawner.SpawnNextPlatform;
-            _platformSpawner.OnDespawned += _objectSpawner.OnPlatformDespawned;
             
             _platformSpawner.OnSpawned += HandlePlatformSpawned;
             _platformSpawner.OnDespawned += HandlePlatformDespawned;
@@ -40,8 +39,6 @@ namespace Spawner.Controller
             //Unsubcribe function spawn platform when player jump
             if (!PlayerController.Instance?.GridMovementSystem) return;
             PlayerController.Instance.GridMovementSystem.OnJumpUp -= _platformSpawner.SpawnNextPlatform;
-          
-            _platformSpawner.OnDespawned -= _objectSpawner.OnPlatformDespawned;
             
             _platformSpawner.OnSpawned -= HandlePlatformSpawned;
             _platformSpawner.OnDespawned -= HandlePlatformDespawned;
@@ -75,6 +72,7 @@ namespace Spawner.Controller
         private void HandlePlatformDespawned(GameObject despawnedPlatform)
         {
             _activePlatformHistory.Remove(despawnedPlatform);
+            _objectSpawner.OnPlatformDespawned(despawnedPlatform);
         }
         
         /// <summary>

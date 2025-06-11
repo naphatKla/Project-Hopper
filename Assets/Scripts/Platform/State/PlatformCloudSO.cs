@@ -37,9 +37,9 @@ namespace Platform
         
         private async UniTask LoopBehavior(PlatformManager manager, CancellationToken token)
         {
-            try
+            while (!token.IsCancellationRequested && manager != null)
             {
-                while (!token.IsCancellationRequested && manager != null)
+                try
                 {
                     if (token.IsCancellationRequested || manager == null) return; 
                     //1. Wait
@@ -53,20 +53,10 @@ namespace Platform
                     //3. Dissapear
                     await DisappearPhase(manager, token);
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                Debug.Log("LoopBehavior cancelled.");
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"An unexpected error occurred in LoopBehavior: {ex.Message}");
-            }
-            finally
-            {
-                if (manager != null && manager.feedback != null)
+                catch (Exception a)
                 {
-                    manager.StopFeedbackAsync(manager.feedback);
+                    Console.WriteLine(a);
+                    throw;
                 }
             }
         }
