@@ -150,7 +150,6 @@ namespace Spawner.Platform
         {
             return feedbackList.TryGetValue(data, out var feedback) ? feedback : null;
         }
-
         
         /// <summary>
         /// Spawn Platform and Initialize
@@ -158,8 +157,8 @@ namespace Spawner.Platform
         /// <param name="position"></param>
         public void Spawn(Vector3 position, PlatformDataSO platformData)
         {
-            var platformGO = PoolingManager.Instance.Spawn(platformPrefab, position, Quaternion.identity, parent);
-            SetPosition(platformGO, position).Forget();
+            var platformGO = PoolingManager.Instance.Spawn(platformPrefab, parent, position, Quaternion.identity);
+           
             //Set Sprite
             var sr = platformGO.GetComponent<SpriteRenderer>();
             sr.sprite = platformData.GetRandomSprite();
@@ -170,18 +169,19 @@ namespace Spawner.Platform
             context.SetFeedback(AssignFeedback(platformData));
             context.OnSpawned();
             context.data = platformData;
-
+            
             OnSpawned?.Invoke(platformGO);
             activePlatforms.Enqueue(platformGO);
             CheckDespawn();
+            CheckPosition(platformGO, position).Forget();
         }
 
-        private async UniTask SetPosition(GameObject obj, Vector3 position)
+        private async UniTask CheckPosition(GameObject platform, Vector3 position)
         {
-            await UniTask.WaitForSeconds(2f);
-            obj.transform.position = position;
+            await UniTask.WaitForSeconds(0.5f);
+            platform.transform.position = position;
         }
-        
+
         /// <summary>
         /// Check old platform if it more than max count
         /// </summary>

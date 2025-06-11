@@ -164,7 +164,7 @@ namespace Spawner.Object
             //Check pool is full
             if (activeObjectCount.GetValueOrDefault(objectSetting.objectPrefab, 0) >= objectSetting.poolingAmount) { return; }
                 
-            var obj = PoolingManager.Instance.Spawn(objectSetting.objectPrefab, position, Quaternion.identity, parent);
+            var obj = PoolingManager.Instance.Spawn(objectSetting.objectPrefab, parent, position, Quaternion.identity);
             if (obj == null) return;
             var poolingDespawn = obj.GetComponent<PoolingDespawn>();
 
