@@ -1,3 +1,4 @@
+using System;
 using Characters.CombatSystems;
 using Characters.InputSystems;
 using Characters.MovementSystems;
@@ -94,6 +95,12 @@ namespace Characters.Controllers
             inputSystem.OnGuardInputPerform -= guardSystem.Guard;
             gridMovementSystem.OnLandingAfterJump -= scoreSystem.AddScore;
             base.OnDisable();
+        }
+
+        private void OnApplicationQuit()
+        {
+            if (!scoreSystem) return;
+            SetHighestScore(scoreSystem.Score);
         }
 
         #endregion
