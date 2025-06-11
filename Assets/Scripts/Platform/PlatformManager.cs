@@ -57,9 +57,6 @@ namespace Platform
         
         public void OnDespawned()
         {
-            ResetPlatform();
-            data = null;
-            StopFeedbackAsync(feedback);
             currentState?.OnDespawned(this);
         }
 
