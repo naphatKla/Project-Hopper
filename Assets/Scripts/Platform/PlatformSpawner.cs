@@ -178,8 +178,14 @@ namespace Spawner.Platform
 
         private async UniTask CheckPosition(GameObject platform, Vector3 position)
         {
-            await UniTask.WaitForSeconds(0.5f);
-            platform.transform.position = position;
+            await UniTask.WaitForSeconds(0.3f);
+            if (!IsSamePosition(platform.transform.position, position)) 
+                platform.transform.position = position;
+        }
+        
+        bool IsSamePosition(Vector3 a, Vector3 b, float tolerance = 0.01f)
+        {
+            return Vector3.Distance(a, b) < tolerance;
         }
 
         /// <summary>
@@ -281,13 +287,6 @@ namespace Spawner.Platform
             position.z = 0f;
             return position;
         }
-        
-        bool IsSamePosition(Vector3 a, Vector3 b, float tolerance = 0.01f)
-        {
-            return Vector3.Distance(a, b) < tolerance;
-        }
-
-
         
         #endregion
 
