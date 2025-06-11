@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Platform;
 using PoolingSystem;
 using Sirenix.OdinInspector;
+using Spawner.Controller;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -62,7 +64,6 @@ namespace Spawner.Platform
         
         private readonly Dictionary<PlatformDataSO, GameObject> feedbackList = new();
         private Vector3 lastSpawnPosition;
-        private int spawnedPlatformCount;
 
         private const int minStep = 1;
         private const int maxStep = 8;
@@ -83,7 +84,6 @@ namespace Spawner.Platform
         {
             activePlatforms.Clear();
             feedbackList.Clear();
-            spawnedPlatformCount = 0;
             lastSpawnPosition = spawnStartPosition;
         }
 
@@ -119,13 +119,14 @@ namespace Spawner.Platform
         {
             currentStep = nextStep;
             var newStep = CalculateWeight();
-          
+
             lastSpawnPosition.x += distancePlatform;
             lastSpawnPosition.y = newStep * stepHeight;
-            lastSpawnPosition = SnapToGrid(lastSpawnPosition, 0.1f);
+            lastSpawnPosition = SnapToGrid(lastSpawnPosition, 0.05f);
 
             Spawn(lastSpawnPosition, GetRandomWeightedPlatform(platformDatas));
         }
+
         
         ///<summary>
         /// Create feedback for platform
@@ -157,10 +158,8 @@ namespace Spawner.Platform
         /// <param name="position"></param>
         public void Spawn(Vector3 position, PlatformDataSO platformData)
         {
-            position = SnapToGrid(position, 0.1f);
-
             var platformGO = PoolingManager.Instance.Spawn(platformPrefab, position, Quaternion.identity, parent);
-
+            SetPosition(platformGO, position).Forget();
             //Set Sprite
             var sr = platformGO.GetComponent<SpriteRenderer>();
             sr.sprite = platformData.GetRandomSprite();
@@ -173,9 +172,14 @@ namespace Spawner.Platform
             context.data = platformData;
 
             OnSpawned?.Invoke(platformGO);
-            spawnedPlatformCount++;
             activePlatforms.Enqueue(platformGO);
             CheckDespawn();
+        }
+
+        private async UniTask SetPosition(GameObject obj, Vector3 position)
+        {
+            await UniTask.WaitForSeconds(2f);
+            obj.transform.position = position;
         }
         
         /// <summary>
@@ -197,10 +201,16 @@ namespace Spawner.Platform
         public void Despawn(GameObject obj)
         {
             if (obj == null) return;
-            obj.GetComponent<PlatformManager>().OnDespawned();
+
+            var manager = obj.GetComponent<PlatformManager>();
+            if (manager != null)
+            {
+                manager.OnDespawned();
+                OnDespawned?.Invoke(obj);
+            }
             PoolingManager.Instance.Despawn(obj);
-            OnDespawned?.Invoke(obj);
         }
+
 
         #endregion
         
@@ -268,8 +278,15 @@ namespace Spawner.Platform
         {
             position.x = Mathf.Round(position.x / gridSize) * gridSize;
             position.y = Mathf.Round(position.y / gridSize) * gridSize;
+            position.z = 0f;
             return position;
         }
+        
+        bool IsSamePosition(Vector3 a, Vector3 b, float tolerance = 0.01f)
+        {
+            return Vector3.Distance(a, b) < tolerance;
+        }
+
 
         
         #endregion

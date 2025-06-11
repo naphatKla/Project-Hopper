@@ -4,6 +4,7 @@ using System.Linq;
 using Characters.Controllers;
 using Cysharp.Threading.Tasks;
 using MoreMountains.Tools;
+using Platform;
 using PoolingSystem;
 using Sirenix.OdinInspector;
 using Spawner.Object;
@@ -89,7 +90,16 @@ namespace Spawner.Controller
             var right = _activePlatformHistory.Skip(currentIndex + 1).Take(range);
             return (left, right);
         }
-
+        
+        /// <summary>
+        /// Get active platform list
+        /// </summary>
+        /// <returns></returns>
+        public List<GameObject> GetActivePlatformList()
+        {
+            return new List<GameObject>(_activePlatformHistory);
+        }
+     
         #region Inspector Control
 
         [Button("Spawn Platform",ButtonSizes.Large)] [Tooltip("Spawn next platform")]
