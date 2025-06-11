@@ -133,7 +133,7 @@ namespace Spawner.Object
             
             //Spawn and set position
             var spawnPos = (Vector2)platform.transform.position + Vector2.up * selectedSetting.yOffset;
-            Spawn(platform, spawnPos, selectedSetting);
+            Spawn(platform, spawnPos, null , selectedSetting);
         }
         
         /// <summary>
@@ -151,30 +151,95 @@ namespace Spawner.Object
         }
 
         /// <summary>
-        /// Spawn the object
+        /// Main method to spawn an object using various levels of override: custom prefab, setting override, or random selection.
+        /// Also determines spawn position, validates spawn conditions, and finalizes the spawn process.
         /// </summary>
-        /// <param name="platform"></param>
-        /// <param name="position"></param>
-        /// <param name="settings"></param>
-        public void Spawn(GameObject platform,Vector2 position, object settings = null)
+        public GameObject Spawn(GameObject platform = null, Vector2? position = null, GameObject customPrefab = null, ObjectSetting settingOverride = null)
         {
-            var objectSetting = settings as ObjectSetting ?? GetRandomChanceObject(ObjectDataList);
-            if (objectSetting == null) { return; }
-            
-            //Check pool is full
-            if (activeObjectCount.GetValueOrDefault(objectSetting.objectPrefab, 0) >= objectSetting.poolingAmount) { return; }
-                
-            var obj = PoolingManager.Instance.Spawn(objectSetting.objectPrefab, parent, position, Quaternion.identity);
-            if (obj == null) return;
-            var poolingDespawn = obj.GetComponent<PoolingDespawn>();
+            var objectSetting = AssignSetting(customPrefab, settingOverride);
+            if (objectSetting == null) return null;
 
-            //Add Event on spawn and despawn
-            AddListener(obj , poolingDespawn);
-            
-            activeObjectCount[objectSetting.objectPrefab] = activeObjectCount.GetValueOrDefault(objectSetting.objectPrefab, 0) + 1;
+            var spawnPos = AssignSpawnPosition(platform, position, objectSetting);
+            if (!CanSpawn(objectSetting)) return null;
+
+            var obj = PoolingManager.Instance.Spawn(objectSetting.objectPrefab, parent, spawnPos, Quaternion.identity);
+            if (obj == null) return null;
+
+            FinalizeSpawn(obj, platform, objectSetting);
+
+            return obj;
+        }
+        
+        /// <summary>
+        /// Resolves the ObjectSetting to use for spawning.
+        /// Priority: custom prefab → setting override → random from object data list.
+        /// </summary>
+        /// <param name="customPrefab">Custom GameObject to match against settings.</param>
+        /// <param name="overrideSetting">Manually specified ObjectSetting.</param>
+        /// <returns>The resolved ObjectSetting or null if none is valid.</returns>
+        private ObjectSetting AssignSetting(GameObject customPrefab, ObjectSetting overrideSetting)
+        {
+            if (customPrefab != null) return ObjectDataList.FirstOrDefault(x => x.objectPrefab == customPrefab);
+            if (overrideSetting != null) return overrideSetting;
+            return GetRandomChanceObject(ObjectDataList);
+        }
+
+        /// <summary>
+        /// Calculates the spawn position based on platform, explicit position, or fallback to spawner's own transform.
+        /// </summary>
+        /// <param name="platform">Platform GameObject, if any.</param>
+        /// <param name="position">Explicit position override, if provided.</param>
+        /// <param name="setting">The resolved ObjectSetting (used for yOffset).</param>
+        /// <returns>The final position to spawn the object at.</returns>
+        private Vector2 AssignSpawnPosition(GameObject platform, Vector2? position, ObjectSetting setting)
+        {
+            if (position.HasValue) return position.Value;
+            if (platform != null) return (Vector2)platform.transform.position + Vector2.up * setting.yOffset;
+            return transform.position;
+        }
+
+        /// <summary>
+        /// Checks if the object associated with the given setting can be spawned,
+        /// based on the active pool count versus the allowed pooling amount.
+        /// </summary>
+        /// <param name="setting">The ObjectSetting to check against.</param>
+        /// <returns>True if the object can be spawned; false otherwise.</returns>
+        private bool CanSpawn(ObjectSetting setting)
+        {
+            return activeObjectCount.GetValueOrDefault(setting.objectPrefab, 0) < setting.poolingAmount;
+        }
+
+        /// <summary>
+        /// Completes the spawning process by registering listeners, updating counters,
+        /// assigning platform linkage (if any), and invoking spawn event.
+        /// </summary>
+        /// <param name="obj">The GameObject that was spawned.</param>
+        /// <param name="platform">The platform associated with the spawn (can be null).</param>
+        /// <param name="setting">The ObjectSetting used for the spawn.</param>
+        private void FinalizeSpawn(GameObject obj, GameObject platform, ObjectSetting setting)
+        {
+            var poolingDespawn = obj.GetComponent<PoolingDespawn>();
+            AddListener(obj, poolingDespawn);
+
+            activeObjectCount[setting.objectPrefab] = activeObjectCount.GetValueOrDefault(setting.objectPrefab, 0) + 1;
             poolingDespawn.currentPlatform = platform;
-            platformObjectMap[platform] = obj;
+
+            if (platform != null)
+                platformObjectMap[platform] = obj;
+
             OnSpawned?.Invoke(obj);
+        }
+        
+        /// <summary>
+        /// Find prefab name
+        /// </summary>
+        /// <param name="prefabName"></param>
+        /// <returns></returns>
+        public ObjectSetting GetSettingByPrefabName(string prefabName)
+        {
+            return objectDatas.FirstOrDefault(setting =>
+                setting.objectPrefab != null &&
+                setting.objectPrefab.name.Equals(prefabName, StringComparison.OrdinalIgnoreCase));
         }
         
         /// <summary>

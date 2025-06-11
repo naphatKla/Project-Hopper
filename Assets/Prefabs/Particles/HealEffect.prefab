@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4081332809125922537}
   - component: {fileID: 2341263268295971971}
   m_Layer: 0
-  m_Name: CoinEffect
+  m_Name: HealEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -222,8 +222,8 @@ ParticleSystem:
     startColor:
       serializedVersion: 2
       minMaxState: 2
-      minColor: {r: 1, g: 0.5135953, b: 0, a: 0.39215687}
-      maxColor: {r: 1, g: 0.89767873, b: 0, a: 0.39215687}
+      minColor: {r: 0.5, g: 0.26643807, b: 0, a: 0.39215687}
+      maxColor: {r: 0.4056604, g: 0.01711075, b: 0, a: 0.39215687}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
