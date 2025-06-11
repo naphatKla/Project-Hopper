@@ -7,7 +7,8 @@ public class ScoreSystem : MonoBehaviour
     [SerializeField] private int score;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private MMF_Player scoreChangeFeedback;
-    
+    public int Score => score;
+
     public void AddScore()
     {
         IncreaseScore(1);

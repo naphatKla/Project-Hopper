@@ -61,10 +61,12 @@ namespace Characters.Controllers
             }
 
             Instance = this;
-
             gridMovementSystem?.Initialize(this);
             guardSystem?.Initialize(this);
-            
+            HealthSystem?.OnDead.AddListener(() =>
+            {
+                SetHighestScore(scoreSystem.Score);
+            });
             base.Awake();
         }
 
@@ -96,13 +98,14 @@ namespace Characters.Controllers
 
         #endregion
         
-        public static void SetName(string name)
+        public static void LoadData(string name, int lastedHighScore)
         {
             if (name.Length <= 0) return;
             playerName = name;
+            highestScore = lastedHighScore;
         }
         
-        public static void SetHighestScore(int score)
+        private void SetHighestScore(int score)
         {
             if (playerName.Length <= 0)
             {
@@ -116,6 +119,8 @@ namespace Characters.Controllers
                 return;
             }
             
+            // upload to leader board
+            highestScore = score;
             Leaderboards.ProjectHopper.UploadNewEntry(playerName, score);
         }
     } 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Characters.Controllers;
 using Dan.Main;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,10 +16,10 @@ namespace UI
         [SerializeField] private Button playButton;
         
         [SerializeField] private int maxDisplayAmount = 10;
-        private List<LeaderboardElement> elementList = new List<LeaderboardElement>();
+        private readonly List<LeaderboardElement> elementList = new List<LeaderboardElement>();
         private bool _isInitialized;
 
-        private async void Start()
+        private void Start()
         {
             playButton.gameObject.SetActive(false);
             nameInput.gameObject.SetActive(false);
@@ -26,13 +27,20 @@ namespace UI
             // load data from leader board
             Leaderboards.ProjectHopper.GetPersonalEntry(entry =>
             {
-                PlayerController.SetName(entry.Username);
-                PlayerController.SetHighestScore(entry.Score);
+                PlayerController.LoadData(entry.Username, entry.Score);
                 _isInitialized = true;
                 
                 nameInput.text = PlayerController.PlayerName;
-                playButton.onClick.AddListener(() => PlayerController.SetName(nameInput.text));
-                
+                playButton.onClick.AddListener(() => PlayerController.LoadData(nameInput.text, entry.Score));
+                nameInput.gameObject.SetActive(true);
+                playButton.gameObject.SetActive(true);
+            });
+
+            // time out
+            DOVirtual.DelayedCall(5f, () =>
+            {
+                nameInput.gameObject.SetActive(true);
+                playButton.gameObject.SetActive(true);
             });
             
             elementPrefab.gameObject?.SetActive(false);
