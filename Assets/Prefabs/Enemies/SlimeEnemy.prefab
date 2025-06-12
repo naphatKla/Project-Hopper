@@ -446,7 +446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36c5c09e9d14ce34096fcb138f2f53fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnId: Enemy_Slime
+  spawnId: EnemySlime
   OnObjectSpawnedEvent:
     m_PersistentCalls:
       m_Calls:

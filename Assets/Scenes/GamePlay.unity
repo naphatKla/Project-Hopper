@@ -8495,37 +8495,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   platformPrefabs:
-  - id: Platform_Normal
+  - id: PlatformNormal
     prefab: {fileID: 2440649737265221699, guid: ed6d30393853a7d4399c340923f85b8b, type: 3}
     prewarmCount: 15
     weight: 20
     chance: 100
-  - id: Platform_Falling
+  - id: PlatformFalling
     prefab: {fileID: 4356961184076040564, guid: 122f32f8a532e9345b8ffecdc8299c93, type: 3}
     prewarmCount: 15
     weight: 3
     chance: 100
-  - id: Platform_Broken
+  - id: PlatformBroken
     prefab: {fileID: 1775796112859372514, guid: 722685758882b3942bb763ea57c7cc3f, type: 3}
     prewarmCount: 15
     weight: 3
     chance: 100
-  - id: Platform_Spear
+  - id: PlatformSpear
     prefab: {fileID: 2961288095606630916, guid: ee5396187b9004543aff005e8c11b8c8, type: 3}
     prewarmCount: 15
     weight: 2
     chance: 100
-  - id: Platform_TNT
+  - id: PlatformTNT
     prefab: {fileID: 196439045629894100, guid: a40de7bbd6eb31c45962314bde5dfcdc, type: 3}
     prewarmCount: 15
     weight: 1
     chance: 100
-  - id: Platform_Cloud
+  - id: PlatformCloud
     prefab: {fileID: 1030023824258741643, guid: 5478ca236d4a9d744ab833bd45d4ca9b, type: 3}
     prewarmCount: 15
     weight: 2
     chance: 100
-  - id: Platform_Obstacle
+  - id: PlatformObstacle
     prefab: {fileID: 8500082788431550180, guid: 06a2887b480284b409e870cab0e3c54c, type: 3}
     prewarmCount: 15
     weight: 2
@@ -8551,17 +8551,53 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectPrefabs:
-  - id: Enemy_Slime
+  - id: EnemySlime
     prefab: {fileID: 2691774995898733471, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
     prewarmCount: 10
-    weight: 10
-    chance: 50
+    weight: 1
+    chance: 40
     bypassAttemp: 0
+    mustSafeBeforeSpawn: 1
     canSpawnOnType:
     - PlatformNormal
+  - id: EnemySkeleton
+    prefab: {fileID: 2691774995898733471, guid: cfea1e390c3caca4c82546a0ce6f428c, type: 3}
+    prewarmCount: 10
+    weight: 1
+    chance: 10
+    bypassAttemp: 0
     mustSafeBeforeSpawn: 1
+    canSpawnOnType:
+    - PlatformNormal
+  - id: EnemyBat
+    prefab: {fileID: 2691774995898733471, guid: ab0bfbeb9533a81438c0f0ed10383a82, type: 3}
+    prewarmCount: 10
+    weight: 1
+    chance: 15
+    bypassAttemp: 0
+    mustSafeBeforeSpawn: 1
+    canSpawnOnType:
+    - PlatformNormal
+  - id: EnemyEliteSlime
+    prefab: {fileID: 2691774995898733471, guid: daca16d91597c044c9561962d75ae77f, type: 3}
+    prewarmCount: 10
+    weight: 10
+    chance: 100
+    bypassAttemp: 0
+    mustSafeBeforeSpawn: 1
+    canSpawnOnType:
+    - PlatformNormal
+  - id: ObjectSpike
+    prefab: {fileID: 9118354823518209840, guid: edbf17aad0fab9a47abefbc160cc67f4, type: 3}
+    prewarmCount: 15
+    weight: 1
+    chance: 100
+    bypassAttemp: 1
+    mustSafeBeforeSpawn: 0
+    canSpawnOnType:
+    - PlatformObstacle
   parent: {fileID: 1154669716}
-  attempObject: 1
+  attempObject: 3
 --- !u!1 &1763852820
 GameObject:
   m_ObjectHideFlags: 0

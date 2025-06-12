@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class SpawnerController : MMSingleton<SpawnerController>
 {
+    public List<GameObject> _allPlatform = new();
+    
     private void OnDisable()
     {
         ClearAll();
@@ -37,11 +39,15 @@ public class SpawnerController : MMSingleton<SpawnerController>
         PoolingManager.Instance.ClearAll();
     }
     
-    public T GetRandomOption<T>(List<T> options) where T : ISpawnOption
+    public T GetRandomOption<T>(List<T> options, bool useWeight = true) where T : ISpawnOption
     {
         var passed = options.Where(o => o.TryPassChance()).ToList();
         if (passed.Count == 0) return default;
 
+        if (!useWeight)
+        {
+            return passed[Random.Range(0, passed.Count)];
+        }
         int totalWeight = passed.Sum(o => o.Weight);
         int rand = Random.Range(0, totalWeight);
         int current = 0;
@@ -54,5 +60,15 @@ public class SpawnerController : MMSingleton<SpawnerController>
         }
 
         return passed[0];
+    }
+
+    
+    public List<GameObject> GetPreviousMultiple(List<GameObject> sourceList, GameObject obj, int count)
+    {
+        int index = sourceList.IndexOf(obj);
+        if (index < 0) return new List<GameObject>();
+
+        int start = Mathf.Max(0, index - count);
+        return sourceList.GetRange(start, index - start);
     }
 } 

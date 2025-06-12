@@ -75,6 +75,7 @@ namespace Platform
         
         private void Awake()
         {
+            SpawnerController.Instance._allPlatform.Clear();
             _activePlatforms.Clear();
             _spawnedPlatformToIdMap.Clear();
             foreach (var config in platformPrefabs)
@@ -94,7 +95,7 @@ namespace Platform
 
         public void SpawnStart7Platform()
         {
-            string normalID = "Platform_Normal";
+            string normalID = "PlatformNormal";
             for (var i = 0; i < initialNormalPlatformCount; i++)
             {
                 var newStep = CalculateWeight();
@@ -116,10 +117,11 @@ namespace Platform
             _lastSpawnPosition.y = newStep * _stepHeight;
             _lastSpawnPosition = SnapToGrid(_lastSpawnPosition, 0.05f);
             
-            var option = SpawnerController.Instance.GetRandomOption(platformPrefabs);
+            var option = SpawnerController.Instance.GetRandomOption(platformPrefabs, true);
             var platform = SpawnerController.Instance.Spawn(option.id, _lastSpawnPosition);
             _activePlatforms.Enqueue(platform);
             _spawnedPlatformToIdMap[platform] = option.id;
+            SpawnerController.Instance._allPlatform.Add(platform);
             OnPlatformSpawned?.Invoke(platform);
             CheckDespawn();
         }
@@ -131,6 +133,7 @@ namespace Platform
                 var oldPlatform = _activePlatforms.Dequeue();
                 if (_spawnedPlatformToIdMap.TryGetValue(oldPlatform, out var id))
                 {
+                    SpawnerController.Instance._allPlatform.Remove(oldPlatform);
                     SpawnerController.Instance.Despawn(id, oldPlatform);
                     OnPlatformDespawned?.Invoke(oldPlatform);
                     _spawnedPlatformToIdMap.Remove(oldPlatform);

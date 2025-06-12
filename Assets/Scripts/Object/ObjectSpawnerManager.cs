@@ -13,6 +13,7 @@ namespace Object
 {
     public class ObjectSpawnerManager : MonoBehaviour
     {
+        #region Option
         [Serializable]
         public class ObjectSpawnOption : ISpawnOption
         {
@@ -29,18 +30,18 @@ namespace Object
             [FoldoutGroup("$id")]
             public bool bypassAttemp;
             [FoldoutGroup("$id")]
-            public List<string> canSpawnOnType;
-            
-            [FoldoutGroup("$id")]
             [Tooltip("if this enable mean it will not spawn near falling or danger platform")]
             public bool mustSafeBeforeSpawn;
-
+            [FoldoutGroup("$id")]
+            public List<string> canSpawnOnType;
             public int Weight => weight;
             public int Chance => chance;
             public bool TryPassChance() => Random.Range(0, 100) < chance;
             
         }
+        #endregion
 
+        #region Inspector & Value
         [ListDrawerSettings(Expanded = false, ShowPaging = true)]
         [SerializeField] private List<ObjectSpawnOption> objectPrefabs;
         
@@ -60,6 +61,9 @@ namespace Object
         private float _currentAttemp = 0;
         private Vector2 _lastPlatformPosition;
         
+        #endregion
+        
+        #region Unity Methods
         private void Awake()
         {
             _currentAttemp = 0;
@@ -81,28 +85,36 @@ namespace Object
             PlatformSpawnerManager.OnPlatformSpawned -= HandlePlatformSpawned;
             PlatformSpawnerManager.OnPlatformDespawned -= HandlePlatformDespawned;
         }
-        
+        #endregion
+
+        #region Methods
+
         private void HandlePlatformSpawned(GameObject platform)
         {
             var platformData = platform.GetComponent<ObjectPoolData>();
             if (platformData == null) return;
-            
-            var option = SpawnerController.Instance.GetRandomOption(objectPrefabs);
-            if (option == null) return;
-            
-            if (!option.canSpawnOnType.Contains(platformData.SpawnId)) return;
-            
-            //Count check
-            if (!CanSpawn(option)) return;
-            //Attemp
-            if (CalculateAttemp(option)) return;
-            var obj = SpawnerController.Instance.Spawn(option.id, platform.transform.position);
-            
-            platformObjectMap[platform] = obj;
-            if (!activeObjectCount.ContainsKey(option.id)) activeObjectCount[option.id] = 0;
-            activeObjectCount[option.id]++;
-            OnSpawned?.Invoke(obj);
+
+            for (var i = 0; i < objectPrefabs.Count; i++)
+            {
+                var option = objectPrefabs[i];
+
+                if (!option.TryPassChance()) continue;
+                if (!option.canSpawnOnType.Contains(platformData.SpawnId)) continue;
+                if (!CanSpawn(option)) continue;
+                if (option.mustSafeBeforeSpawn && !SafePlatform(platform)) continue;
+
+                if (!option.bypassAttemp && CalculateAttemp(option))
+                    break;
+
+                var obj = SpawnerController.Instance.Spawn(option.id, platform.transform.position);
+                platformObjectMap[platform] = obj;
+                activeObjectCount.TryAdd(option.id, 0);
+                activeObjectCount[option.id]++;
+                OnSpawned?.Invoke(obj);
+                break;
+            }
         }
+
 
         private void HandlePlatformDespawned(GameObject platform)
         {
@@ -124,6 +136,13 @@ namespace Object
             OnDespawned?.Invoke(obj);
         }
 
+        private bool SafePlatform(GameObject platform)
+        {
+            var spawner = SpawnerController.Instance;
+            var previousPlatforms = spawner.GetPreviousMultiple(spawner._allPlatform, platform, 2);
+            if (previousPlatforms.Count() != 2) return false;
+            return previousPlatforms.All(p => p.GetComponent<ObjectPoolData>().SpawnId == "PlatformNormal");
+        }
         
         private bool CalculateAttemp(ObjectSpawnOption option)
         {
@@ -145,6 +164,7 @@ namespace Object
         {
             return activeObjectCount.GetValueOrDefault(option.id, 0) < option.prewarmCount;
         }
+        #endregion
     }
 }
 
