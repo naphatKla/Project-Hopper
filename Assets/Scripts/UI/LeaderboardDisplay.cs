@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Dan.Models;
@@ -23,7 +24,10 @@ namespace UI
             nameInput.gameObject.SetActive(false);
             
             Entry ownerEntry = await LeaderboardManager.LoadOwnerDataFromServer();
-            nameInput.text = ownerEntry.Username;
+            
+            if (ownerEntry.Username != "Unknown")
+                nameInput.text = ownerEntry.Username;
+        
             nameInput.gameObject.SetActive(true);
             playButton.gameObject.SetActive(true);
             playButton.onClick.AddListener(() => LeaderboardManager.SetLocalData(nameInput.text, ownerEntry.Score));
@@ -40,8 +44,6 @@ namespace UI
                 int elementScore = entries[i].Score;
                 _elementList[i].AssignText(elementName, elementScore);
             }
-            
-            Debug.Log("Done");
         }
     }
 }

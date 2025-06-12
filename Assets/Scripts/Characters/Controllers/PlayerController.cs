@@ -1,3 +1,4 @@
+using System;
 using Characters.CombatSystems;
 using Characters.InputSystems;
 using Characters.MovementSystems;
@@ -98,7 +99,7 @@ namespace Characters.Controllers
         
         private void SaveDataToLeaderboard(int score)
         {
-            if (LeaderboardManager.OwnerLocalName.Length <= 0)
+            if (String.IsNullOrEmpty(LeaderboardManager.OwnerLocalName))
             {
                 Debug.Log("empty name, leaderboard will not save");
                 return;
