@@ -8596,6 +8596,20 @@ MonoBehaviour:
     mustSafeBeforeSpawn: 0
     canSpawnOnType:
     - PlatformObstacle
+  - id: FlyingCoin
+    prefab: {fileID: 9118354823518209840, guid: 78aa337818acbb94e90aa1d89f581676, type: 3}
+    prewarmCount: 30
+    weight: 1
+    chance: 40
+    bypassAttemp: 1
+    mustSafeBeforeSpawn: 0
+    canSpawnOnType:
+    - PlatformNormal
+    - PlatformFalling
+    - PlatformBroken
+    - PlatformSpear
+    - PlatformTNT
+    - PlatformCloud
   parent: {fileID: 1154669716}
   attempObject: 3
 --- !u!1 &1763852820

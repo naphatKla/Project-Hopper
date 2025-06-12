@@ -98,13 +98,8 @@ namespace Object
             {
                 var option = objectPrefabs[i];
 
-                if (!option.TryPassChance()) continue;
-                if (!option.canSpawnOnType.Contains(platformData.SpawnId)) continue;
-                if (!CanSpawn(option)) continue;
-                if (option.mustSafeBeforeSpawn && !SafePlatform(platform)) continue;
-
-                if (!option.bypassAttemp && CalculateAttemp(option))
-                    break;
+                if (!CanSpawnOption(option, platformData, platform)) continue;
+                if (!option.bypassAttemp && CalculateAttemp(option)) break;
 
                 var obj = SpawnerController.Instance.Spawn(option.id, platform.transform.position);
                 platformObjectMap[platform] = obj;
@@ -114,8 +109,7 @@ namespace Object
                 break;
             }
         }
-
-
+        
         private void HandlePlatformDespawned(GameObject platform)
         {
             if (platformObjectMap.TryGetValue(platform, out var option))
@@ -124,6 +118,16 @@ namespace Object
             }
         }
         
+        private bool CanSpawnOption(ObjectSpawnOption option, ObjectPoolData platformData, GameObject platform)
+        {
+            if (!option.TryPassChance()) return false;
+            if (!option.canSpawnOnType.Contains(platformData.SpawnId)) return false;
+            if (!CanSpawn(option)) return false;
+            if (option.mustSafeBeforeSpawn && !SafePlatform(platform)) return false;
+
+            return true;
+        }
+
         private void DespawnObject(GameObject platform, GameObject obj)
         {
             var id = obj.GetComponent<ObjectPoolData>()?.SpawnId;
@@ -155,11 +159,6 @@ namespace Object
             return false;
         }
         
-        /// <summary>
-        /// Check is it can spawn
-        /// </summary>
-        /// <param name="option"></param>
-        /// <returns></returns>
         private bool CanSpawn(ObjectSpawnOption option)
         {
             return activeObjectCount.GetValueOrDefault(option.id, 0) < option.prewarmCount;

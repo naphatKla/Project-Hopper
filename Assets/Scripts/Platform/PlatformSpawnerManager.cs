@@ -103,6 +103,7 @@ namespace Platform
                 _lastSpawnPosition.y = newStep * _stepHeight;
                 _lastSpawnPosition = SnapToGrid(_lastSpawnPosition, 0.1f);
                 var platform = SpawnerController.Instance.Spawn(normalID, _lastSpawnPosition);
+                
                 _activePlatforms.Enqueue(platform);
                 _spawnedPlatformToIdMap[platform] = normalID;
             }
@@ -119,6 +120,7 @@ namespace Platform
             
             var option = SpawnerController.Instance.GetRandomOption(platformPrefabs, true);
             var platform = SpawnerController.Instance.Spawn(option.id, _lastSpawnPosition);
+            
             _activePlatforms.Enqueue(platform);
             _spawnedPlatformToIdMap[platform] = option.id;
             SpawnerController.Instance._allPlatform.Add(platform);

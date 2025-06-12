@@ -24,6 +24,7 @@ namespace Platform
         
         private Vector2 _lastAttackBoxSize;
         private Vector2 _lastAttackBoxOffset;
+        private Quaternion _originalRotation;
         #endregion
 
         #region Properties
@@ -38,6 +39,8 @@ namespace Platform
             RigidbodyPlatform = GetComponent<Rigidbody2D>();
             ColliderPlatform = GetComponent<BoxCollider2D>();
             RendererPlatform = GetComponent<SpriteRenderer>();
+            
+            _originalRotation = transform.rotation;
         }
         
         private void Update()
@@ -49,6 +52,7 @@ namespace Platform
         #region Public Methods
         public void OnEnable()
         {
+            ResetPlatform();
             currentState?.OnSpawned(this);
         }
 
@@ -77,7 +81,8 @@ namespace Platform
             loopTokenSource = null;
             _lastAttackBoxOffset = Vector2.zero;
             _lastAttackBoxSize = Vector2.zero;
-            
+
+            transform.rotation = _originalRotation;
             ColliderPlatform.enabled = true;
             RigidbodyPlatform.gravityScale = 0;
             RendererPlatform.color = Color.white;
