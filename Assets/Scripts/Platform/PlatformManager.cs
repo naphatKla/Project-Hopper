@@ -6,70 +6,56 @@ using Characters.HealthSystems;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using MoreMountains.Feedbacks;
-using PoolingSystem;
+using Platform.State;
 using Sirenix.OdinInspector;
-using Spawner.Platform;
 using UnityEngine;
 
 namespace Platform
 {
     public class PlatformManager : MonoBehaviour
     {
-        [ReadOnly] public PlatformBaseStateSO currentState;
-        [ReadOnly] public CancellationTokenSource loopTokenSource;
-
-        [FoldoutGroup("Object Effect")]
-        public List<ObjectPlatformEffect> objectEffects;
+        #region Inspector & Variable
+        [BoxGroup("Platform Setting")]
+        public PlatformBaseState currentState;
+        [BoxGroup("Platform Setting")]
+        public CancellationTokenSource loopTokenSource;
+        [BoxGroup("Platform Feedback")]
+        public MMF_Player feedback;
         
-        private Dictionary<string, ObjectPlatformEffect> _effectDict;
         private Vector2 _lastAttackBoxSize;
         private Vector2 _lastAttackBoxOffset;
-        
+        #endregion
+
+        #region Properties
         public Rigidbody2D RigidbodyPlatform { get; private set; }
         public BoxCollider2D ColliderPlatform { get; private set; }
         public SpriteRenderer RendererPlatform { get; private set; }
-        public ObjectPlatformEffect currentObjectEffect;
+        #endregion
 
-        [HideInInspector] public GameObject feedback;
-        [HideInInspector] public PlatformDataSO data;
-
+        #region Unity Methods
         private void Awake()
         {
             RigidbodyPlatform = GetComponent<Rigidbody2D>();
             ColliderPlatform = GetComponent<BoxCollider2D>();
             RendererPlatform = GetComponent<SpriteRenderer>();
-
-            _effectDict = new Dictionary<string, ObjectPlatformEffect>();
-            foreach (var effect in objectEffects)
-            {
-                if (effect != null && !_effectDict.ContainsKey(effect.name))
-                {
-                    _effectDict.Add(effect.name, effect);
-                    effect.Init();
-                }
-            }
-        }
-
-        public void OnSpawned()
-        {
-            currentState?.OnSpawned(this);
         }
         
-        public void OnDespawned()
+        private void Update()
         {
-            currentState?.OnDespawned(this);
+            currentState?.UpdateState(this);
+        }
+        #endregion
+
+        #region Public Methods
+        public void OnEnable()
+        {
+            currentState?.OnSpawned(this);
         }
 
         public void OnDisable()
         {
             ResetPlatform();
-            data = null;
-            StopFeedbackAsync(feedback);
-        }
-
-        private void Update()
-        {
-            currentState?.UpdateState(this);
+            currentState?.OnDespawned(this);
         }
 
         public void OnStepped(GameObject player)
@@ -77,15 +63,10 @@ namespace Platform
             currentState?.OnStepped(this, player);
         }
         
-        public void SetState(PlatformBaseStateSO newState)
+        public void SetState(PlatformBaseState newState)
         {
             currentState = newState;
             currentState.OnSpawned(this);
-        }
-        
-        public void SetFeedback(GameObject feedbacks)
-        {
-            feedback = feedbacks;
         }
 
         public void ResetPlatform()
@@ -100,13 +81,7 @@ namespace Platform
             ColliderPlatform.enabled = true;
             RigidbodyPlatform.gravityScale = 0;
             RendererPlatform.color = Color.white;
-        }
-        
-        
-        public ObjectPlatformEffect GetObject(string name)
-        {
-            if (_effectDict.TryGetValue(name, out var result)) return result;
-            return null;
+            RendererPlatform.enabled = true;
         }
         
         /// <summary>
@@ -148,13 +123,11 @@ namespace Platform
         /// </summary>
         /// <param name="particlePrefab"></param>
         /// <param name="position"></param>
-        public async UniTask PlayFeedbackAsync(GameObject feedbackItem, Vector3 position)
+        public async UniTask PlayFeedbackAsync(Vector3 position)
         {
-            if (feedbackItem == null) return;
-            feedbackItem.transform.position = position;
-            var mmf = feedbackItem.GetComponent<MMFeedbacks>();
-            if (mmf == null) return;
-            mmf.PlayFeedbacks();
+            if (feedback == null) return;
+            feedback.transform.position = position;
+            feedback.PlayFeedbacks();
         }
         
         /// <summary>
@@ -162,20 +135,11 @@ namespace Platform
         /// </summary>
         /// <param name="particlePrefab"></param>
         /// <param name="position"></param>
-        public void StopFeedbackAsync(GameObject feedbackItem)
+        public void StopFeedbackAsync()
         {
-            if (feedbackItem == null) return;
-            var mmf = feedbackItem.GetComponent<MMFeedbacks>();
-            if (mmf == null) return;
-            mmf.StopFeedbacks();
+            if (feedback == null) return;
+            feedback.StopFeedbacks();
         }
-        
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.red;
-            Vector2 center = (Vector2)transform.position + _lastAttackBoxOffset;
-            Gizmos.DrawWireCube(center, _lastAttackBoxSize);
-        }
-
+        #endregion
     }
 }

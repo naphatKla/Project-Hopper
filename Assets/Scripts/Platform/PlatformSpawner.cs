@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
@@ -99,7 +99,7 @@ namespace Spawner.Platform
         /// <summary>
         /// Start spawning 7 platform
         /// </summary>
-        public void SpawnStartPlatform()
+        /*public void SpawnStartPlatform()
         {
             var normalSo = platformDatas.Find(data => data.platformSO.state is PlatformNormalStateSO);
             for (var i = 0; i < initialNormalPlatformCount; i++)
@@ -110,7 +110,7 @@ namespace Spawner.Platform
                 lastSpawnPosition = SnapToGrid(lastSpawnPosition, 0.1f);
                 Spawn(lastSpawnPosition, normalSo.platformSO);
             }
-        }
+        }#1#
         
         /// <summary>
         /// Spawn next platform
@@ -166,9 +166,7 @@ namespace Spawner.Platform
             //Set State
             var context = platformGO.GetComponent<PlatformManager>();
             context.SetState(platformData.state);
-            context.SetFeedback(AssignFeedback(platformData));
             context.OnSpawned();
-            context.data = platformData;
             
             OnSpawned?.Invoke(platformGO);
             activePlatforms.Enqueue(platformGO);
@@ -300,4 +298,4 @@ namespace Spawner.Platform
 
         #endregion
     }
-}
+}*/

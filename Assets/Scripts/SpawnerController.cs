@@ -1,114 +1,96 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Characters.Controllers;
-using Cysharp.Threading.Tasks;
 using MoreMountains.Tools;
 using Platform;
-using PoolingSystem;
-using Sirenix.OdinInspector;
-using Spawner.Object;
-using Spawner.Platform;
+using Pool;
 using UnityEngine;
 
-namespace Spawner.Controller
+public class SpawnerController : MMSingleton<SpawnerController>
 {
-    public class SpawnerController : MMSingleton<SpawnerController>
+    private List<GameObject> _allSpawnedObjects = new();
+    
+    public GameObject Spawn(string id, Vector3 position)
     {
-        [BoxGroup("Dependent Context")] 
-        [SerializeField] public PlatformSpawner _platformSpawner;
-        
-        [BoxGroup("Dependent Context")] 
-        [SerializeField] public ObjectSpawner _objectSpawner;
-        
-        private readonly List<GameObject> _activePlatformHistory = new();
-        
-        private async void OnEnable()
-        {
-            await UniTask.WaitUntil(() => PlayerController.Instance != null && PlayerController.Instance.GridMovementSystem != null);
-            
-            //Spawn platform when player jump
-            if (!PlayerController.Instance?.GridMovementSystem) return;
-            PlayerController.Instance.GridMovementSystem.OnJumpUp += _platformSpawner.SpawnNextPlatform;
-            
-            _platformSpawner.OnSpawned += HandlePlatformSpawned;
-            _platformSpawner.OnDespawned += HandlePlatformDespawned;
-        }
-
-        private void OnDisable()
-        {
-            //Unsubcribe function spawn platform when player jump
-            if (!PlayerController.Instance?.GridMovementSystem) return;
-            PlayerController.Instance.GridMovementSystem.OnJumpUp -= _platformSpawner.SpawnNextPlatform;
-            
-            _platformSpawner.OnSpawned -= HandlePlatformSpawned;
-            _platformSpawner.OnDespawned -= HandlePlatformDespawned;
-        }
-        
-        private void Awake()
-        {
-            //Clear all pool & data
-            PoolingManager.Instance.ClearPool();
-            _platformSpawner.ClearData();
-            _objectSpawner.ClearData();
-            
-            //Create pooling and despawn
-            _platformSpawner.PreWarm();
-            _objectSpawner.PreWarm();
-        }
-
-        private void Start()
-        {
-            //Start spawn platform
-            _platformSpawner.SpawnStartPlatform();
-            PlayerController.Instance?.gameObject.SetActive(true);
-        }
-        
-        private void HandlePlatformSpawned(GameObject platform)
-        {
-            _activePlatformHistory.Add(platform);
-            _objectSpawner.TrySpawnObjectOnPlatform(platform);
-        }
-
-        private void HandlePlatformDespawned(GameObject despawnedPlatform)
-        {
-            _activePlatformHistory.Remove(despawnedPlatform);
-            _objectSpawner.OnPlatformDespawned(despawnedPlatform);
-        }
-        
-        /// <summary>
-        /// Search neighbor platform with Linq
-        /// </summary>
-        /// <param name="currentPlatform"></param>
-        /// <param name="range"></param>
-        /// <returns></returns>
-        public (IEnumerable<GameObject> left, IEnumerable<GameObject> right) GetNeighbors(GameObject currentPlatform, int range)
-        {
-            int currentIndex = _activePlatformHistory.IndexOf(currentPlatform);
-            if (currentIndex == -1) return (Enumerable.Empty<GameObject>(), Enumerable.Empty<GameObject>());
-            var left = _activePlatformHistory.Take(currentIndex).TakeLast(range);
-            var right = _activePlatformHistory.Skip(currentIndex + 1).Take(range);
-            return (left, right);
-        }
-        
-        /// <summary>
-        /// Get active platform list
-        /// </summary>
-        /// <returns></returns>
-        public List<GameObject> GetActivePlatformList()
-        {
-            return new List<GameObject>(_activePlatformHistory);
-        }
-     
-        #region Inspector Control
-
-        [Button("Spawn Platform",ButtonSizes.Large)] [Tooltip("Spawn next platform")]
-        private void SpawnPlatform()
-        {
-            _platformSpawner.SpawnNextPlatform();
-        }
-
-        #endregion
+        var obj = PoolingManager.Instance.Spawn(id, position);
+        Instance.Register(obj);
+        return obj;
     }
-}
+    
+    public GameObject Spawn(string id, GameObject prefab, Vector3 position)
+    {
+        var obj = PoolingManager.Instance.Spawn(id, prefab, position);
+        Instance.Register(obj);
+        return obj;
+    }
 
+    public void Despawn(string id, GameObject obj)
+    {
+        PoolingManager.Instance.Despawn(id, obj);
+        Instance.Unregister(obj);
+    }
+
+    public void Prewarm(string id, GameObject prefab, int amount,Transform parent)
+    {
+        PoolingManager.Instance.Prewarm(id, prefab, amount, parent);
+    }
+
+    public void ClearAll(string id)
+    {
+        PoolingManager.Instance.ClearAll(id);
+    }
+    
+    /// <summary>
+    /// Random spawner by passs chance and weight.
+    /// </summary>
+    /// <param name="options"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public T GetRandomOption<T>(List<T> options) where T : ISpawnOption
+    {
+        var passed = options.Where(o => o.TryPassChance()).ToList();
+        if (passed.Count == 0) return default;
+
+        int totalWeight = passed.Sum(o => o.Weight);
+        int rand = Random.Range(0, totalWeight);
+        int current = 0;
+
+        foreach (var opt in passed)
+        {
+            Debug.Log($"Checking: {opt} | Chance: {opt.Chance} | Pass: {opt.TryPassChance()}");
+            current += opt.Weight;
+            if (rand < current)
+                return opt;
+        }
+
+        return passed[0];
+    }
+
+    
+    #region Tracking & Query
+    private void Register(GameObject obj)
+    {
+        _allSpawnedObjects.Add(obj);
+    }
+
+    private void Unregister(GameObject obj)
+    {
+        _allSpawnedObjects.Remove(obj);
+    }
+
+    public GameObject GetPrevious(int offsetFromLast = 1)
+    {
+        int idx = _allSpawnedObjects.Count - 1 - offsetFromLast;
+        return (idx >= 0) ? _allSpawnedObjects[idx] : null;
+    }
+
+    public List<GameObject> GetAllSpawned(System.Func<GameObject, bool> filter = null)
+    {
+        return filter != null ? _allSpawnedObjects.Where(filter).ToList() : new(_allSpawnedObjects);
+    }
+
+    public void ClearTracked()
+    {
+        _allSpawnedObjects.Clear();
+    }
+    #endregion
+} 

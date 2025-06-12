@@ -1,14 +1,6 @@
-using System;
-using System.Threading;
 using Characters.Controllers;
 using Characters.HealthSystems;
-using Cysharp.Threading.Tasks;
-using DG.Tweening;
-using ObjectItem;
-using Sirenix.OdinInspector;
-using Spawner.Controller;
 using UnityEngine;
-using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 namespace ObjectItem
@@ -37,7 +29,7 @@ namespace ObjectItem
 
         private void DropCoin(ObjectManager manager)
         {
-            var coinSetting = SpawnerController.Instance._objectSpawner.GetSettingByPrefabName("Coin");
+            /*var coinSetting = SpawnerController.Instance._objectSpawner.GetSettingByPrefabName("Coin");
             var potionSetting = SpawnerController.Instance._objectSpawner.GetSettingByPrefabName("Potion");
             if (coinSetting == null && potionSetting == null) return;
             
@@ -61,7 +53,7 @@ namespace ObjectItem
                     var targetPos = originPos + new Vector3(offsetX, 0, 0);
                     coin.transform.DOJump(targetPos, 1f, 1, 1f);
                 }
-            }
+            }*/
         }
     }
 }

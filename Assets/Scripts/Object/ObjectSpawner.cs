@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,9 +25,9 @@ namespace Spawner.Object
         [Tooltip("Chance of object to random")]
         public float spawnChance;
         
-        [Tooltip("Choose which platform that this object can spawn on")]
+        /*[Tooltip("Choose which platform that this object can spawn on")]
         [ValueDropdown(nameof(GetAllPlatformStatesDropdown), IsUniqueList = true)]
-        public List<PlatformBaseStateSO> validPlatformTypes;
+        public List<PlatformBaseStateSO> validPlatformTypes;#1#
         
         [Tooltip("Increase Height from platform")]
         public float yOffset;
@@ -40,7 +41,7 @@ namespace Spawner.Object
         [Tooltip("if this enable mean it will not calculate attemp")]
         public bool bypassAttemp;
         
-        private static IEnumerable<ValueDropdownItem<PlatformBaseStateSO>> GetAllPlatformStatesDropdown()
+        /*private static IEnumerable<ValueDropdownItem<PlatformBaseStateSO>> GetAllPlatformStatesDropdown()
         {
             return UnityEditor.AssetDatabase
                 .FindAssets("t:PlatformBaseStateSO")
@@ -51,7 +52,7 @@ namespace Spawner.Object
                     string shortName = asset.name;
                     return new ValueDropdownItem<PlatformBaseStateSO>(shortName, asset);
                 });
-        }
+        }#1#
 
     }
     #endregion
@@ -107,7 +108,7 @@ namespace Spawner.Object
         /// <param name="platform"></param>
         public void TrySpawnObjectOnPlatform(GameObject platform)
         {
-            if (!IsValidPlatform(platform)) return;
+            /*if (!IsValidPlatform(platform)) return;
      
             //Get properties
             var platformManager = platform.GetComponent<PlatformManager>();
@@ -133,7 +134,7 @@ namespace Spawner.Object
             
             //Spawn and set position
             var spawnPos = (Vector2)platform.transform.position + Vector2.up * selectedSetting.yOffset;
-            Spawn(platform, spawnPos, null , selectedSetting);
+            Spawn(platform, spawnPos, null , selectedSetting);#1#
         }
         
         /// <summary>
@@ -292,10 +293,10 @@ namespace Spawner.Object
         /// <param name="platformState"></param>
         /// <param name="setting"></param>
         /// <returns></returns>
-        public bool CanSpawnOn(PlatformBaseStateSO platformState, ObjectSetting setting)
+        /*public bool CanSpawnOn(PlatformBaseStateSO platformState, ObjectSetting setting)
         {
             return setting.validPlatformTypes.Any(validState => platformState.GetType() == validState.GetType());
-        }
+        }#1#
         #endregion
 
         #region Private Methods
@@ -321,11 +322,11 @@ namespace Spawner.Object
         /// </summary>
         /// <param name="platform"></param>
         /// <returns></returns>
-        private bool IsValidPlatform(GameObject platform)
+        /*private bool IsValidPlatform(GameObject platform)
         {
             var pm = platform.GetComponent<PlatformManager>();
             return pm != null && pm.data != null;
-        }
+        }#1#
 
         /// <summary>
         /// Check left of platform is normal
@@ -337,7 +338,7 @@ namespace Spawner.Object
         /// </summary>
         /// <param name="platform">The current platform to check from.</param>
         /// <returns>True only if there are exactly 2 left neighbors and both are normal.</returns>
-        private bool IsLeftPlatformNormal(GameObject platform)
+        /*private bool IsLeftPlatformNormal(GameObject platform)
         {
             var leftNeighbors = SpawnerController.Instance.GetNeighbors(platform, 2).left;
             if (leftNeighbors.Count() != 2)
@@ -357,8 +358,9 @@ namespace Spawner.Object
             return objectDatas
                 .Where(setting => CanSpawnOn(platformState, setting))
                 .ToList();
-        }
+        }#1#
         #endregion
     }
 }
+*/
 
