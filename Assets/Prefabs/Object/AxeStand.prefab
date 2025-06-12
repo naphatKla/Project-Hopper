@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 776453868710436240}
   - component: {fileID: 3325449177164941349}
   - component: {fileID: 7301764424803491625}
-  - component: {fileID: 5275631478517284547}
+  - component: {fileID: 1464224344730431422}
   m_Layer: 7
   m_Name: AxeStand
   m_TagString: Untagged
@@ -247,7 +247,7 @@ MonoBehaviour:
   OnDead:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5275631478517284547
+--- !u!114 &1464224344730431422
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -256,12 +256,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 2142938544900157211}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0405db12e22a4764988a489688bd4c39, type: 3}
+  m_Script: {fileID: 11500000, guid: 36c5c09e9d14ce34096fcb138f2f53fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnId: AxeStand
   OnObjectSpawnedEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7301764424803491625}
+        m_TargetAssemblyTypeName: Characters.HealthSystems.HealthSystem, Assembly-CSharp
+        m_MethodName: ResetHealth
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnObjectDespawnedEvent:
     m_PersistentCalls:
       m_Calls: []

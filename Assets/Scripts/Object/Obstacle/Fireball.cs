@@ -133,6 +133,7 @@ namespace ObjectItem
         {
             warningIcon.GetComponent<SpriteRenderer>().enabled = false;
             manager.RendererObject.enabled = true;
+            manager.ColliderObject.enabled = true;
 
             firePosition = warningIcon.transform.position;
             manager.transform.position = firePosition;
@@ -148,6 +149,7 @@ namespace ObjectItem
                 .SetEase(Ease.Linear)
                 .ToUniTask();
 
+            manager.ColliderObject.enabled = false;
             manager.gameObject.SetActive(false);
         }
 

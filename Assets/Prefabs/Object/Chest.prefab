@@ -520,10 +520,10 @@ GameObject:
   - component: {fileID: 6693197027226556134}
   - component: {fileID: 6125838047745172732}
   - component: {fileID: 6328216571203049035}
-  - component: {fileID: 4272002193041845069}
   - component: {fileID: 1071386795053589763}
   - component: {fileID: 7644762005032898566}
-  - component: {fileID: 5396808700454693385}
+  - component: {fileID: 4272002193041845069}
+  - component: {fileID: 542402513830783842}
   m_Layer: 7
   m_Name: Chest
   m_TagString: Untagged
@@ -690,20 +690,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentState: {fileID: 4272002193041845069}
   feedback: {fileID: 0}
---- !u!114 &4272002193041845069
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8521010066800170767}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe72206430a369f408f004387946d469, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  minDropAmount: 3
-  maxDropAmount: 6
 --- !u!114 &1071386795053589763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -753,7 +739,7 @@ MonoBehaviour:
   OnDead:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5396808700454693385
+--- !u!114 &4272002193041845069
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -762,12 +748,39 @@ MonoBehaviour:
   m_GameObject: {fileID: 8521010066800170767}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0405db12e22a4764988a489688bd4c39, type: 3}
+  m_Script: {fileID: 11500000, guid: fe72206430a369f408f004387946d469, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minDropAmount: 3
+  maxDropAmount: 6
+--- !u!114 &542402513830783842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8521010066800170767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36c5c09e9d14ce34096fcb138f2f53fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnId: Chest
   OnObjectSpawnedEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7644762005032898566}
+        m_TargetAssemblyTypeName: Characters.HealthSystems.HealthSystem, Assembly-CSharp
+        m_MethodName: ResetHealth
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnObjectDespawnedEvent:
     m_PersistentCalls:
       m_Calls: []

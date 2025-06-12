@@ -491,7 +491,7 @@ GameObject:
   - component: {fileID: 8298917704446366007}
   - component: {fileID: 6906386847654530506}
   - component: {fileID: 4470992802624947809}
-  - component: {fileID: 7708926553920435636}
+  - component: {fileID: 4435119535536813229}
   - component: {fileID: 8605631981897174899}
   m_Layer: 0
   m_Name: Fireball
@@ -647,7 +647,7 @@ MonoBehaviour:
   warningIcon: {fileID: 6218425596901285162}
   warningTimer: 3
   prepareTimer: 1
---- !u!114 &7708926553920435636
+--- !u!114 &4435119535536813229
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -656,9 +656,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 9118354823518209840}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0405db12e22a4764988a489688bd4c39, type: 3}
+  m_Script: {fileID: 11500000, guid: 36c5c09e9d14ce34096fcb138f2f53fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnId: Fireball
   OnObjectSpawnedEvent:
     m_PersistentCalls:
       m_Calls: []

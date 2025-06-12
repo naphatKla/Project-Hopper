@@ -8555,11 +8555,12 @@ MonoBehaviour:
     prefab: {fileID: 2691774995898733471, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
     prewarmCount: 10
     weight: 1
-    chance: 40
+    chance: 30
     bypassAttemp: 0
     mustSafeBeforeSpawn: 1
     canSpawnOnType:
     - PlatformNormal
+    yOffset: 0
   - id: EnemySkeleton
     prefab: {fileID: 2691774995898733471, guid: cfea1e390c3caca4c82546a0ce6f428c, type: 3}
     prewarmCount: 10
@@ -8569,6 +8570,7 @@ MonoBehaviour:
     mustSafeBeforeSpawn: 1
     canSpawnOnType:
     - PlatformNormal
+    yOffset: 0
   - id: EnemyBat
     prefab: {fileID: 2691774995898733471, guid: ab0bfbeb9533a81438c0f0ed10383a82, type: 3}
     prewarmCount: 10
@@ -8578,15 +8580,17 @@ MonoBehaviour:
     mustSafeBeforeSpawn: 1
     canSpawnOnType:
     - PlatformNormal
+    yOffset: 0
   - id: EnemyEliteSlime
     prefab: {fileID: 2691774995898733471, guid: daca16d91597c044c9561962d75ae77f, type: 3}
     prewarmCount: 10
     weight: 10
-    chance: 100
+    chance: 5
     bypassAttemp: 0
     mustSafeBeforeSpawn: 1
     canSpawnOnType:
     - PlatformNormal
+    yOffset: 0
   - id: ObjectSpike
     prefab: {fileID: 9118354823518209840, guid: edbf17aad0fab9a47abefbc160cc67f4, type: 3}
     prewarmCount: 15
@@ -8596,11 +8600,12 @@ MonoBehaviour:
     mustSafeBeforeSpawn: 0
     canSpawnOnType:
     - PlatformObstacle
+    yOffset: 1.5
   - id: FlyingCoin
     prefab: {fileID: 9118354823518209840, guid: 78aa337818acbb94e90aa1d89f581676, type: 3}
     prewarmCount: 30
     weight: 1
-    chance: 40
+    chance: 25
     bypassAttemp: 1
     mustSafeBeforeSpawn: 0
     canSpawnOnType:
@@ -8610,8 +8615,62 @@ MonoBehaviour:
     - PlatformSpear
     - PlatformTNT
     - PlatformCloud
+    yOffset: 1
+  - id: AxeStand
+    prefab: {fileID: 2142938544900157211, guid: 8f6706b33231ebc47819858012e2c7d1, type: 3}
+    prewarmCount: 10
+    weight: 1
+    chance: 10
+    bypassAttemp: 0
+    mustSafeBeforeSpawn: 1
+    canSpawnOnType:
+    - PlatformNormal
+    yOffset: 0
+  - id: Chest
+    prefab: {fileID: 8521010066800170767, guid: 0122692150d23d64ca85cea899f0fe17, type: 3}
+    prewarmCount: 10
+    weight: 1
+    chance: 12
+    bypassAttemp: 1
+    mustSafeBeforeSpawn: 1
+    canSpawnOnType:
+    - PlatformNormal
+    yOffset: 0
+  - id: Coin
+    prefab: {fileID: 9118354823518209840, guid: 112eac318dbea5a489c1592cc15a268a, type: 3}
+    prewarmCount: 20
+    weight: 1
+    chance: 0
+    bypassAttemp: 0
+    mustSafeBeforeSpawn: 0
+    canSpawnOnType: []
+    yOffset: 0
+  - id: Potion
+    prefab: {fileID: 9118354823518209840, guid: 7abd7f963e42f4947a25a327793c458b, type: 3}
+    prewarmCount: 20
+    weight: 1
+    chance: 0
+    bypassAttemp: 0
+    mustSafeBeforeSpawn: 0
+    canSpawnOnType: []
+    yOffset: 0
+  - id: Fireball
+    prefab: {fileID: 9118354823518209840, guid: c68a5d8fb4b2a414da89662d5ff94632, type: 3}
+    prewarmCount: 10
+    weight: 1
+    chance: 5
+    bypassAttemp: 0
+    mustSafeBeforeSpawn: 0
+    canSpawnOnType:
+    - PlatformNormal
+    - PlatformFalling
+    - PlatformBroken
+    - PlatformSpear
+    - PlatformTNT
+    - PlatformCloud
+    yOffset: 0
   parent: {fileID: 1154669716}
-  attempObject: 3
+  attempObject: 2
 --- !u!1 &1763852820
 GameObject:
   m_ObjectHideFlags: 0

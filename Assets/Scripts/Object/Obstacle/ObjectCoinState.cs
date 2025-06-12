@@ -12,18 +12,27 @@ namespace ObjectItem
     public class ObjectCoinState : ObjectBaseState
     {
         public override string StateID { get; }
-        
+
+        private CancellationTokenSource _despawnCts;
+
         public override void OnSpawned(ObjectManager manager)
         {
             manager.Loop?.Kill();
             manager.transform.DOKill();
-            manager.RigidbodyPlatform.gravityScale = 1;
+            manager.RigidbodyObject.gravityScale = 1;
+            
+            _despawnCts = new CancellationTokenSource();
+            AutoDespawnAfterDelay(manager, _despawnCts.Token).Forget();
         }
 
         public override void OnDespawned(ObjectManager manager)
         {
             manager.Loop?.Kill();
             manager.Loop = null;
+
+            _despawnCts?.Cancel();
+            _despawnCts?.Dispose();
+            _despawnCts = null;
         }
 
         public override void UpdateState(ObjectManager manager) { }
@@ -35,6 +44,16 @@ namespace ObjectItem
             manager.feedback.PlayFeedbacks();
             manager.gameObject.SetActive(false);
         }
-        
+
+        private async UniTaskVoid AutoDespawnAfterDelay(ObjectManager manager, CancellationToken token)
+        {
+            try
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(10), cancellationToken: token);
+                if (!manager.gameObject.activeSelf) return;
+                manager.gameObject.SetActive(false);
+            }
+            catch (OperationCanceledException) { }
+        }
     }
 }

@@ -12,6 +12,7 @@ namespace Platform
 {
     public class PlatformSpawnerManager : MonoBehaviour
     {
+        #region Option
         [Serializable]
         public class PlatformSpawnOption : ISpawnOption
         {
@@ -30,7 +31,9 @@ namespace Platform
             public int Chance => chance;
             public bool TryPassChance() => Random.Range(0, 100) < chance;
         }
+        #endregion
 
+        #region Inspector & Value
         [ListDrawerSettings(Expanded = false, ShowPaging = true)]
         [SerializeField] private List<PlatformSpawnOption> platformPrefabs;
         
@@ -72,7 +75,9 @@ namespace Platform
         private const int _maxStep = 8;
         private const float _stepHeight = 0.2f;
         private const int _maxActivePlatformCount = 15;
+        #endregion
         
+        #region Unity Methods
         private void Awake()
         {
             SpawnerController.Instance._allPlatform.Clear();
@@ -92,7 +97,9 @@ namespace Platform
             if (!PlayerController.Instance?.GridMovementSystem) return;
             PlayerController.Instance.GridMovementSystem.OnJumpUp += SpawnNextPlatform;
         }
-
+        #endregion
+        
+        #region Methods
         public void SpawnStart7Platform()
         {
             string normalID = "PlatformNormal";
@@ -183,6 +190,7 @@ namespace Platform
             position.z = 0f;
             return position;
         }
+        #endregion
         
         #region Gizmos
 

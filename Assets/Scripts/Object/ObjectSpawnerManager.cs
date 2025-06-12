@@ -34,6 +34,9 @@ namespace Object
             public bool mustSafeBeforeSpawn;
             [FoldoutGroup("$id")]
             public List<string> canSpawnOnType;
+            [FoldoutGroup("$id")]
+            [Tooltip("Increase Height from platform")]
+            public float yOffset;
             public int Weight => weight;
             public int Chance => chance;
             public bool TryPassChance() => Random.Range(0, 100) < chance;
@@ -101,7 +104,7 @@ namespace Object
                 if (!CanSpawnOption(option, platformData, platform)) continue;
                 if (!option.bypassAttemp && CalculateAttemp(option)) break;
 
-                var obj = SpawnerController.Instance.Spawn(option.id, platform.transform.position);
+                var obj = SpawnerController.Instance.Spawn(option.id, platform.transform.position + Vector3.up * option.yOffset);
                 platformObjectMap[platform] = obj;
                 activeObjectCount.TryAdd(option.id, 0);
                 activeObjectCount[option.id]++;

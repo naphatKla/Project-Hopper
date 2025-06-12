@@ -1,5 +1,6 @@
 using Characters.Controllers;
 using Characters.HealthSystems;
+using DG.Tweening;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -29,23 +30,18 @@ namespace ObjectItem
 
         private void DropCoin(ObjectManager manager)
         {
-            /*var coinSetting = SpawnerController.Instance._objectSpawner.GetSettingByPrefabName("Coin");
-            var potionSetting = SpawnerController.Instance._objectSpawner.GetSettingByPrefabName("Potion");
-            if (coinSetting == null && potionSetting == null) return;
-            
             Vector3 originPos = manager.transform.position;
 
             //Potion drop if health < 33%
             if (PlayerController.Instance.HealthSystem.CurrentHp == 1)
-                SpawnerController.Instance._objectSpawner.Spawn(position: originPos, settingOverride: potionSetting);
+                SpawnerController.Instance.Spawn("Potion", manager.transform.position);
             //Coin drop if health > 33%
             else
             {
                 var dropCount = Random.Range(Mathf.CeilToInt(minDropAmount), Mathf.FloorToInt(maxDropAmount) + 1);
                 for (var i = 0; i < dropCount; i++)
                 {
-                    var coin = SpawnerController.Instance._objectSpawner.Spawn(position: originPos,
-                        settingOverride: coinSetting);
+                    var coin = SpawnerController.Instance.Spawn("Coin", manager.transform.position);
 
                     if (coin == null) continue;
                     var offsetX = Random.Range(-1.5f, 1.5f);
@@ -53,7 +49,7 @@ namespace ObjectItem
                     var targetPos = originPos + new Vector3(offsetX, 0, 0);
                     coin.transform.DOJump(targetPos, 1f, 1, 1f);
                 }
-            }*/
+            }
         }
     }
 }
