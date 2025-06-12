@@ -87,7 +87,7 @@ namespace Object
             var platformData = platform.GetComponent<ObjectPoolData>();
             if (platformData == null) return;
             
-            var option = GetRandomObjectOption();
+            var option = SpawnerController.Instance.GetRandomOption(objectPrefabs);
             if (option == null) return;
             
             if (!option.canSpawnOnType.Contains(platformData.SpawnId)) return;
@@ -98,20 +98,10 @@ namespace Object
             if (CalculateAttemp(option)) return;
             var obj = SpawnerController.Instance.Spawn(option.id, platform.transform.position);
             
-            var pooldata = obj.GetComponent<ObjectPoolData>();
-            AddListener(obj, pooldata);
-           
             platformObjectMap[platform] = obj;
             if (!activeObjectCount.ContainsKey(option.id)) activeObjectCount[option.id] = 0;
             activeObjectCount[option.id]++;
             OnSpawned?.Invoke(obj);
-        }
-        
-        public void AddListener(GameObject itemObj, ObjectPoolData poolData)
-        {
-            poolData.OnObjectDespawnedEvent.RemoveAllListeners();
-            poolData.OnObjectSpawnedEvent.RemoveAllListeners();
-            poolData.OnObjectSpawnedEvent.AddListener((obj) => OnSpawned?.Invoke(itemObj));
         }
 
         private void HandlePlatformDespawned(GameObject platform)
@@ -154,32 +144,6 @@ namespace Object
         private bool CanSpawn(ObjectSpawnOption option)
         {
             return activeObjectCount.GetValueOrDefault(option.id, 0) < option.prewarmCount;
-        }
-        
-        
-        /// <summary>
-        /// Random spawner by passs chance and weight.
-        /// </summary>
-        /// <param name="options"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        private ObjectSpawnOption GetRandomObjectOption()
-        {
-            var passed = objectPrefabs.Where(o => o.TryPassChance()).ToList();
-            if (passed.Count == 0) return null;
-
-            int totalWeight = passed.Sum(o => o.Weight);
-            int rand = Random.Range(0, totalWeight);
-            int current = 0;
-
-            foreach (var opt in passed)
-            {
-                current += opt.Weight;
-                if (rand < current)
-                    return opt;
-            }
-
-            return passed[0];
         }
     }
 }

@@ -116,7 +116,7 @@ namespace Platform
             _lastSpawnPosition.y = newStep * _stepHeight;
             _lastSpawnPosition = SnapToGrid(_lastSpawnPosition, 0.05f);
             
-            var option = GetRandomPlatformOption();
+            var option = SpawnerController.Instance.GetRandomOption(platformPrefabs);
             var platform = SpawnerController.Instance.Spawn(option.id, _lastSpawnPosition);
             _activePlatforms.Enqueue(platform);
             _spawnedPlatformToIdMap[platform] = option.id;
@@ -178,32 +178,6 @@ namespace Platform
             position.z = 0f;
             return position;
         }
-        
-        /// <summary>
-        /// Random spawner by passs chance and weight.
-        /// </summary>
-        /// <param name="options"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        private PlatformSpawnOption GetRandomPlatformOption()
-        {
-            var passed = platformPrefabs.Where(o => o.TryPassChance()).ToList();
-            if (passed.Count == 0) return null;
-
-            int totalWeight = passed.Sum(o => o.Weight);
-            int rand = Random.Range(0, totalWeight);
-            int current = 0;
-
-            foreach (var opt in passed)
-            {
-                current += opt.Weight;
-                if (rand < current)
-                    return opt;
-            }
-
-            return passed[0];
-        }
-
         
         #region Gizmos
 
