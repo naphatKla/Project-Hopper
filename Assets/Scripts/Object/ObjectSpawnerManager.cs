@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Characters.Controllers;
+using Characters.HealthSystems;
 using MoreMountains.Tools;
 using Platform;
 using Sirenix.OdinInspector;
@@ -50,10 +51,11 @@ namespace Object
         [SerializeField] private float attempObject;
         
 
-        private readonly Dictionary<GameObject, ObjectSpawnOption> platformObjectMap = new();
+        private readonly Dictionary<GameObject, GameObject> platformObjectMap = new();
+        private readonly Dictionary<string, int> activeObjectCount = new();
         
-        public static event Action<GameObject> OnObjectSpawned;
-        public static event Action<GameObject> OnObjectDespawned;
+        public event Action<GameObject> OnSpawned;
+        public event Action<GameObject> OnDespawned;
         
         private float _currentAttemp = 0;
         private Vector2 _lastPlatformPosition;
@@ -65,7 +67,6 @@ namespace Object
             foreach (var config in objectPrefabs)
             {
                 SpawnerController.Instance.Prewarm(config.id, config.prefab, config.prewarmCount, parent);
-                config.prefab.GetComponent<ObjectPoolData>().SpawnId = config.id;
             }
         }
         
@@ -91,21 +92,48 @@ namespace Object
             
             if (!option.canSpawnOnType.Contains(platformData.SpawnId)) return;
             
+            //Count check
+            if (!CanSpawn(option)) return;
+            //Attemp
             if (CalculateAttemp(option)) return;
             var obj = SpawnerController.Instance.Spawn(option.id, platform.transform.position);
-            platformObjectMap[platform] = option;
-            OnObjectSpawned?.Invoke(obj);
+            
+            var pooldata = obj.GetComponent<ObjectPoolData>();
+            AddListener(obj, pooldata);
+           
+            platformObjectMap[platform] = obj;
+            if (!activeObjectCount.ContainsKey(option.id)) activeObjectCount[option.id] = 0;
+            activeObjectCount[option.id]++;
+            OnSpawned?.Invoke(obj);
+        }
+        
+        public void AddListener(GameObject itemObj, ObjectPoolData poolData)
+        {
+            poolData.OnObjectDespawnedEvent.RemoveAllListeners();
+            poolData.OnObjectSpawnedEvent.RemoveAllListeners();
+            poolData.OnObjectSpawnedEvent.AddListener((obj) => OnSpawned?.Invoke(itemObj));
         }
 
         private void HandlePlatformDespawned(GameObject platform)
         {
             if (platformObjectMap.TryGetValue(platform, out var option))
             {
-                SpawnerController.Instance.Despawn(option.id, option.prefab);
-                platformObjectMap.Remove(platform);
-                OnObjectDespawned?.Invoke(option.prefab);
+                DespawnObject(platform, option);
             }
         }
+        
+        private void DespawnObject(GameObject platform, GameObject obj)
+        {
+            var id = obj.GetComponent<ObjectPoolData>()?.SpawnId;
+            if (string.IsNullOrEmpty(id)) return;
+
+            SpawnerController.Instance.Despawn(id, obj);
+            platformObjectMap.Remove(platform);
+
+            if (activeObjectCount.ContainsKey(id)) activeObjectCount[id] = Mathf.Max(0, activeObjectCount[id] - 1);
+            OnDespawned?.Invoke(obj);
+        }
+
         
         private bool CalculateAttemp(ObjectSpawnOption option)
         {
@@ -116,6 +144,16 @@ namespace Object
             }
             _currentAttemp = attempObject;
             return false;
+        }
+        
+        /// <summary>
+        /// Check is it can spawn
+        /// </summary>
+        /// <param name="option"></param>
+        /// <returns></returns>
+        private bool CanSpawn(ObjectSpawnOption option)
+        {
+            return activeObjectCount.GetValueOrDefault(option.id, 0) < option.prewarmCount;
         }
         
         

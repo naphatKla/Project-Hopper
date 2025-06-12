@@ -4,32 +4,44 @@ using Pool;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ObjectPoolData : MonoBehaviour, ISpawnable , IPoolable
+public class ObjectPoolData : MonoBehaviour , ISpawnable , IPoolable
 {
     [SerializeField] private string spawnId;
 
     public string SpawnId { get => spawnId; set => spawnId = value; }
-    public static event Action<ObjectPoolData> OnAnySpawned;
-    public static event Action<ObjectPoolData> OnAnyDespawned;
+    
+    [SerializeField] public UnityEvent<GameObject> OnObjectSpawnedEvent;
+    [SerializeField] public UnityEvent<GameObject> OnObjectDespawnedEvent;
+    
+    private bool wasActive = true;
 
-    public UnityEvent onSpawnedEvent;
-    public UnityEvent onDespawnedEvent;
+    private void OnEnable()
+    {
+        OnObjectSpawnedEvent?.Invoke(gameObject);
+        wasActive = true;
+    }
+
+    private void OnDisable()
+    {
+        if (wasActive)
+        {
+            OnObjectDespawnedEvent?.Invoke(gameObject);
+            wasActive = false;
+        }
+    }
 
     public void OnSpawned()
     {
-        onSpawnedEvent?.Invoke();
-        OnAnySpawned?.Invoke(this);
+        OnObjectSpawnedEvent?.Invoke(gameObject);
+        wasActive = true;
     }
 
     public void OnDespawned()
     {
-        onDespawnedEvent?.Invoke();
-        OnAnyDespawned?.Invoke(this);
-    }
-    
-    public void OnDisable()
-    {
-        onDespawnedEvent?.Invoke();
-        OnAnyDespawned?.Invoke(this);
+        if (wasActive)
+        {
+            OnObjectDespawnedEvent?.Invoke(gameObject);
+            wasActive = false;
+        }
     }
 }
