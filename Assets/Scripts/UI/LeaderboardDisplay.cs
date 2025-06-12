@@ -18,6 +18,7 @@ namespace UI
 
         private async void Start()
         {
+            elementPrefab.gameObject.SetActive(false);
             playButton.gameObject.SetActive(false);
             nameInput.gameObject.SetActive(false);
             
