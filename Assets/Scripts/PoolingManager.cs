@@ -63,7 +63,7 @@ namespace Pool
             pool[id].Enqueue(obj);
         }
     
-        public void ClearAll(string id)
+        public void ClearAllType(string id)
         {
             if (!pool.ContainsKey(id)) return;
     
@@ -71,6 +71,12 @@ namespace Pool
                 Destroy(obj);
     
             pool[id].Clear();
+        }
+        
+        public void ClearAll()
+        {
+            pool.Clear();
+            prefabs.Clear();
         }
     }
 }

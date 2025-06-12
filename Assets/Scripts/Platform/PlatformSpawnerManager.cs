@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Characters.Controllers;
-using Cysharp.Threading.Tasks;
-using Interface;
+using MoreMountains.Tools;
+using Object;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -12,7 +13,7 @@ namespace Platform
     public class PlatformSpawnerManager : MonoBehaviour
     {
         [Serializable]
-        public class SpawnOption : ISpawnOption
+        public class PlatformSpawnOption : ISpawnOption
         {
             [FoldoutGroup("$id")]
             public string id;
@@ -24,13 +25,14 @@ namespace Platform
             public int weight = 1;
             [FoldoutGroup("$id")]
             [Range(0, 100)] public int chance = 100;
+            
             public int Weight => weight;
             public int Chance => chance;
             public bool TryPassChance() => Random.Range(0, 100) < chance;
         }
 
         [ListDrawerSettings(Expanded = false, ShowPaging = true)]
-        [SerializeField] private List<SpawnOption> platformPrefabs;
+        [SerializeField] private List<PlatformSpawnOption> platformPrefabs;
         
         [FoldoutGroup("Control")] [Tooltip("How many first platforms must be Normal")] [SerializeField]
         private int initialNormalPlatformCount = 7;
@@ -61,6 +63,7 @@ namespace Platform
         private readonly Queue<GameObject> _activePlatforms = new();
         private Dictionary<GameObject, string> _spawnedPlatformToIdMap = new();
         
+        public List<PlatformSpawnOption> PlatformPrefabs => platformPrefabs;
         public static event Action<GameObject> OnPlatformSpawned;
         public static event Action<GameObject> OnPlatformDespawned;
         
@@ -76,9 +79,7 @@ namespace Platform
             _spawnedPlatformToIdMap.Clear();
             foreach (var config in platformPrefabs)
             {
-                SpawnerController.Instance.ClearAll(config.id);
                 SpawnerController.Instance.Prewarm(config.id, config.prefab, config.prewarmCount, parent);
-                config.prefab.GetComponent<ObjectPoolData>().SpawnId = config.id;
             }
         }
         
@@ -93,7 +94,7 @@ namespace Platform
 
         public void SpawnStart7Platform()
         {
-            string normalID = "PlatformNormal";
+            string normalID = "Platform_Normal";
             for (var i = 0; i < initialNormalPlatformCount; i++)
             {
                 var newStep = CalculateWeight();
@@ -115,7 +116,7 @@ namespace Platform
             _lastSpawnPosition.y = newStep * _stepHeight;
             _lastSpawnPosition = SnapToGrid(_lastSpawnPosition, 0.05f);
             
-            var option = SpawnerController.Instance.GetRandomOption(platformPrefabs);
+            var option = GetRandomPlatformOption();
             var platform = SpawnerController.Instance.Spawn(option.id, _lastSpawnPosition);
             _activePlatforms.Enqueue(platform);
             _spawnedPlatformToIdMap[platform] = option.id;
@@ -131,7 +132,7 @@ namespace Platform
                 if (_spawnedPlatformToIdMap.TryGetValue(oldPlatform, out var id))
                 {
                     SpawnerController.Instance.Despawn(id, oldPlatform);
-                    OnPlatformSpawned?.Invoke(oldPlatform);
+                    OnPlatformDespawned?.Invoke(oldPlatform);
                     _spawnedPlatformToIdMap.Remove(oldPlatform);
                 }
             }
@@ -165,6 +166,11 @@ namespace Platform
             return nextStep;
         }
         
+        public bool TryGetPlatformId(GameObject platform, out string id)
+        {
+            return _spawnedPlatformToIdMap.TryGetValue(platform, out id);
+        }
+        
         private Vector3 SnapToGrid(Vector3 position, float gridSize = 0.5f)
         {
             position.x = Mathf.Round(position.x / gridSize) * gridSize;
@@ -172,6 +178,32 @@ namespace Platform
             position.z = 0f;
             return position;
         }
+        
+        /// <summary>
+        /// Random spawner by passs chance and weight.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        private PlatformSpawnOption GetRandomPlatformOption()
+        {
+            var passed = platformPrefabs.Where(o => o.TryPassChance()).ToList();
+            if (passed.Count == 0) return null;
+
+            int totalWeight = passed.Sum(o => o.Weight);
+            int rand = Random.Range(0, totalWeight);
+            int current = 0;
+
+            foreach (var opt in passed)
+            {
+                current += opt.Weight;
+                if (rand < current)
+                    return opt;
+            }
+
+            return passed[0];
+        }
+
         
         #region Gizmos
 

@@ -15,7 +15,6 @@ public class ObjectPoolData : MonoBehaviour, ISpawnable, IPoolable
     public UnityEvent onSpawnedEvent;
     public UnityEvent onDespawnedEvent;
     
-    
     public void Despawn()
     {
         if (!gameObject.scene.IsValid()) return;

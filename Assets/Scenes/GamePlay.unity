@@ -7896,37 +7896,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da43522623d4704e979466dc7650b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1570342465
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1570342466}
-  m_Layer: 0
-  m_Name: FeedbackParent
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1570342466
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1570342465}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1597827103
 GameObject:
   m_ObjectHideFlags: 0
@@ -8490,6 +8459,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1710304640}
   - component: {fileID: 1710304643}
+  - component: {fileID: 1710304644}
   m_Layer: 0
   m_Name: SpawnerManager
   m_TagString: Untagged
@@ -8525,37 +8495,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   platformPrefabs:
-  - id: PlatformNormal
+  - id: Platform_Normal
     prefab: {fileID: 2440649737265221699, guid: ed6d30393853a7d4399c340923f85b8b, type: 3}
     prewarmCount: 15
     weight: 20
     chance: 100
-  - id: PlatformFalling
+  - id: Platform_Falling
     prefab: {fileID: 4356961184076040564, guid: 122f32f8a532e9345b8ffecdc8299c93, type: 3}
     prewarmCount: 15
     weight: 3
     chance: 100
-  - id: PlatformBroken
+  - id: Platform_Broken
     prefab: {fileID: 1775796112859372514, guid: 722685758882b3942bb763ea57c7cc3f, type: 3}
     prewarmCount: 15
     weight: 3
     chance: 100
-  - id: PlatformSpear
+  - id: Platform_Spear
     prefab: {fileID: 2961288095606630916, guid: ee5396187b9004543aff005e8c11b8c8, type: 3}
     prewarmCount: 15
     weight: 2
     chance: 100
-  - id: PlatformTNT
+  - id: Platform_TNT
     prefab: {fileID: 196439045629894100, guid: a40de7bbd6eb31c45962314bde5dfcdc, type: 3}
     prewarmCount: 15
     weight: 1
     chance: 100
-  - id: PlatformCloud
+  - id: Platform_Cloud
     prefab: {fileID: 1030023824258741643, guid: 5478ca236d4a9d744ab833bd45d4ca9b, type: 3}
     prewarmCount: 15
     weight: 2
     chance: 100
-  - id: PlatformObstacle
+  - id: Platform_Obstacle
     prefab: {fileID: 8500082788431550180, guid: 06a2887b480284b409e870cab0e3c54c, type: 3}
     prewarmCount: 15
     weight: 2
@@ -8568,6 +8538,30 @@ MonoBehaviour:
   nextStep: 4
   targetStep: 4
   retainStep: 7
+--- !u!114 &1710304644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1710304638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c54ef73b9f224f849b2e119043a22c51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectPrefabs:
+  - id: Enemy_Slime
+    prefab: {fileID: 2691774995898733471, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
+    prewarmCount: 10
+    weight: 10
+    chance: 50
+    bypassAttemp: 0
+    canSpawnOnType:
+    - Platform_Normal
+    mustSafeBeforeSpawn: 1
+  parent: {fileID: 1154669716}
+  attempObject: 1
 --- !u!1 &1763852820
 GameObject:
   m_ObjectHideFlags: 0
@@ -9359,7 +9353,6 @@ SceneRoots:
   - {fileID: 1302779526}
   - {fileID: 878975400}
   - {fileID: 615574709}
-  - {fileID: 1570342466}
   - {fileID: 1154669716}
   - {fileID: 21371655}
   - {fileID: 2014777778}

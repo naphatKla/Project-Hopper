@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 8464559609138264350}
   - component: {fileID: 2881279238246293737}
   - component: {fileID: 1968252146258710090}
-  - component: {fileID: -999884926351472804}
+  - component: {fileID: 2924422587889086828}
   - component: {fileID: 3946832140847313736}
   m_Layer: 7
   m_Name: SlimeEnemy
@@ -152,7 +152,7 @@ Transform:
   m_GameObject: {fileID: 2691774995898733471}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.487, y: 3.5, z: 0}
+  m_LocalPosition: {x: 65.5, y: 0.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -434,7 +434,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
---- !u!114 &-999884926351472804
+--- !u!114 &2924422587889086828
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -443,10 +443,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2691774995898733471}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0405db12e22a4764988a489688bd4c39, type: 3}
+  m_Script: {fileID: 11500000, guid: 36c5c09e9d14ce34096fcb138f2f53fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnObjectSpawnedEvent:
+  spawnId: Enemy_Slime
+  onSpawnedEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8464559609138264350}
@@ -461,7 +462,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnObjectDespawnedEvent:
+  onDespawnedEvent:
     m_PersistentCalls:
       m_Calls: []
 --- !u!95 &3946832140847313736
