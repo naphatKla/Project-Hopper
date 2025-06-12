@@ -8558,7 +8558,7 @@ MonoBehaviour:
     chance: 50
     bypassAttemp: 0
     canSpawnOnType:
-    - Platform_Normal
+    - PlatformNormal
     mustSafeBeforeSpawn: 1
   parent: {fileID: 1154669716}
   attempObject: 1

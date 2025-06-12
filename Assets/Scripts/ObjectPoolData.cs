@@ -4,7 +4,7 @@ using Pool;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ObjectPoolData : MonoBehaviour, ISpawnable, IPoolable
+public class ObjectPoolData : MonoBehaviour, ISpawnable , IPoolable
 {
     [SerializeField] private string spawnId;
 
@@ -14,23 +14,21 @@ public class ObjectPoolData : MonoBehaviour, ISpawnable, IPoolable
 
     public UnityEvent onSpawnedEvent;
     public UnityEvent onDespawnedEvent;
-    
-    public void Despawn()
-    {
-        if (!gameObject.scene.IsValid()) return;
-        PoolingManager.Instance.Despawn(spawnId, gameObject);
-    }
-    
+
     public void OnSpawned()
     {
-        //
         onSpawnedEvent?.Invoke();
         OnAnySpawned?.Invoke(this);
     }
 
     public void OnDespawned()
     {
-        //
+        onDespawnedEvent?.Invoke();
+        OnAnyDespawned?.Invoke(this);
+    }
+    
+    public void OnDisable()
+    {
         onDespawnedEvent?.Invoke();
         OnAnyDespawned?.Invoke(this);
     }

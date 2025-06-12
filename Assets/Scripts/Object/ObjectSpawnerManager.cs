@@ -88,7 +88,7 @@ namespace Object
             
             var option = GetRandomObjectOption();
             if (option == null) return;
-
+            
             if (!option.canSpawnOnType.Contains(platformData.SpawnId)) return;
             
             if (CalculateAttemp(option)) return;

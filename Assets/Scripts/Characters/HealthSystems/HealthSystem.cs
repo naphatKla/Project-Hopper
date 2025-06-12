@@ -171,7 +171,6 @@ namespace Characters.HealthSystems
         /// </summary>
         public void ResetHealth()
         {
-            Debug.LogWarning(_owner);
             _currentHp = maxHp;
             _isDead = false;
             _owner.CharacterCollider2D.enabled = true;
