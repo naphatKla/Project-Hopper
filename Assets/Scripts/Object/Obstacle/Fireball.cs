@@ -70,14 +70,17 @@ namespace ObjectItem
             if (!other.CompareTag("Player")) return;
             if (other.TryGetComponent(out HealthSystem health)) health.TakeDamage(1);
             manager.feedback.PlayFeedbacks();
+            manager.DOKill();
             manager.gameObject.SetActive(false);
         }
         
         private async UniTask FireballAsync(ObjectManager manager)
         {
+            await UniTask.Yield();
             _isWarning = true;
             float lockedY = await DoWarnPhaseAsync();
             _isWarning = false;
+            manager.BlinkColor(Color.white, Color.red, 3f, 3).Forget();
             await DoPreparePhaseAsync(lockedY);
             await DoFirePhaseAsync(manager);
         }
@@ -98,7 +101,7 @@ namespace ObjectItem
                     float playerY = PlayerController.Instance.transform.position.y;
                     lockedY = playerY + 0.5f;
 
-                    warningIcon.transform.position = GetScreenRightPosition(lockedY);
+                    warningIcon.transform.position = GetScreenRightPosition(0.95f,lockedY);
                 }
 
                 warntimer += Time.deltaTime;
@@ -115,10 +118,9 @@ namespace ObjectItem
         private async UniTask DoPreparePhaseAsync(float lockedY)
         {
             float pretimer = 0f;
-
             while (pretimer < prepareTimer)
             {
-                warningIcon.transform.position = GetScreenRightPosition(lockedY);
+                warningIcon.transform.position = GetScreenRightPosition(0.95f,lockedY);
 
                 pretimer += Time.deltaTime;
                 await UniTask.Yield();
@@ -135,6 +137,7 @@ namespace ObjectItem
             manager.RendererObject.enabled = true;
             manager.ColliderObject.enabled = true;
 
+            warningIcon.transform.position = GetScreenRightPosition(1.1f,warningIcon.transform.position.y);
             firePosition = warningIcon.transform.position;
             manager.transform.position = firePosition;
 
@@ -158,9 +161,9 @@ namespace ObjectItem
         /// </summary>
         /// <param name="y"></param>
         /// <returns></returns>
-        private Vector3 GetScreenRightPosition(float y)
+        private Vector3 GetScreenRightPosition(float x ,float y)
         {
-            Vector3 screenRight = mainCamera.ViewportToWorldPoint(new Vector3(0.9f, 0.5f, mainCamera.nearClipPlane));
+            Vector3 screenRight = mainCamera.ViewportToWorldPoint(new Vector3(x, 0.5f, mainCamera.nearClipPlane));
             screenRight.y = y;
             screenRight.z = 0;
             return screenRight;

@@ -41,13 +41,12 @@ public class SpawnerController : MMSingleton<SpawnerController>
     
     public T GetRandomOption<T>(List<T> options, bool useWeight = true) where T : ISpawnOption
     {
+        
         var passed = options.Where(o => o.TryPassChance()).ToList();
         if (passed.Count == 0) return default;
 
-        if (!useWeight)
-        {
-            return passed[Random.Range(0, passed.Count)];
-        }
+        if (!useWeight) return passed[Random.Range(0, passed.Count)];
+        
         int totalWeight = passed.Sum(o => o.Weight);
         int rand = Random.Range(0, totalWeight);
         int current = 0;
