@@ -119,18 +119,12 @@ namespace Characters.MovementSystems
         #endregion
 
         #region Unity Methods
-
-        /// <summary>
-        /// Calculate and control the gravity.
-        /// </summary>
-        private void Update()
+        
+        private void FixedUpdate()
         {
             if (!_isInitialized) return;
             GravityHandler();
-        }
-
-        private void FixedUpdate()
-        {
+            
             if (!_isBuffer) return;
             _inputBufferTimeCount += Time.fixedDeltaTime;
             if (_inputBufferTimeCount <_inputBufferTime) return;
@@ -195,7 +189,7 @@ namespace Characters.MovementSystems
                     MovePosition(curvedPos);
                 }, 1f, moveDuration)
                 .SetEase(Ease.Linear)
-                .OnComplete(() => { _ignoreGravity = false; });
+                .OnComplete(() => { _ignoreGravity = false; }).SetUpdate(UpdateType.Fixed);
 
             await UniTask.WaitForSeconds(Mathf.Max(0, moveCooldown - moveDuration));
             _isMoveCooldown = false;
@@ -243,7 +237,7 @@ namespace Characters.MovementSystems
             //if (_isGrounded) return;
 
             Vector2 currentPos = transform.position;
-            Vector2 newPos = currentPos + Vector2.up * (gravityScale * Time.deltaTime);
+            Vector2 newPos = currentPos + Vector2.up * (gravityScale * Time.fixedDeltaTime);
             MovePosition(newPos);
         }
 
