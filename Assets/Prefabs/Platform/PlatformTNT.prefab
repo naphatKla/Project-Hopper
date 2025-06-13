@@ -112,11 +112,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8777110324347823491, guid: eaa33ef0234c302439cb50f92d2f2cf7, type: 3}
       propertyPath: FeedbacksList.Array.size
-      value: 3
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8777110324347823491, guid: eaa33ef0234c302439cb50f92d2f2cf7, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[1]'
+      value: 4929453904111337687
       objectReference: {fileID: 0}
     - target: {fileID: -8777110324347823491, guid: eaa33ef0234c302439cb50f92d2f2cf7, type: 3}
       propertyPath: 'FeedbacksList.Array.data[2]'
       value: 4929453904111337687
+      objectReference: {fileID: 0}
+    - target: {fileID: -8777110324347823491, guid: eaa33ef0234c302439cb50f92d2f2cf7, type: 3}
+      propertyPath: managedReferences[7847927109811962099].NestParticles
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4851070957362740516, guid: eaa33ef0234c302439cb50f92d2f2cf7, type: 3}
       propertyPath: m_Name

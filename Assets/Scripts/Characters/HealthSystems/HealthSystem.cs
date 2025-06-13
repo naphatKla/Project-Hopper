@@ -153,6 +153,7 @@ namespace Characters.HealthSystems
         public void FullHeal()
         {
             _currentHp = maxHp;
+            _owner?.FeedbackSystem?.PlayFeedback(FeedbackKey.Heal);
             OnHealthChange?.Invoke();
         }
 

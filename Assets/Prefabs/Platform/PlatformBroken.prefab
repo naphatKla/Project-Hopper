@@ -109,6 +109,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8545043408614685686}
     m_Modifications:
+    - target: {fileID: -8777110324347823491, guid: 3a48ff3787d700349b36ddd2db3a9a01, type: 3}
+      propertyPath: managedReferences[7847927109811962099].NestParticles
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4851070957362740516, guid: 3a48ff3787d700349b36ddd2db3a9a01, type: 3}
       propertyPath: m_Name
       value: BrokenFeedbackEffect

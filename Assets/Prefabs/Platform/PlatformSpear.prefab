@@ -133,6 +133,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5128026876366555664}
     m_Modifications:
+    - target: {fileID: -8777110324347823491, guid: 2cafcda994a855440ac176568d132ce0, type: 3}
+      propertyPath: FeedbacksList.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8777110324347823491, guid: 2cafcda994a855440ac176568d132ce0, type: 3}
+      propertyPath: 'FeedbacksList.Array.data[0]'
+      value: 4929453904111337686
+      objectReference: {fileID: 0}
     - target: {fileID: 4851070957362740516, guid: 2cafcda994a855440ac176568d132ce0, type: 3}
       propertyPath: m_Name
       value: SpearFeedbackEffect

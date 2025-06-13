@@ -48,6 +48,7 @@ namespace Characters
         Guard = 3,       // Triggered on guard activation
         Hurt = 4,  // Triggered when taking damage
         Iframe = 5,       // Triggered when entering invincible (iframe) state
-        Dead = 6
+        Dead = 6,
+        Heal = 7,
     }
 }
