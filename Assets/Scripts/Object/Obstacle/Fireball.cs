@@ -70,6 +70,7 @@ namespace ObjectItem
             if (!other.CompareTag("Player")) return;
             if (other.TryGetComponent(out HealthSystem health)) health.TakeDamage(1);
             manager.feedback.PlayFeedbacks();
+            manager.DOKill();
             manager.gameObject.SetActive(false);
         }
         
