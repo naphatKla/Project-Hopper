@@ -732,6 +732,7 @@ MonoBehaviour:
   warningIcon: {fileID: 6218425596901285162}
   warningTimer: 3
   prepareTimer: 1
+  fireballSpeed: 6.5
 --- !u!114 &4435119535536813229
 MonoBehaviour:
   m_ObjectHideFlags: 0

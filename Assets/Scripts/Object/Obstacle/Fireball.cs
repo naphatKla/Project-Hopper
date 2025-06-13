@@ -20,6 +20,8 @@ namespace ObjectItem
         [SerializeField] private float warningTimer;
         [FoldoutGroup("Fireball Setting")] 
         [SerializeField] private float prepareTimer;
+        [FoldoutGroup("Fireball Setting")] 
+        [SerializeField] private float fireballSpeed;
 
         private bool _isWarning;
         
@@ -71,6 +73,7 @@ namespace ObjectItem
             if (other.TryGetComponent(out HealthSystem health)) health.TakeDamage(1);
             manager.feedback.PlayFeedbacks();
             manager.DOKill();
+            manager.ColliderObject.enabled = false;                 
             manager.gameObject.SetActive(false);
         }
         
@@ -146,10 +149,10 @@ namespace ObjectItem
             screenLeft.z = 0;
 
             float distance = Vector3.Distance(firePosition, screenLeft);
-            float duration = distance / 2f;
-
+            float duration = distance / fireballSpeed;
+            
             await manager.transform.DOMoveX(screenLeft.x, duration)
-                .SetEase(Ease.Linear)
+                .SetEase(Ease.Linear).SetUpdate(UpdateType.Fixed)
                 .ToUniTask();
 
             manager.ColliderObject.enabled = false;
