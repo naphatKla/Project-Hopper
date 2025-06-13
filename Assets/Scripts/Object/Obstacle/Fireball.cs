@@ -35,6 +35,7 @@ namespace ObjectItem
             manager.Loop?.Kill();
             manager.transform.DOKill();
             manager.RendererObject.enabled = false;
+            manager.ColliderObject.isTrigger = true;
             warningIcon.GetComponent<SpriteRenderer>().enabled = true;
             mainCamera = Camera.main;
             _ = FireballAsync(manager);
@@ -139,6 +140,7 @@ namespace ObjectItem
             warningIcon.GetComponent<SpriteRenderer>().enabled = false;
             manager.RendererObject.enabled = true;
             manager.ColliderObject.enabled = true;
+            manager.ColliderObject.isTrigger = true;
 
             warningIcon.transform.position = GetScreenRightPosition(1.1f,warningIcon.transform.position.y);
             firePosition = warningIcon.transform.position;
