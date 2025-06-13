@@ -34,7 +34,7 @@ namespace Platform
         #endregion
 
         #region Inspector & Value
-        [ListDrawerSettings(Expanded = false, ShowPaging = true)]
+        [FoldoutGroup("List")] [ListDrawerSettings(Expanded = false, ShowPaging = true)]
         [SerializeField] private List<PlatformSpawnOption> platformPrefabs;
         
         [FoldoutGroup("Control")] [Tooltip("How many first platforms must be Normal")] [SerializeField]

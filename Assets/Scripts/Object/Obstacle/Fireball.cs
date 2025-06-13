@@ -75,9 +75,11 @@ namespace ObjectItem
         
         private async UniTask FireballAsync(ObjectManager manager)
         {
+            await UniTask.Yield();
             _isWarning = true;
             float lockedY = await DoWarnPhaseAsync();
             _isWarning = false;
+            manager.BlinkColor(Color.white, Color.red, 3f, 3).Forget();
             await DoPreparePhaseAsync(lockedY);
             await DoFirePhaseAsync(manager);
         }
@@ -115,7 +117,6 @@ namespace ObjectItem
         private async UniTask DoPreparePhaseAsync(float lockedY)
         {
             float pretimer = 0f;
-
             while (pretimer < prepareTimer)
             {
                 warningIcon.transform.position = GetScreenRightPosition(lockedY);

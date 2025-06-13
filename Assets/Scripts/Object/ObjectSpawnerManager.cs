@@ -45,7 +45,7 @@ namespace Object
         #endregion
 
         #region Inspector & Value
-        [ListDrawerSettings(Expanded = false, ShowPaging = true)]
+        [FoldoutGroup("List")] [ListDrawerSettings(Expanded = false, ShowPaging = true)]
         [SerializeField] private List<ObjectSpawnOption> objectPrefabs;
         
         [FoldoutGroup("Control")] [SerializeField] [Tooltip("Object parent")]
