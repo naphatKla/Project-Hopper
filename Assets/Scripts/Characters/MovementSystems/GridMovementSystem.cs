@@ -127,7 +127,7 @@ namespace Characters.MovementSystems
             
             if (!_isBuffer) return;
             _inputBufferTimeCount += Time.fixedDeltaTime;
-            if (_inputBufferTimeCount <_inputBufferTime) return;
+            if (_inputBufferTimeCount < _inputBufferTime) return;
             TryMoveAction();
         }
 
