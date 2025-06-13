@@ -32,6 +32,7 @@ namespace ObjectItem
         public override void OnSpawned(ObjectManager manager)
         {
             manager.transform.localRotation = Quaternion.Euler(0f, 0f, -90f);
+            manager.transform.position = Vector3.down * 2f; //For fix start platform
             manager.Loop?.Kill();
             manager.transform.DOKill();
             manager.RendererObject.enabled = false;
