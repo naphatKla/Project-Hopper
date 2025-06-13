@@ -16,16 +16,16 @@ namespace ObjectItem
         public MMF_Player feedback;
         [ReadOnly] public CancellationTokenSource loopTokenSource;
         
-        public Rigidbody2D RigidbodyPlatform { get; private set; }
-        public BoxCollider2D ColliderPlatform { get; private set; }
+        public Rigidbody2D RigidbodyObject { get; private set; }
+        public BoxCollider2D ColliderObject { get; private set; }
         public SpriteRenderer RendererObject { get; private set; }
 
         public Sequence Loop;
 
         private void Awake()
         {
-            RigidbodyPlatform = GetComponent<Rigidbody2D>();
-            ColliderPlatform = GetComponent<BoxCollider2D>();
+            RigidbodyObject = GetComponent<Rigidbody2D>();
+            ColliderObject = GetComponent<BoxCollider2D>();
             RendererObject = GetComponent<SpriteRenderer>();
         }
 
@@ -60,8 +60,9 @@ namespace ObjectItem
             loopTokenSource?.Cancel();
             loopTokenSource?.Dispose();
             loopTokenSource = null;
-            
-            RigidbodyPlatform.gravityScale = 0;
+
+            ColliderObject.enabled = true;
+            RigidbodyObject.gravityScale = 0;
             RendererObject.color = Color.white;
         }
         

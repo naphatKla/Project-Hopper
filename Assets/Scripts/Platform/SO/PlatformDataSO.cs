@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MoreMountains.Feedbacks;
+using Platform.State;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -16,7 +17,7 @@ namespace Platform
         [BoxGroup("Data Setting")] [Tooltip("Weight of platform")]
         public float weight;
         [BoxGroup("Data Setting")] [Tooltip("State type each platform")]
-        public PlatformBaseStateSO state;
+        public PlatformBaseState state;
         [BoxGroup("Data Setting")] [Tooltip("Particle when stepped on platform")]
         public GameObject feedback;
 
