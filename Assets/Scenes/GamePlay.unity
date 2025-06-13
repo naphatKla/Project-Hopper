@@ -8658,7 +8658,7 @@ MonoBehaviour:
     prefab: {fileID: 9118354823518209840, guid: c68a5d8fb4b2a414da89662d5ff94632, type: 3}
     prewarmCount: 10
     weight: 1
-    chance: 5
+    chance: 20
     bypassAttemp: 0
     mustSafeBeforeSpawn: 0
     canSpawnOnType:
