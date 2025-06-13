@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Generic;
-using Characters.Controllers;
-using Dan.Main;
-using DG.Tweening;
+using Cysharp.Threading.Tasks;
+using Dan.Models;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,51 +14,36 @@ namespace UI
         [SerializeField] private Transform leaderBoardParent;
         [SerializeField] private TMP_InputField nameInput;
         [SerializeField] private Button playButton;
-        
         [SerializeField] private int maxDisplayAmount = 10;
-        private readonly List<LeaderboardElement> elementList = new List<LeaderboardElement>();
-        private bool _isInitialized;
+        private readonly List<LeaderboardElement> _elementList = new List<LeaderboardElement>();
 
-        private void Start()
+        private async void Start()
         {
+            elementPrefab.gameObject.SetActive(false);
             playButton.gameObject.SetActive(false);
             nameInput.gameObject.SetActive(false);
             
-            // load data from leader board
-            Leaderboards.ProjectHopper.GetPersonalEntry(entry =>
-            {
-                PlayerController.LoadData(entry.Username, entry.Score);
-                _isInitialized = true;
-                
-                nameInput.text = PlayerController.PlayerName;
-                playButton.onClick.AddListener(() => PlayerController.LoadData(nameInput.text, entry.Score));
-                nameInput.gameObject.SetActive(true);
-                playButton.gameObject.SetActive(true);
-            });
-
-            // time out
-            DOVirtual.DelayedCall(5f, () =>
-            {
-                nameInput.gameObject.SetActive(true);
-                playButton.gameObject.SetActive(true);
-            });
+            Entry ownerEntry = await LeaderboardManager.LoadOwnerDataFromServer();
             
-            elementPrefab.gameObject?.SetActive(false);
-            Leaderboards.ProjectHopper.GetEntries(entries =>
-            {
-                int elementAmount = Mathf.Min(entries.Length, maxDisplayAmount);
-                
-                for (int i = 0; i < elementAmount; i++)
-                {
-                    elementList.Add(Instantiate(elementPrefab, leaderBoardParent));
-                    elementList[i].gameObject.SetActive(true);
+            if (ownerEntry.Username != "Unknown")
+                nameInput.text = ownerEntry.Username;
+        
+            nameInput.gameObject.SetActive(true);
+            playButton.gameObject.SetActive(true);
+            playButton.onClick.AddListener(() => LeaderboardManager.SetLocalData(nameInput.text, ownerEntry.Score));
 
-                    string elementName = $"{entries[i].Rank}. {entries[i].Username}";
-                    int elementScore = entries[i].Score;
-                    elementList[i].AssignText(elementName, elementScore);
-                }
-            });
-            
+            Entry[] entries = await LeaderboardManager.LoadAllDataFromServer();
+            int elementAmount = Mathf.Min(entries.Length, maxDisplayAmount);
+                
+            for (int i = 0; i < elementAmount; i++)
+            {
+                _elementList.Add(Instantiate(elementPrefab, leaderBoardParent));
+                _elementList[i].gameObject.SetActive(true);
+
+                string elementName = $"{entries[i].Rank}. {entries[i].Username}";
+                int elementScore = entries[i].Score;
+                _elementList[i].AssignText(elementName, elementScore);
+            }
         }
     }
 }

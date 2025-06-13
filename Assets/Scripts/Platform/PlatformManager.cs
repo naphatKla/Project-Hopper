@@ -57,14 +57,14 @@ namespace Platform
         
         public void OnDespawned()
         {
-            data = null;
-            StopFeedbackAsync(feedback);
             currentState?.OnDespawned(this);
         }
 
         public void OnDisable()
         {
             ResetPlatform();
+            data = null;
+            StopFeedbackAsync(feedback);
         }
 
         private void Update()

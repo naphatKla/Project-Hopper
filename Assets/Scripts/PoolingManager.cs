@@ -24,7 +24,7 @@ namespace PoolingSystem
         /// <param name="rotation">The rotation to apply to the spawned object.</param>
         /// <param name="parent">The parent Transform for the spawned object (optional).</param>
         /// <returns>The spawned GameObject, or null if the prefab is null.</returns>
-        public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null)
+        public GameObject Spawn(GameObject prefab, Transform parent = null , Vector3? position = null, Quaternion? rotation = null)
         {
             if (prefab == null) return null;
 
@@ -36,13 +36,14 @@ namespace PoolingSystem
                 obj = pool.Dequeue();
             else
                 obj = Object.Instantiate(prefab);
+
             obj.transform.SetParent(parent, false);
-            obj.transform.position = position;
-            obj.transform.rotation = rotation;
-            Debug.Log($"Pooling Spawner: position ${position}");
+            obj.transform.position = position ?? Vector3.zero;
+            obj.transform.rotation = rotation ?? Quaternion.identity;
             obj.SetActive(true);
             return obj;
         }
+
 
 
 

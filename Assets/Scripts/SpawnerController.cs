@@ -16,10 +16,10 @@ namespace Spawner.Controller
     public class SpawnerController : MMSingleton<SpawnerController>
     {
         [BoxGroup("Dependent Context")] 
-        [SerializeField] private PlatformSpawner _platformSpawner;
+        [SerializeField] public PlatformSpawner _platformSpawner;
         
         [BoxGroup("Dependent Context")] 
-        [SerializeField] private ObjectSpawner _objectSpawner;
+        [SerializeField] public ObjectSpawner _objectSpawner;
         
         private readonly List<GameObject> _activePlatformHistory = new();
         

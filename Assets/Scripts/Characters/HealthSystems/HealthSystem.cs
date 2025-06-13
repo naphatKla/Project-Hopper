@@ -148,6 +148,15 @@ namespace Characters.HealthSystems
         }
 
         /// <summary>
+        /// Heal the character to full health.
+        /// </summary>
+        public void FullHeal()
+        {
+            _currentHp = maxHp;
+            OnHealthChange?.Invoke();
+        }
+
+        /// <summary>
         /// Sets whether the character is currently invincible.
         /// </summary>
         /// <param name="value">True to make invincible, false to disable invincibility.</param>

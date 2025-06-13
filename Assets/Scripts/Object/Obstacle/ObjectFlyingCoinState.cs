@@ -38,6 +38,7 @@ namespace ObjectItem
 
         public override void OnTriggerEnterObject(Collider2D other, ObjectManager manager)
         {
+            if (!other.CompareTag("Player")) return;
             if (other.TryGetComponent(out ScoreSystem score)) score.AddScore();
             manager.feedback.PlayFeedbacks();
             manager.gameObject.SetActive(false);
@@ -50,12 +51,13 @@ namespace ObjectItem
             
             await UniTask.NextFrame();
             manager.Loop = DOTween.Sequence();
-            manager.Loop.SetDelay(0.33f);
             manager.Loop.Append(manager.transform.DOMoveY(distanceIdle, idleTimer)
                 .SetRelative()
-                .SetEase(Ease.OutSine));
-            manager.Loop.AppendInterval(0.33f);
-            manager.Loop.SetLoops(-1, LoopType.Yoyo);
+                .SetEase(Ease.InQuad));
+            manager.Loop.Append(manager.transform.DOMoveY(-distanceIdle, idleTimer)
+                .SetRelative()
+                .SetEase(Ease.InQuad));
+            manager.Loop.SetLoops(-1, LoopType.Restart);
         }
         
     }
