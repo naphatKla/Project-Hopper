@@ -282,6 +282,10 @@ PrefabInstance:
       propertyPath: attackCooldown
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3422520147201627447, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.224
+      objectReference: {fileID: 0}
     - target: {fileID: 3946832140847313736, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
       propertyPath: m_Controller
       value: 
@@ -329,18 +333,6 @@ PrefabInstance:
     - target: {fileID: 8464559609138264350, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
       propertyPath: maxHp
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8660690790367064735, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 3.3918312
-      objectReference: {fileID: 0}
-    - target: {fileID: 8660690790367064735, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.5806007
-      objectReference: {fileID: 0}
-    - target: {fileID: 8660690790367064735, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8660690790367064735, guid: bd9380d15b539db4fa89ff52bc297d98, type: 3}
       propertyPath: m_LocalRotation.w

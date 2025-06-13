@@ -8770,7 +8770,7 @@ MonoBehaviour:
     - PlatformNormal
     yOffset: 0
   - id: EnemySkeleton
-    prefab: {fileID: 2691774995898733471, guid: cfea1e390c3caca4c82546a0ce6f428c, type: 3}
+    prefab: {fileID: 7634561817434906168, guid: d84339046a257f149bad517b67568e2c, type: 3}
     prewarmCount: 10
     weight: 1
     chance: 5
@@ -8780,7 +8780,7 @@ MonoBehaviour:
     - PlatformNormal
     yOffset: 0
   - id: EnemyBat
-    prefab: {fileID: 2691774995898733471, guid: ab0bfbeb9533a81438c0f0ed10383a82, type: 3}
+    prefab: {fileID: 5710652427634203148, guid: a4a34a32adbd9524dba990391e62fe9a, type: 3}
     prewarmCount: 10
     weight: 1
     chance: 15
@@ -8790,7 +8790,7 @@ MonoBehaviour:
     - PlatformNormal
     yOffset: 0
   - id: EnemyEliteSlime
-    prefab: {fileID: 2691774995898733471, guid: daca16d91597c044c9561962d75ae77f, type: 3}
+    prefab: {fileID: 8101844795405372443, guid: 56ced494b86331944be1bed014791d26, type: 3}
     prewarmCount: 10
     weight: 1
     chance: 15
