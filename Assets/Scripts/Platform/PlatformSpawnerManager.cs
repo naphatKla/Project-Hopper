@@ -149,11 +149,7 @@ namespace Platform
                 }
             }
         }
-        
-        /// <summary>
-        /// Calculate height platform algorithm
-        /// </summary>
-        /// <returns></returns>
+    
         private int CalculateWeight()
         {
             if (currentStep == targetStep)
@@ -176,11 +172,6 @@ namespace Platform
             }
 
             return nextStep;
-        }
-        
-        public bool TryGetPlatformId(GameObject platform, out string id)
-        {
-            return _spawnedPlatformToIdMap.TryGetValue(platform, out id);
         }
         
         private Vector3 SnapToGrid(Vector3 position, float gridSize = 0.5f)

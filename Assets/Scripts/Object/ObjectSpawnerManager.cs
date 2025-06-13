@@ -147,7 +147,7 @@ namespace Object
         {
             var spawner = SpawnerController.Instance;
             var previousPlatforms = spawner.GetPreviousMultiple(spawner._allPlatform, platform, 2);
-            if (previousPlatforms.Count() != 2) return false;
+            if (previousPlatforms.Count != 2) return false;
             return previousPlatforms.All(p => p.GetComponent<ObjectPoolData>().SpawnId == "PlatformNormal");
         }
         
