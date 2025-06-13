@@ -1,3 +1,4 @@
+using System;
 using Characters.HealthSystems;
 using MoreMountains.Tools;
 using Sirenix.OdinInspector;
@@ -23,7 +24,7 @@ namespace UI
             if (!ownerHealthSystem) return;
             ownerHealthSystem.OnHealthChange -= UpdateUI;
         }
-
+        
         private void UpdateUI()
         {
             float progress = Mathf.Clamp01(ownerHealthSystem.CurrentHp / ownerHealthSystem.MaxHp);

@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using MoreMountains.Feedbacks;
 using Sirenix.OdinInspector;
@@ -54,8 +55,9 @@ namespace Characters.InputSystems
         /// <summary>
         /// Subscribes button click events when the component is enabled.
         /// </summary>
-        private void OnEnable()
+        private async void OnEnable()
         {
+            await UniTask.NextFrame();
             moveButton?.onClick.AddListener(PerformMove);
             attackButton?.onClick.AddListener(PerformAttack);
             guardButton?.onClick.AddListener(PerformGuard);

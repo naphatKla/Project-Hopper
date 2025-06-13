@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 #if MM_TEXTMESHPRO
@@ -476,8 +477,25 @@ namespace MoreMountains.Tools
 			{
 				return;
 			}
-
+			
 			StoreInitialColor();
+		}
+
+		// reset coroutine values
+		protected void OnDisable()
+		{
+			if (!_initialized)
+			{
+				return;
+			}
+			
+			if (ChangeColorWhenBumping && _isForegroundImageNotNull)
+			{
+				_foregroundImage.color = _initialColor;
+			}
+
+			transform.localScale = _initialScale;
+			Bumping = false;
 		}
 
 		public virtual void Initialization()
@@ -929,6 +947,7 @@ namespace MoreMountains.Tools
 				}
 				yield return null;
 			}
+			
 			if (ChangeColorWhenBumping && _isForegroundImageNotNull)
 			{
 				_foregroundImage.color = _initialColor;
